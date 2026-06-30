@@ -1,0 +1,4 @@
+CompileFlags:
+  Add: [-Wall, -Wextra, -Wpedantic, -Wno-unused-parameter]
+  Remove:
+    - -mno-direct-extern-access
