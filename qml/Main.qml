@@ -166,6 +166,17 @@ ApplicationWindow {
                 CubedInstance.set_wrapper_command(wrapperCommand.text);
             }
         }
+        Switch {
+            id: logStatus
+            visible: advancedSetting.checked
+            Layout.alignment: Qt.AlignCenter
+            checked: false
+            font.pixelSize: 20
+            text: "Log"
+            onCheckedChanged: {
+                CubedInstance.logOn = logStatus.checked;
+            }
+        }
     }
 
     FileDialog {

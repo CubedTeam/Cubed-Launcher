@@ -34,6 +34,23 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     connect(process, &QProcess::errorOccurred, this,
             [](QProcess::ProcessError error) { qDebug() << error; });
 
+    if (m_log_on) {
+        connect(process, &QProcess::readyReadStandardOutput, this, [process]() {
+            QByteArray data = process->readAllStandardOutput();
+            if (!data.isEmpty()) {
+                fwrite(data.constData(), 1, data.size(), stdout);
+                fflush(stdout);
+            }
+        });
+        connect(process, &QProcess::readyReadStandardError, this, [process]() {
+            QByteArray data = process->readAllStandardError();
+            if (!data.isEmpty()) {
+                fwrite(data.constData(), 1, data.size(), stderr);
+                fflush(stderr);
+            }
+        });
+    }
+
     process->start();
     if (process->waitForStarted()) {
         m_processes.append(process);
@@ -69,3 +86,4 @@ Q_INVOKABLE void CubedInstance::set_wrapper_command(const QString& wrapper) {
 
 bool CubedInstance::running() const { return !m_processes.isEmpty(); }
 bool CubedInstance::game_path_select() const { return !m_game_path.isEmpty(); }
+void CubedInstance::set_log_statue(bool status) { m_log_on = status; }

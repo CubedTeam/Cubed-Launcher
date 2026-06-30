@@ -9,6 +9,7 @@ class CubedInstance : public QObject {
     QML_SINGLETON
     Q_PROPERTY(bool running READ running NOTIFY running_changed)
     Q_PROPERTY(bool path_selected READ game_path_select NOTIFY path_change)
+    Q_PROPERTY(bool logOn WRITE set_log_statue)
 public:
     Q_INVOKABLE void start_cubed_instance();
     Q_INVOKABLE void set_game_path(const QUrl& game_path);
@@ -20,6 +21,7 @@ public:
     Q_INVOKABLE void kill_all();
     bool running() const;
     bool game_path_select() const;
+    void set_log_statue(bool status);
 signals:
     void running_changed();
     void path_change();
@@ -32,4 +34,5 @@ private:
     QString m_ip{"127.0.0.1"};
     QString m_name{"Unknown"};
     QList<QProcess*> m_processes;
+    bool m_log_on{false};
 };
