@@ -33,9 +33,13 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     QML_FILES 
         qml/Main.qml
+        qml/Sidebar.qml
+        qml/Tab/Launch.qml
+        qml/Tab/About.qml
     SOURCES
         src/game-mgmt/cubed_instance.cpp
         src/game-mgmt/cubed_instance.hpp
+        src/tool/system_info.hpp
     
 )
 
@@ -43,6 +47,7 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/game-mgmt
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/tool
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
