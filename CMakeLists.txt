@@ -34,14 +34,15 @@ qt_add_qml_module(${PROJECT_NAME}
     QML_FILES 
         qml/Main.qml
     SOURCES
-        src/cubed_instance.cpp
-        src/cubed_instance.hpp
+        src/game-mgmt/cubed_instance.cpp
+        src/game-mgmt/cubed_instance.hpp
     
 )
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/game-mgmt
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 

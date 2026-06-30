@@ -6,6 +6,7 @@ import QtQuick.Dialogs
 import QtQuick.Layouts
 
 ApplicationWindow {
+    id: cbedLauncher
     visible: true
     width: 640
     height: 480
@@ -36,12 +37,20 @@ ApplicationWindow {
             font.pixelSize: 20
             text: "Start Game"
             //anchors.centerIn: parent
-            highlighted: true
+            enabled: CubedInstance.path_selected
+            highlighted: enabled
 
             Material.roundedScale: Material.MediumScale
             onClicked: {
                 CubedInstance.start_cubed_instance();
             }
+        }
+        Label {
+            id: selectMessgae
+            Layout.alignment: Qt.AlignCenter
+            Material.foreground: Material.Red
+            visible: !CubedInstance.path_selected
+            text: "You must select game program"
         }
         Button {
             id: gamePathButton
@@ -54,7 +63,7 @@ ApplicationWindow {
             font.pixelSize: 20
 
             highlighted: true
-            text: "Select Game Path"
+            text: "Select Game"
             onClicked: {
                 gameFileDialog.open();
             }
@@ -80,7 +89,22 @@ ApplicationWindow {
                 }
             }
         }
+        Button {
+            text: "Kill All Process"
+            visible: CubedInstance.running
 
+            Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+            font.pixelSize: 20
+
+            highlighted: true
+
+            onClicked: {
+                CubedInstance.kill_all();
+            }
+        }
         Component {
             id: hostMode
             Item {
@@ -124,6 +148,22 @@ ApplicationWindow {
                         }
                     }
                 }
+            }
+        }
+        Switch {
+            id: advancedSetting
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 20
+            text: "Advanced Setting"
+            checked: false
+        }
+        TextField {
+            id: wrapperCommand
+            visible: advancedSetting.checked
+            Layout.fillWidth: true
+            placeholderText: "Wrapper Command"
+            onEditingFinished: {
+                CubedInstance.set_wrapper_command(wrapperCommand.text);
             }
         }
     }
