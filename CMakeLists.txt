@@ -25,7 +25,6 @@ qt_standard_project_setup(REQUIRES 6.11)
 
 qt_add_executable(${PROJECT_NAME}
     src/main.cpp
-    
 )
 
 qt_add_qml_module(${PROJECT_NAME}
@@ -37,10 +36,13 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tab/Launch.qml
         qml/Tab/Setting.qml
         qml/Tab/About.qml
+        qml/Tool/GamePathSet.qml
     SOURCES
         src/game-mgmt/cubed_instance.cpp
         src/game-mgmt/cubed_instance.hpp
         src/tool/system_info.hpp
+        src/settings.cpp
+        src/settings.hpp
     
 )
 

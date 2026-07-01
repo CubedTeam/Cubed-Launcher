@@ -12,7 +12,8 @@ class CubedInstance : public QObject {
     Q_PROPERTY(bool logOn WRITE set_log_statue)
 public:
     Q_INVOKABLE void start_cubed_instance();
-    Q_INVOKABLE void set_game_path(const QUrl& game_path);
+    Q_INVOKABLE void set_game_path_url(const QUrl& game_path);
+    Q_INVOKABLE void set_game_path(const QString& game_path);
     Q_INVOKABLE void set_peer(int index);
     Q_INVOKABLE void set_port(const QString& port);
     Q_INVOKABLE void set_ip(const QString& ip);

@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
 import CubedLauncher
-import QtQuick.Dialogs
+
 import QtQuick.Layouts
 
 Item {
@@ -39,11 +39,16 @@ Item {
         }
 
         TextField {
-            id: playerName
+            id: playerNameText
+            Component.onCompleted: {
+                CubedInstance.set_name(playerNameText.text);
+            }
+            text: Settings.playerName
             Layout.fillWidth: true
             placeholderText: "Enter Player Name"
             onEditingFinished: {
-                CubedInstance.set_name(playerName.text);
+                Settings.playerName = playerNameText.text;
+                CubedInstance.set_name(playerNameText.text);
             }
         }
 
@@ -57,7 +62,12 @@ Item {
             //anchors.centerIn: parent
             enabled: CubedInstance.path_selected
             highlighted: enabled
-
+            Component.onCompleted: {
+                if (Settings.pathSetted) {
+                    console.log("Set Cubed Instance game path sucessful");
+                    CubedInstance.set_game_path(Settings.gamePath);
+                }
+            }
             Material.roundedScale: Material.MediumScale
             onClicked: {
                 CubedInstance.start_cubed_instance();
@@ -129,46 +139,6 @@ Item {
                     }
                 }
             }
-        }
-    }
-
-    ColumnLayout {
-        anchors.centerIn: parent
-        visible: !CubedInstance.path_selected
-        Label {
-            id: selectMessgae
-            Layout.alignment: Qt.AlignCenter
-            Material.foreground: Material.Red
-            visible: !CubedInstance.path_selected
-            text: "You must select game program"
-        }
-        Button {
-            id: gamePathButton
-
-            Material.roundedScale: Material.MediumScale
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-
-            font.pixelSize: 20
-
-            highlighted: true
-            text: "Select Game"
-            onClicked: {
-                gameFileDialog.open();
-            }
-        }
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: gameFileDialog.selectedFile
-        }
-    }
-    FileDialog {
-        id: gameFileDialog
-        title: "Select Cubed Game"
-        // currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
-        onAccepted: {
-            CubedInstance.set_game_path(selectedFile);
         }
     }
 }

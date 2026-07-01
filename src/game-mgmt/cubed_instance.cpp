@@ -57,11 +57,14 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
         emit running_changed();
     }
 }
-Q_INVOKABLE void CubedInstance::set_game_path(const QUrl& game_path_url) {
+Q_INVOKABLE void CubedInstance::set_game_path_url(const QUrl& game_path_url) {
     m_game_path = game_path_url.toLocalFile();
     emit path_change();
 }
-
+Q_INVOKABLE void CubedInstance::set_game_path(const QString& game_path) {
+    m_game_path = game_path;
+    emit path_change();
+}
 Q_INVOKABLE void CubedInstance::set_peer(int index) {
     if (index == 0) {
         m_peer_mode = "--host";

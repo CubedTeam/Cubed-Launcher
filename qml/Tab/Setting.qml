@@ -9,6 +9,17 @@ Item {
     id: settingTab
     Layout.fillHeight: true
     Layout.fillWidth: true
+
+    Loader {
+        id: pathSetLoader
+
+        anchors.bottom: advancedSetting.top
+        anchors.horizontalCenter: advancedSetting.horizontalCenter
+        anchors.bottomMargin: 50
+
+        source: "../Tool/GamePathSet.qml"
+    }
+
     Switch {
         id: advancedSetting
         anchors.centerIn: parent
@@ -17,6 +28,7 @@ Item {
         text: "Advanced Setting"
         checked: false
     }
+
     ColumnLayout {
 
         anchors.horizontalCenter: advancedSetting.horizontalCenter
