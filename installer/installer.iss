@@ -25,7 +25,7 @@ VersionInfoDescription=Cubed Launcher Installer
 VersionInfoCompany=CubedTeam
 
 [Files]
-Source: "..\build\CubedLauncher\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
+Source: "..\build\CubedLauncher\Release*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\Cubed Launcher"; Filename: "{app}\CubedLauncher.exe"

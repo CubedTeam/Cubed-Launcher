@@ -74,7 +74,7 @@ jobs:
       - name: Create Portable Zip
         run: |
             Compress-Archive `
-            -Path build/CubedLauncher/* `
+            -Path build/CubedLauncher/Release* `
             -DestinationPath CubedLauncher-${{ steps.version.outputs.version }}-windows-x64-portable.zip
 
       - name: Release
