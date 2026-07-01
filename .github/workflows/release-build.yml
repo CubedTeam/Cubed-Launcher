@@ -27,6 +27,13 @@ jobs:
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+
       - name: Get Version
         id: version
         shell: bash
@@ -38,20 +45,6 @@ jobs:
             fi
 
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Qt via aqt (With Mirror)
-        run: |
-          python -m pip install --upgrade pip
-          pip install aqtinstall
-          
-          python -m aqt install-qt windows desktop 6.11.1 win64_msvc2022_64 --outputdir D:\Qt --base https://mirrors.tuna.tsinghua.edu.cn/qt
-          
-          echo "D:\Qt\6.11.1\msvc2022_64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Configure
         run: >
