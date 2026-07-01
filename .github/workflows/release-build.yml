@@ -26,10 +26,6 @@ jobs:
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
-      
-      - name: List Qt Versions
-        run: |
-            aqt list-qt windows desktop
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
