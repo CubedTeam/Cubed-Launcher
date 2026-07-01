@@ -1,5 +1,11 @@
 #ifndef CubedLauncherVersion
-#define CubedLauncherVersion "0.0.1dev"
+#define CubedLauncherVersion "dev"
+#endif
+
+#if CubedLauncherVersion == "dev"
+  #define CubedLauncherFileVersion "0.0.0.0"
+#else
+  #define CubedLauncherFileVersion CubedLauncherVersion + ".0"
 #endif
 
 [Setup]
@@ -19,7 +25,7 @@ ArchitecturesInstallIn64BitMode=x64compatible
 
 UninstallDisplayIcon={app}\CubedLauncher.exe
 
-VersionInfoVersion={#CubedLauncherVersion}
+VersionInfoVersion={#CubedLauncherFileVersion}
 VersionInfoProductName=Cubed Launcher
 VersionInfoDescription=Cubed Launcher Installer
 VersionInfoCompany=CubedTeam
