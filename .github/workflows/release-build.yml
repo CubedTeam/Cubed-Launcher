@@ -27,14 +27,6 @@ jobs:
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
-      - name: Install aqt
-        run: |
-            pip install aqtinstall==3.3.0
-
-      - name: Install Qt
-        run: |
-            python -m aqt install-qt windows desktop 6.11.1 win64_msvc2022_64
-
       - name: Get Version
         id: version
         shell: bash
@@ -54,6 +46,7 @@ jobs:
             -G "Visual Studio 17 2022"
             -A x64
             -DCMAKE_BUILD_TYPE=Release
+            -DCMAKE_PREFIX_PATH=C:/Qt/6.11.1/msvc2022_64
             -DAPP_VERSION=${{ steps.version.outputs.version }}
 
       - name: Build
