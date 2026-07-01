@@ -7,12 +7,15 @@ import QtQuick.Layouts
 
 Rectangle {
     anchors.fill: parent
+
+    color: Material.backgroundColor
+
     RowLayout {
         anchors.fill: parent
         Rectangle {
             Layout.preferredWidth: 140
             Layout.fillHeight: true
-            color: Material.color(Material.Amber, Material.Shade100)
+            color: Material.color(Material.Amber, Material.Shade50)
             ListView {
                 id: navList
                 anchors.fill: parent
@@ -43,7 +46,6 @@ Rectangle {
                     highlighted: ListView.isCurrentItem
 
                     onClicked: navList.currentIndex = index
-                    Material.accent: Material.color(Material.Orange)
                 }
             }
         }
@@ -56,12 +58,7 @@ Rectangle {
 
             Launch {}
 
-            Rectangle {
-                Label {
-                    anchors.centerIn: parent
-                    text: "Coming Soon..."
-                }
-            }
+            Setting {}
 
             About {}
         }

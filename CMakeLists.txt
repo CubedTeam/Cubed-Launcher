@@ -35,6 +35,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Main.qml
         qml/Sidebar.qml
         qml/Tab/Launch.qml
+        qml/Tab/Setting.qml
         qml/Tab/About.qml
     SOURCES
         src/game-mgmt/cubed_instance.cpp

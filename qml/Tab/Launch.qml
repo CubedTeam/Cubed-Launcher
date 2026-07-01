@@ -10,15 +10,34 @@ Item {
     id: launchTab
     Layout.fillHeight: true
     Layout.fillWidth: true
+
     ColumnLayout {
         id: gameLayout
-        anchors.centerIn: parent
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.bottomMargin: 10
+        anchors.rightMargin: 25
+
         width: 300
         spacing: 10
-        Label {
+
+        Button {
+            text: "Kill All Process"
+            visible: CubedInstance.running
+            Layout.margins: 15
+            Material.roundedScale: Material.MediumScale
             Layout.alignment: Qt.AlignCenter
-            text: gameFileDialog.selectedFile
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+            font.pixelSize: 20
+
+            highlighted: true
+
+            onClicked: {
+                CubedInstance.kill_all();
+            }
         }
+
         TextField {
             id: playerName
             Layout.fillWidth: true
@@ -44,29 +63,6 @@ Item {
                 CubedInstance.start_cubed_instance();
             }
         }
-        Label {
-            id: selectMessgae
-            Layout.alignment: Qt.AlignCenter
-            Material.foreground: Material.Red
-            visible: !CubedInstance.path_selected
-            text: "You must select game program"
-        }
-        Button {
-            id: gamePathButton
-
-            Material.roundedScale: Material.MediumScale
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-
-            font.pixelSize: 20
-
-            highlighted: true
-            text: "Select Game"
-            onClicked: {
-                gameFileDialog.open();
-            }
-        }
 
         ComboBox {
             id: peerMode
@@ -88,22 +84,7 @@ Item {
                 }
             }
         }
-        Button {
-            text: "Kill All Process"
-            visible: CubedInstance.running
 
-            Material.roundedScale: Material.MediumScale
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-            font.pixelSize: 20
-
-            highlighted: true
-
-            onClicked: {
-                CubedInstance.kill_all();
-            }
-        }
         Component {
             id: hostMode
             Item {
@@ -152,47 +133,42 @@ Item {
     }
 
     ColumnLayout {
-
-        anchors.horizontalCenter: gameLayout.horizontalCenter
-        anchors.top: gameLayout.bottom
-        width: gameLayout.width
-        spacing: gameLayout.spacing
-
-        Switch {
-            id: advancedSetting
+        anchors.centerIn: parent
+        visible: !CubedInstance.path_selected
+        Label {
+            id: selectMessgae
             Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 20
-            text: "Advanced Setting"
-            checked: false
+            Material.foreground: Material.Red
+            visible: !CubedInstance.path_selected
+            text: "You must select game program"
         }
-        TextField {
-            id: wrapperCommand
-            visible: advancedSetting.checked
-            Layout.fillWidth: true
-            placeholderText: "Wrapper Command"
-            onEditingFinished: {
-                CubedInstance.set_wrapper_command(wrapperCommand.text);
-            }
-        }
-        Switch {
-            id: logStatus
-            visible: advancedSetting.checked
-            Layout.alignment: Qt.AlignCenter
-            checked: false
-            font.pixelSize: 20
-            text: "Log"
-            onCheckedChanged: {
-                CubedInstance.logOn = logStatus.checked;
-            }
-        }
+        Button {
+            id: gamePathButton
 
-        FileDialog {
-            id: gameFileDialog
-            title: "Select Cubed Game"
-            // currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
-            onAccepted: {
-                CubedInstance.set_game_path(selectedFile);
+            Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+
+            font.pixelSize: 20
+
+            highlighted: true
+            text: "Select Game"
+            onClicked: {
+                gameFileDialog.open();
             }
+        }
+        Label {
+            Layout.alignment: Qt.AlignCenter
+            text: gameFileDialog.selectedFile
+        }
+    }
+    FileDialog {
+        id: gameFileDialog
+        title: "Select Cubed Game"
+        // currentFolder: StandardPaths.standardLocations(StandardPaths.PicturesLocation)[0]
+        onAccepted: {
+            CubedInstance.set_game_path(selectedFile);
         }
     }
 }

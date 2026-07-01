@@ -9,5 +9,8 @@ ApplicationWindow {
     height: 480
     title: "Cubed Launcher"
 
+    Material.background: Material.color(Material.Orange, Material.Shade50)
+    Material.accent: Material.color(Material.Orange)
+
     Sidebar {}
 }
