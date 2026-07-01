@@ -1,0 +1,77 @@
+name: Release-Build
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+
+    runs-on: windows-2022
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.11.1
+          host: windows
+          target: desktop
+          arch: win64_msvc2022
+
+      - name: Get Version
+        id: version
+        shell: bash
+        run: |
+            VERSION=${GITHUB_REF_NAME#v}
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Configure
+        run: >
+            cmake
+            -B build
+            -G "Visual Studio 17 2022"
+            -A x64
+            -DCMAKE_BUILD_TYPE=Release
+            -DAPP_VERSION=${{ steps.version.outputs.version }}
+
+      - name: Build
+        run: cmake --build build --config Release --target CubedLauncher
+
+      - name: Deploy Qt
+        shell: cmd
+        run: |
+            windeployqt --release --qmldir qml build\CubedLauncher\CubedLauncher.exe
+    
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Build Installer
+        shell: cmd
+        run: |
+            iscc /DCubedLauncherVersion=${{ steps.version.outputs.version }} installer\installer.iss
+
+      - name: Create Portable Zip
+        run: |
+            Compress-Archive `
+            -Path build/CubedLauncher/* `
+            -DestinationPath CubedLauncher-${{ steps.version.outputs.version }}-windows-x64-portable.zip
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+            files: |
+                installer/output/*.exe
+                *.zip
+                generate_release_notes: true
+                draft: false
+                prerelease: false

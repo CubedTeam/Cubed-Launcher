@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.21)
+
 project(CubedLauncher LANGUAGES C CXX)
 
+if(NOT DEFINED APP_VERSION)
+    set(APP_VERSION "dev")
+endif()
+message(STATUS "App Version: ${APP_VERSION}")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -19,6 +24,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(CMAKE_AUTOMOC ON)
 
+configure_file(
+    src/version.hpp.in
+    ${CMAKE_BINARY_DIR}/generated/version.hpp
+    @ONLY
+)
+
 find_package(Qt6 6.11 REQUIRED COMPONENTS Core Quick QuickControls2)
 
 qt_standard_project_setup(REQUIRES 6.11)
@@ -26,6 +37,16 @@ qt_standard_project_setup(REQUIRES 6.11)
 qt_add_executable(${PROJECT_NAME}
     src/main.cpp
 )
+
+
+if (WIN32)
+    set_target_properties(${PROJECT_NAME}
+        PROPERTIES
+            VERSION ${APP_VERSION}
+            WIN32_EXECUTABLE $<CONFIG:Release>
+    )
+endif()
+
 
 qt_add_qml_module(${PROJECT_NAME}
     URI ${PROJECT_NAME}
@@ -51,6 +72,7 @@ qt_add_qml_module(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE
+        ${CMAKE_BINARY_DIR}/generated
         ${CMAKE_CURRENT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/game-mgmt
         ${CMAKE_CURRENT_SOURCE_DIR}/src/tool

@@ -20,6 +20,12 @@ Item {
 
         Label {
             Layout.alignment: Qt.AlignCenter
+            text: "Version: " + AppVersion
+            font.pixelSize: 24
+        }
+
+        Label {
+            Layout.alignment: Qt.AlignCenter
             text: "OS: " + Qt.platform.os
             font.pixelSize: 24
         }
