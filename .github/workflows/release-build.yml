@@ -26,11 +26,15 @@ jobs:
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
+      
+      - name: List Qt Versions
+        run: |
+            aqt list-qt windows desktop
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.11.1
+          version: 6.11.0
           host: windows
           target: desktop
           arch: win64_msvc2022
