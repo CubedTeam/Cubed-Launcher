@@ -44,3 +44,4 @@ assets/config.toml
 .venv/
 pyout/
 vcpkg_installed/
+installer/output

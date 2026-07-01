@@ -50,8 +50,7 @@ jobs:
         run: >
             cmake
             -B build
-            -G "Visual Studio 17 2022"
-            -A x64
+            -G Ninja
             -DCMAKE_BUILD_TYPE=Release
             -DAPP_VERSION=${{ steps.version.outputs.version }}
 
@@ -61,7 +60,7 @@ jobs:
       - name: Deploy Qt
         shell: cmd
         run: |
-            windeployqt --release --qmldir qml build\CubedLauncher\Release\CubedLauncher.exe
+            windeployqt --release --qmldir qml build\CubedLauncher\CubedLauncher.exe
     
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
@@ -74,7 +73,7 @@ jobs:
       - name: Create Portable Zip
         run: |
             Compress-Archive `
-            -Path build/CubedLauncher/Release* `
+            -Path build/CubedLauncher* `
             -DestinationPath CubedLauncher-${{ steps.version.outputs.version }}-windows-x64-portable.zip
 
       - name: Release
