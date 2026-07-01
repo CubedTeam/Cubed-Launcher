@@ -30,11 +30,11 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: 6.11.0
-          host: windows
-          target: desktop
-          arch: win64_msvc2022
-
+          version: '6.11.*'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+          aqtversion: '==3.2.1'
       - name: Get Version
         id: version
         shell: bash
