@@ -37,6 +37,9 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tab/Setting.qml
         qml/Tab/About.qml
         qml/Tool/GamePathSet.qml
+    RESOURCES
+        resources/logo.png
+
     SOURCES
         src/game-mgmt/cubed_instance.cpp
         src/game-mgmt/cubed_instance.hpp

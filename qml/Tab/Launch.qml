@@ -11,6 +11,14 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
+    Image {
+        id: logoImage
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.top
+        anchors.verticalCenterOffset: 300
+        source: "qrc:/qt/qml/CubedLauncher/resources/logo.png"
+    }
+
     ColumnLayout {
         id: gameLayout
         anchors.bottom: parent.bottom
