@@ -1,6 +1,13 @@
 name: Release-Build
 
 on:
+  workflow_dispatch:
+    inputs:
+        version:
+            description: "Version"
+            required: false
+            default: "dev"
+
   push:
     tags:
       - "v*"
@@ -32,8 +39,13 @@ jobs:
         id: version
         shell: bash
         run: |
-            VERSION=${GITHUB_REF_NAME#v}
-            echo "version=$VERSION" >> $GITHUB_OUTPUT
+            if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+            else
+            VERSION="${{ github.event.inputs.version }}"
+            fi
+
+            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Configure
         run: >
