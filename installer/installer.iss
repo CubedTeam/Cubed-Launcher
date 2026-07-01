@@ -1,5 +1,5 @@
 #ifndef CubedLauncherVersion
-#define CubedLauncherVersion "dev"
+#define CubedLauncherVersion "0.0.1dev"
 #endif
 
 [Setup]

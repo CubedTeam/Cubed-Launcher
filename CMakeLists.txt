@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 project(CubedLauncher LANGUAGES C CXX)
 
 if(NOT DEFINED APP_VERSION)
-    set(APP_VERSION "dev")
+    set(APP_VERSION "0.0.1dev")
 endif()
 message(STATUS "App Version: ${APP_VERSION}")
 set(CMAKE_CXX_STANDARD 23)
