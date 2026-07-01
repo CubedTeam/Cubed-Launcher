@@ -34,7 +34,7 @@ jobs:
           host: 'windows'
           target: 'desktop'
           arch: 'win64_msvc2022_64'
-          aqtversion: '==3.2.1'
+          aqtversion: '==3.3.0'
       - name: Get Version
         id: version
         shell: bash
