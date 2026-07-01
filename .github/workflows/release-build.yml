@@ -27,14 +27,14 @@ jobs:
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: Install aqt
+        run: |
+            pip install aqtinstall==3.3.0
+
       - name: Install Qt
-        uses: jurplel/install-qt-action@v4
-        with:
-          version: '6.11.*'
-          host: 'windows'
-          target: 'desktop'
-          arch: 'win64_msvc2022_64'
-          aqtversion: '==3.3.0'
+        run: |
+            python -m aqt install-qt-official windows desktop 6.11.1 win64_msvc2022_64
+            
       - name: Get Version
         id: version
         shell: bash
