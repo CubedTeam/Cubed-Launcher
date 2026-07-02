@@ -130,22 +130,28 @@ jobs:
         run: |
           cmake --install build --prefix AppDir/usr
 
-      - name: Download linuxdeployqt
+      - name: Download linuxdeploy and qt plugin
         if: matrix.platform == 'linux'
         run: |
-          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-          chmod +x linuxdeployqt-continuous-x86_64.AppImage
+          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
 
       - name: Build AppImage
         if: matrix.platform == 'linux'
         env:
           VERSION: ${{ steps.version.outputs.version }}
+          QML_SOURCES_PATHS: "qml" 
+          LDAI_OUTPUT: "CubedLauncher-${{ steps.version.outputs.version }}-linux-x64.AppImage"
         run: |
-          export ARCH=x86_64
+          ./linuxdeploy-x86_64.AppImage \
+            --appdir AppDir \
+            --desktop-file AppDir/usr/share/applications/CubedLauncher.desktop \
+            --plugin qt \
+            --output appimage
 
-          ./linuxdeployqt-continuous-x86_64.AppImage \
-            AppDir/usr/share/applications/CubedLauncher.desktop \
-            -appimage
+          rm linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
+      
 
       ####################################################################
       # Upload
