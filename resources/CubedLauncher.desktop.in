@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Cubed Launcher
+Exec=CubedLauncher
+Icon=CubedLauncher
+Version=@APP_VERSION@
+Categories=Game;
+Terminal=false

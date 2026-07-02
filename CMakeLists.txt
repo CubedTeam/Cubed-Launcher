@@ -30,6 +30,12 @@ configure_file(
     @ONLY
 )
 
+configure_file(
+    resources/CubedLauncher.desktop.in
+    ${CMAKE_BINARY_DIR}/CubedLauncher.desktop
+    @ONLY
+)
+
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2)
 
 qt_standard_project_setup(REQUIRES 6.8)
@@ -82,3 +88,24 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
     Qt6::QuickControls2
 )
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+
+include(GNUInstallDirs)
+
+install(TARGETS ${PROJECT_NAME}
+    BUNDLE DESTINATION .
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+install(
+    FILES ${CMAKE_BINARY_DIR}/CubedLauncher.desktop
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
+)
+
+install(
+    FILES resources/CubedLauncher.png
+    DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/256x256/apps
+)
+
+endif()
