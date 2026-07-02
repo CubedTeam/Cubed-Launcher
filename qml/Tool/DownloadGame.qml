@@ -45,8 +45,18 @@ Item {
                 gameFileDialog.open();
             }
         }
+
+        Switch {
+            id: downloadSource
+            text: "Use Custom Link"
+            checked: false
+            Layout.alignment: Qt.AlignCenter
+        }
+
         Button {
-            id: downloadGameButton
+            id: downloadGameGithubButton
+            visible: !downloadSource.checked
+            enabled: !downloadSource.checked
             Layout.alignment: Qt.AlignCenter
             Material.roundedScale: Material.MediumScale
             Layout.preferredWidth: 250
@@ -69,6 +79,41 @@ Item {
                 highlighted = false;
             }
         }
+
+        TextField {
+            id: downloadLink
+            visible: downloadSource.checked
+            enabled: downloadSource.checked
+            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: true
+            placeholderText: "Download Link"
+        }
+
+        Button {
+            id: downloadGameCustomButton
+            visible: downloadSource.checked
+            enabled: downloadSource.checked
+            Layout.alignment: Qt.AlignCenter
+            Material.roundedScale: Material.MediumScale
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+            highlighted: true
+
+            font.pixelSize: 20
+            text: "Intall Game"
+            Component.onCompleted: {
+                VersionUpdate.set_game_dir(Settings.gamePath);
+            }
+            onClicked: {
+                VersionUpdate.download_game(downloadLink.text);
+                downloadProgress.visible = true;
+                gamePathButton.enabled = false;
+                gamePathButton.highlighted = false;
+                enabled = false;
+                highlighted = false;
+            }
+        }
+
         Label {
             text: "Game Install Directory: " + Settings.gamePath
             font.pixelSize: 16
@@ -85,8 +130,10 @@ Item {
                 if (value >= to) {
                     console.log("Download Finish");
                     downloadProgress.visible = true;
-                    downloadGameButton.enabled = true;
-                    downloadGameButton.highlighted = true;
+                    downloadGameGithubButton.enabled = true;
+                    downloadGameGithubButton.highlighted = true;
+                    downloadGameCustomButton.enabled = true;
+                    downloadGameCustomButton.highlighted = true;
                     gamePathButton.enabled = true;
                     gamePathButton.highlighted = true;
                 }

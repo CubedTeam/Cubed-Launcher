@@ -88,48 +88,52 @@ Q_INVOKABLE void VersionUpdate::download_from_github() {
 }
 
 Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
-
+    if (download_url.isEmpty()) {
+        qDebug() << "Error Download Url is empty";
+        m_download_progress = 1.0f;
+        emit download_progress_changed();
+        return;
+    }
     QNetworkRequest download_request(download_url);
     download_request.setHeader(QNetworkRequest::UserAgentHeader,
                                buildUserAgent().toUtf8());
 
     auto* download_reply = m_manager.get(download_request);
 
+    QString zip_path = QDir::temp().filePath("Cubed-latest.zip");
+    auto* file = new QFile(zip_path);
+    if (!file->open(QIODevice::WriteOnly)) {
+        qDebug() << "Can't open file";
+        download_reply->abort();
+        download_reply->deleteLater();
+        delete file;
+        return;
+    }
+
+    connect(
+        download_reply, &QNetworkReply::readyRead, this,
+        [download_reply, file]() { file->write(download_reply->readAll()); });
+
     connect(download_reply, &QNetworkReply::finished, this,
-            [download_reply, this]() {
+            [download_reply, file, zip_path, this]() {
+                file->close();
+                delete file;
+
                 if (download_reply->error() != QNetworkReply::NoError) {
                     qDebug() << download_reply->errorString();
                     download_reply->deleteLater();
                     return;
                 }
 
-                QString zip_path = QDir::temp().filePath("Cubed-latest.zip");
-                auto* file = new QFile(zip_path);
+                qDebug() << "Download File completed! Zip Path" << zip_path;
+                qDebug() << "Before extract zip_path" << zip_path
+                         << "to game path" << m_game_dir;
 
-                if (!file->open(QIODevice::WriteOnly)) {
-                    qDebug() << "Can't open file";
-                    return;
+                if (!QMicroz::extract(zip_path, m_game_dir)) {
+                    qDebug() << "Extract file error";
                 }
-
-                connect(download_reply, &QNetworkReply::readyRead,
-                        [download_reply, file]() {
-                            file->write(download_reply->readAll());
-                        });
-
-                connect(download_reply, &QNetworkReply::finished,
-                        [download_reply, file, zip_path,
-                         m_game_dir = this->m_game_dir]() {
-                            file->close();
-                            delete file;
-
-                            if (download_reply->error() ==
-                                QNetworkReply::NoError) {
-                                QMicroz::extract(zip_path, m_game_dir);
-                                QFile::remove(zip_path);
-                            }
-
-                            download_reply->deleteLater();
-                        });
+                QFile::remove(zip_path);
+                download_reply->deleteLater();
             });
 
     connect(download_reply, &QNetworkReply::downloadProgress, this,
