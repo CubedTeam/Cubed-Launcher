@@ -35,6 +35,9 @@ Rectangle {
                         title: "Launcher"
                     }
                     ListElement {
+                        title: "Manager"
+                    }
+                    ListElement {
                         title: "Setting"
                     }
                     ListElement {
@@ -66,7 +69,7 @@ Rectangle {
             currentIndex: navList.currentIndex
 
             Launch {}
-
+            Manager {}
             Setting {}
 
             About {}

@@ -65,7 +65,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 24
             onClicked: {
-                VersionUpdate.check_update();
+                VersionUpdate.check_update("CubedTeam", "Cubed-Launcher");
             }
         }
     }

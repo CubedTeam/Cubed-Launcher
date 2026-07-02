@@ -1,0 +1,55 @@
+QMicroz v0.6
+* Redesigned architecture. Significantly simplified code base.
+  The main class now has functionality for more flexible zippping at a lower level.
+  Files qmztools.h and qmztools.cpp deleted. Many functions have been rewritten and combined.
+* Ability to zip files and folders with an arbitrary entry name.
+* Ability to extract individual items to a custom path.
+* Ability to concise code using << operator.
+* Static compress(paths) function now allows paths with different roots.
+* ZipContents format changed to accelerate the existing entries search.
+  <index, name> --> <name, index>
+* Ability to set last modified date to folder entries.
+* Ability to extract the selected folder with its contents.
+* Extracting to the memory buffer no longer excludes folder entries.
+* extractAll() now continues to extract the rest of the content despite the individual item fail.
+* Reduced verbosity (again).
+
+---
+QMicroz v0.5
+* miniz updated to 3.1.0
+* The names of static compression functions have been merged.
+  multiple comress_FOO() --> single compress(...)
+* Reduced verbosity. Added the ability to enable the verbose mode for member functions.
+* Added static functions 'isArchive' and 'isZipFile' to avoid the need to implement such checks in the project code.
+* Shortcuts and symlinks are no longer excluded from the path list.
+* Reference comments have been improved.
+* Improved BufFile handling.
+* Added unit tests.
+* Fixed static build on Windows MinGW.
+
+---
+QMicroz v0.4
+* It is now possible to request extended information about items contained in the archive.
+    For example, get the modification date or compressed/uncompressed size.
+* The file extracted to the buffer (struct BufFile) now also contains its date modified.
+* It is now possible to both use and dispense with the proposed custom types: BufFile, BufList, ZipContents...
+    For example, extractData(index) returns a simple QByteArray with file's data, if BufFile struct is not needed.
+* Several helper functions have been added to make working with the archive easier.
+* Header files merged.
+    (qmicroz_global.h --> qmicroz.h)
+* Some functions and types have been renamed.
+
+---
+QMicroz v0.3
+* Added the ability to work with buffered data:
+    Creating zip archives from QByteArrays.
+    UnZipping into RAM buffer.
+    Extracting archives located in RAM.
+* Extraction of individual files has been implemented.
+* Micro files are zipped without meaningless compression.
+
+---
+QMicroz v0.2
+* Now files are zipped directly, without full buffering in ram.
+* The modification date of files is now saved when archiving.
+* Improved handling of file and folder paths.
