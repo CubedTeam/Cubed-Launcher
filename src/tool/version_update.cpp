@@ -31,14 +31,11 @@ Q_INVOKABLE void VersionUpdate::check_update(QString onwer, QString repo) {
             &VersionUpdate::on_reply_finished);
 }
 
-Q_INVOKABLE void VersionUpdate::download_and_install_game(QString game_path) {
+Q_INVOKABLE void VersionUpdate::download_from_github() {
 
     if (std::exchange(m_downloading, true)) {
         return;
     }
-
-    QFileInfo info(game_path);
-    QString parentDir = info.absolutePath();
 
     QUrl url("https://api.github.com/repos/CubedTeam/Cubed/releases/latest");
 
@@ -48,7 +45,7 @@ Q_INVOKABLE void VersionUpdate::download_and_install_game(QString game_path) {
 
     auto* reply = m_manager.get(request);
 
-    connect(reply, &QNetworkReply::finished, this, [this, reply, parentDir]() {
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         if (reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             reply->deleteLater();
@@ -66,7 +63,7 @@ Q_INVOKABLE void VersionUpdate::download_and_install_game(QString game_path) {
 
         QRegularExpression regex(R"(Cubed-.*-windows-x64\.zip)");
 
-        QString downloadUrl;
+        QString download_url;
 
         for (const auto& v : assets) {
             auto obj = v.toObject();
@@ -74,69 +71,80 @@ Q_INVOKABLE void VersionUpdate::download_and_install_game(QString game_path) {
             QString name = obj["name"].toString();
 
             if (regex.match(name).hasMatch()) {
-                downloadUrl = obj["browser_download_url"].toString();
+                download_url = obj["browser_download_url"].toString();
                 break;
             }
         }
 
         reply->deleteLater();
 
-        if (downloadUrl.isEmpty()) {
+        if (download_url.isEmpty()) {
             qDebug() << "No Windows package found.";
             return;
         }
 
-        QNetworkRequest downloadRequest(downloadUrl);
-        downloadRequest.setHeader(QNetworkRequest::UserAgentHeader,
-                                  buildUserAgent().toUtf8());
-
-        auto* downloadReply = m_manager.get(downloadRequest);
-
-        connect(downloadReply, &QNetworkReply::finished, this,
-                [downloadReply, parentDir]() {
-                    if (downloadReply->error() != QNetworkReply::NoError) {
-                        qDebug() << downloadReply->errorString();
-                        downloadReply->deleteLater();
-                        return;
-                    }
-
-                    QString zipPath = QDir::temp().filePath("Cubed-latest.zip");
-
-                    auto* file = new QFile(zipPath);
-
-                    if (!file->open(QIODevice::WriteOnly)) {
-                        qDebug() << "Can't open file";
-                        return;
-                    }
-
-                    connect(downloadReply, &QNetworkReply::readyRead,
-                            [downloadReply, file]() {
-                                file->write(downloadReply->readAll());
-                            });
-
-                    connect(downloadReply, &QNetworkReply::finished,
-                            [downloadReply, file, zipPath, parentDir]() {
-                                file->close();
-                                delete file;
-
-                                if (downloadReply->error() ==
-                                    QNetworkReply::NoError) {
-                                    QMicroz::extract(zipPath, parentDir);
-                                    QFile::remove(zipPath);
-                                }
-
-                                downloadReply->deleteLater();
-                            });
-                });
-
-        connect(downloadReply, &QNetworkReply::downloadProgress, this,
-                [this](qint64 received, qint64 total) {
-                    if (total > 0) {
-                        m_download_progress = float(received) / float(total);
-                        emit download_progress_changed();
-                    }
-                });
+        download_game(download_url);
     });
+}
+
+Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
+
+    QNetworkRequest download_request(download_url);
+    download_request.setHeader(QNetworkRequest::UserAgentHeader,
+                               buildUserAgent().toUtf8());
+
+    auto* download_reply = m_manager.get(download_request);
+
+    connect(download_reply, &QNetworkReply::finished, this,
+            [download_reply, this]() {
+                if (download_reply->error() != QNetworkReply::NoError) {
+                    qDebug() << download_reply->errorString();
+                    download_reply->deleteLater();
+                    return;
+                }
+
+                QString zip_path = QDir::temp().filePath("Cubed-latest.zip");
+                auto* file = new QFile(zip_path);
+
+                if (!file->open(QIODevice::WriteOnly)) {
+                    qDebug() << "Can't open file";
+                    return;
+                }
+
+                connect(download_reply, &QNetworkReply::readyRead,
+                        [download_reply, file]() {
+                            file->write(download_reply->readAll());
+                        });
+
+                connect(download_reply, &QNetworkReply::finished,
+                        [download_reply, file, zip_path,
+                         m_game_dir = this->m_game_dir]() {
+                            file->close();
+                            delete file;
+
+                            if (download_reply->error() ==
+                                QNetworkReply::NoError) {
+                                QMicroz::extract(zip_path, m_game_dir);
+                                QFile::remove(zip_path);
+                            }
+
+                            download_reply->deleteLater();
+                        });
+            });
+
+    connect(download_reply, &QNetworkReply::downloadProgress, this,
+            [this](qint64 received, qint64 total) {
+                if (total > 0) {
+                    m_download_progress = float(received) / float(total);
+                    emit download_progress_changed();
+                }
+            });
+}
+
+Q_INVOKABLE void VersionUpdate::set_game_dir(QString game_file_dir) {
+    auto info = QFileInfo(game_file_dir);
+    m_game_dir = info.absolutePath();
+    qDebug() << "VersionUpdate: Change game dir" << m_game_dir;
 }
 
 QString VersionUpdate::buildUserAgent() {

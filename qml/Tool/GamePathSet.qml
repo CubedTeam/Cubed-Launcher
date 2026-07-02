@@ -44,6 +44,7 @@ Item {
         onAccepted: {
             CubedInstance.set_game_path_url(selectedFile);
             Settings.gamePath = selectedFile;
+            VersionUpdate.set_game_dir(Settings.gamePath);
         }
     }
 }

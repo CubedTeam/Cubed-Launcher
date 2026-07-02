@@ -12,6 +12,19 @@ Item {
     ColumnLayout {
         anchors.centerIn: parent
 
+        Button {
+            Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+            text: "Reset Path"
+            onClicked: {
+                CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
+                Settings.set_game_path(SystemInfo.defaultGameFilePath);
+                VersionUpdate.set_game_dir(SystemInfo.defaultGameFilePath);
+            }
+        }
+
         Label {
             Layout.alignment: Qt.AlignCenter
             text: "Game Path: " + Settings.gamePath
@@ -42,8 +55,13 @@ Item {
 
             font.pixelSize: 20
             text: "Intall Game"
+
+            Component.onCompleted: {
+                VersionUpdate.set_game_dir(Settings.gamePath);
+            }
+
             onClicked: {
-                VersionUpdate.download_and_install_game(Settings.gamePath);
+                VersionUpdate.download_from_github();
                 downloadProgress.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
@@ -81,6 +99,7 @@ Item {
         onAccepted: {
             CubedInstance.set_game_path_url(selectedFile);
             Settings.gamePath = selectedFile;
+            VersionUpdate.set_game_dir(Settings.gamePath);
         }
     }
 }

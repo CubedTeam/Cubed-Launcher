@@ -35,8 +35,11 @@ public:
 
     Q_INVOKABLE void check_update(QString onwer, QString repo);
 
-    Q_INVOKABLE void
-    download_and_install_game(QString game_path = "game/Cubed");
+    Q_INVOKABLE void download_from_github();
+
+    Q_INVOKABLE void download_game(QString download_url);
+
+    Q_INVOKABLE void set_game_dir(QString game_dir);
 
 signals:
 
@@ -51,6 +54,8 @@ private:
     QVersionNumber m_local_version;
     QVersionNumber m_remote_version;
     QNetworkAccessManager m_manager;
+
+    QString m_game_dir{QCoreApplication::applicationDirPath() + "/game"};
 
     QString buildUserAgent();
 

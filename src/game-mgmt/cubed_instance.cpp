@@ -3,6 +3,16 @@
 #include <QDebug>
 #include <QFileInfo>
 
+CubedInstance::CubedInstance() {
+#ifdef _WIN32
+    m_game_file_path.append("Cubed.exe");
+#else
+    m_game_file_path.append("Cubed");
+#endif
+
+    qDebug() << "Game File Path " << m_game_file_path;
+}
+
 Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     qDebug() << "Game Start";
 
@@ -11,14 +21,14 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     QStringList argument;
     QString program;
     if (m_wrapper_command.isEmpty()) {
-        program = m_game_path;
+        program = m_game_file_path;
     } else {
         program = m_wrapper_command;
-        argument.append(m_game_path);
+        argument.append(m_game_file_path);
     }
     argument.append(
         {"--player", m_name, m_peer_mode, "--ip", m_ip, "-p", m_port});
-    QFileInfo info(m_game_path);
+    QFileInfo info(m_game_file_path);
 
     process->setWorkingDirectory(info.absolutePath());
     process->setProgram(program);
@@ -57,14 +67,19 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
         emit running_changed();
     }
 }
+
 Q_INVOKABLE void CubedInstance::set_game_path_url(const QUrl& game_path_url) {
-    m_game_path = game_path_url.toLocalFile();
+    m_game_file_path = game_path_url.toLocalFile();
+    qDebug() << "Change Game File Path " << m_game_file_path;
     emit path_change();
 }
+
 Q_INVOKABLE void CubedInstance::set_game_path(const QString& game_path) {
-    m_game_path = game_path;
+    m_game_file_path = game_path;
+    qDebug() << "Change Game File Path " << m_game_file_path;
     emit path_change();
 }
+
 Q_INVOKABLE void CubedInstance::set_peer(int index) {
     if (index == 0) {
         m_peer_mode = "--host";
@@ -88,5 +103,7 @@ Q_INVOKABLE void CubedInstance::set_wrapper_command(const QString& wrapper) {
 }
 
 bool CubedInstance::running() const { return !m_processes.isEmpty(); }
-bool CubedInstance::game_path_select() const { return !m_game_path.isEmpty(); }
+bool CubedInstance::game_path_select() const {
+    return !m_game_file_path.isEmpty();
+}
 void CubedInstance::set_log_statue(bool status) { m_log_on = status; }

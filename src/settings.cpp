@@ -11,9 +11,18 @@ QString Settings::player_name() const { return m_player_name; }
 
 bool Settings::path_set() const { return !m_game_path.isEmpty(); }
 
-void Settings::set_game_path(const QUrl& path) {
+void Settings::set_game_path_url(const QUrl& path) {
     QString local = path.toLocalFile();
     if (!update_value(m_game_path, local, "game_path")) {
+        return;
+    }
+
+    emit game_path_changed();
+    emit path_set_changed();
+}
+
+void Settings::set_game_path(const QString& path) {
+    if (!update_value(m_game_path, path, "game_path")) {
         return;
     }
 

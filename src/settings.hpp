@@ -6,7 +6,7 @@ class Settings : public QObject {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(QString gamePath READ game_path WRITE set_game_path NOTIFY
+    Q_PROPERTY(QString gamePath READ game_path WRITE set_game_path_url NOTIFY
                    game_path_changed FINAL)
     Q_PROPERTY(QString playerName READ player_name WRITE set_player_name NOTIFY
                    player_name_changed FINAL)
@@ -17,7 +17,8 @@ public:
     QString player_name() const;
     bool path_set() const;
 public slots:
-    void set_game_path(const QUrl& path);
+    void set_game_path_url(const QUrl& path);
+    void set_game_path(const QString& path);
     void set_player_name(const QString& name);
 signals:
     void game_path_changed();

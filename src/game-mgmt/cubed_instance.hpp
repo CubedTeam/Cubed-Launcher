@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QCoreApplication>
 #include <QObject>
 #include <QProcess>
 #include <QQmlEngine>
@@ -11,6 +12,7 @@ class CubedInstance : public QObject {
     Q_PROPERTY(bool path_selected READ game_path_select NOTIFY path_change)
     Q_PROPERTY(bool logOn WRITE set_log_statue)
 public:
+    CubedInstance();
     Q_INVOKABLE void start_cubed_instance();
     Q_INVOKABLE void set_game_path_url(const QUrl& game_path);
     Q_INVOKABLE void set_game_path(const QString& game_path);
@@ -28,7 +30,7 @@ signals:
     void path_change();
 
 private:
-    QString m_game_path;
+    QString m_game_file_path{QCoreApplication::applicationDirPath() + "/game/"};
     QString m_wrapper_command;
     QString m_peer_mode{"--host"};
     QString m_port{"25530"};
