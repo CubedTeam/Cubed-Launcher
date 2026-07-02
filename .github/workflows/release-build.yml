@@ -27,7 +27,7 @@ jobs:
             qt_host: windows
             qt_arch: win64_msvc2022_64
 
-          - os: ubuntu-24.04
+          - os: ubuntu-22.04
             platform: linux
             qt_host: linux
             qt_arch: linux_gcc_64
@@ -114,6 +114,16 @@ jobs:
             fuse \
             libfuse2 \
             desktop-file-utils
+
+      - name: Install GCC 13 (for C++23)
+        if: matrix.platform == 'linux'
+        run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+          sudo apt update
+          sudo apt install gcc-13 g++-13 -y
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 \
+                                  --slave /usr/bin/g++ g++ /usr/bin/g++-13
+
 
       - name: Install App
         if: matrix.platform == 'linux'
