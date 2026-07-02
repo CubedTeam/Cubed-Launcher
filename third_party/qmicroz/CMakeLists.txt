@@ -62,5 +62,5 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     )
 
     # install header
-    install(FILES src/qmicroz.h DESTINATION /usr/include)
+    install(FILES src/qmicroz.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
