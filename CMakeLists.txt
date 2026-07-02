@@ -30,12 +30,6 @@ configure_file(
     @ONLY
 )
 
-configure_file(
-    resources/CubedLauncher.desktop.in
-    ${CMAKE_BINARY_DIR}/CubedLauncher.desktop
-    @ONLY
-)
-
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2)
 
 qt_standard_project_setup(REQUIRES 6.8)
@@ -99,7 +93,7 @@ install(TARGETS ${PROJECT_NAME}
 )
 
 install(
-    FILES ${CMAKE_BINARY_DIR}/CubedLauncher.desktop
+    FILES resources/CubedLauncher.desktop
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
 )
 
