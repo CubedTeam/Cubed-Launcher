@@ -17,7 +17,7 @@ Item {
         anchors.horizontalCenter: advancedSetting.horizontalCenter
         anchors.bottomMargin: 50
 
-        source: "../Tool/GamePathSet.qml"
+        source: "qrc:/qt/qml/CubedLauncher/qml/Tool/GamePathSet.qml"
     }
 
     Switch {

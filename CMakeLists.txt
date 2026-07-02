@@ -30,7 +30,7 @@ configure_file(
     @ONLY
 )
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2 Network)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -58,6 +58,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tab/Setting.qml
         qml/Tab/About.qml
         qml/Tool/GamePathSet.qml
+        qml/Tool/CheckUpdate.qml
     RESOURCES
         resources/logo.png
 
@@ -67,6 +68,7 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/system_info.hpp
         src/settings.cpp
         src/settings.hpp
+        src/tool/version_update.hpp
     
 )
 
@@ -81,6 +83,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE 
     Qt6::Quick
     Qt6::QuickControls2
+    Qt6::Network
 )
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")

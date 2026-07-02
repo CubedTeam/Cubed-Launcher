@@ -59,5 +59,14 @@ Item {
             text: "QtVersion: " + SystemInfo.qtVersion
             font.pixelSize: 24
         }
+
+        Button {
+            text: "Check Update"
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 24
+            onClicked: {
+                VersionUpdate.check_update();
+            }
+        }
     }
 }
