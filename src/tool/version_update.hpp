@@ -35,7 +35,7 @@ public:
 
     Q_INVOKABLE void check_update(QString onwer, QString repo);
 
-    Q_INVOKABLE void download_from_github();
+    Q_INVOKABLE void download_from_github(bool use_mirror);
 
     Q_INVOKABLE void download_game(QString download_url);
 

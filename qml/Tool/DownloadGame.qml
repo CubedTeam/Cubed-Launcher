@@ -40,7 +40,7 @@ Item {
             font.pixelSize: 20
 
             highlighted: true
-            text: "Set Game Path"
+            text: "Set Game Install Path"
             onClicked: {
                 gameFileDialog.open();
             }
@@ -71,7 +71,7 @@ Item {
             }
 
             onClicked: {
-                VersionUpdate.download_from_github();
+                VersionUpdate.download_from_github(useMirror.checked);
                 downloadProgress.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
@@ -79,7 +79,14 @@ Item {
                 highlighted = false;
             }
         }
-
+        Switch {
+            id: useMirror
+            visible: !downloadSource.checked
+            enabled: !downloadSource.checked
+            Layout.alignment: Qt.AlignCenter
+            checked: SystemInfo.isInChina
+            text: "Use Github Mirror"
+        }
         TextField {
             id: downloadLink
             visible: downloadSource.checked

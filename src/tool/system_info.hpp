@@ -14,6 +14,7 @@ class SystemInfo : public QObject {
     Q_PROPERTY(QString machineUniqueId READ machineUniqueId CONSTANT)
     Q_PROPERTY(QString qtVersion READ qtVersion CONSTANT)
     Q_PROPERTY(QString defaultGameFilePath READ defaultGameFilePath CONSTANT)
+    Q_PROPERTY(bool isInChina READ isInChina CONSTANT)
 public:
     QString productType() const { return QSysInfo::productType(); }
     QString productVersion() const { return QSysInfo::productVersion(); }
@@ -30,5 +31,10 @@ public:
         game_file_path.append("Cubed");
 #endif
         return game_file_path;
+    }
+
+    bool isInChina() const {
+        QLocale::Country current = QLocale::system().territory();
+        return current == QLocale::China;
     }
 };

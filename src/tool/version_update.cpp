@@ -31,13 +31,15 @@ Q_INVOKABLE void VersionUpdate::check_update(QString onwer, QString repo) {
             &VersionUpdate::on_reply_finished);
 }
 
-Q_INVOKABLE void VersionUpdate::download_from_github() {
+Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
 
     if (std::exchange(m_downloading, true)) {
         return;
     }
+    QString raw_url(
+        "https://api.github.com/repos/CubedTeam/Cubed/releases/latest");
 
-    QUrl url("https://api.github.com/repos/CubedTeam/Cubed/releases/latest");
+    QUrl url(raw_url);
 
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::UserAgentHeader,
@@ -45,7 +47,7 @@ Q_INVOKABLE void VersionUpdate::download_from_github() {
 
     auto* reply = m_manager.get(request);
 
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+    connect(reply, &QNetworkReply::finished, this, [this, reply, use_mirror]() {
         if (reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             reply->deleteLater();
@@ -83,6 +85,10 @@ Q_INVOKABLE void VersionUpdate::download_from_github() {
             return;
         }
 
+        if (use_mirror) {
+            download_url.prepend("https://v4.gh-proxy.org/");
+        }
+
         download_game(download_url);
     });
 }
@@ -94,6 +100,8 @@ Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
         emit download_progress_changed();
         return;
     }
+    qDebug() << "Download url" << download_url;
+
     QNetworkRequest download_request(download_url);
     download_request.setHeader(QNetworkRequest::UserAgentHeader,
                                buildUserAgent().toUtf8());
@@ -107,6 +115,8 @@ Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
         download_reply->abort();
         download_reply->deleteLater();
         delete file;
+        m_download_progress = 1.0f;
+        emit download_progress_changed();
         return;
     }
 
@@ -122,6 +132,8 @@ Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
                 if (download_reply->error() != QNetworkReply::NoError) {
                     qDebug() << download_reply->errorString();
                     download_reply->deleteLater();
+                    m_download_progress = 1.0f;
+                    emit download_progress_changed();
                     return;
                 }
 
@@ -131,9 +143,13 @@ Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
 
                 if (!QMicroz::extract(zip_path, m_game_dir)) {
                     qDebug() << "Extract file error";
+                } else {
+                    qDebug() << "Install Game Sucess";
                 }
                 QFile::remove(zip_path);
                 download_reply->deleteLater();
+                m_download_progress = 1.0f;
+                emit download_progress_changed();
             });
 
     connect(download_reply, &QNetworkReply::downloadProgress, this,
