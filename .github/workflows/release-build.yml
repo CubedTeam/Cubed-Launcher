@@ -142,7 +142,6 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.version }}
           QML_SOURCES_PATHS: "qml" 
-          EXTRA_PLATFORM_PLUGINS: "libqwayland-egl.so;libqwayland-generic.so"
           LDAI_OUTPUT: "CubedLauncher-${{ steps.version.outputs.version }}-linux-x64.AppImage"
         run: |
           ./linuxdeploy-x86_64.AppImage \
