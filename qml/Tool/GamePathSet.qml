@@ -19,7 +19,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Material.foreground: Material.Red
             visible: !CubedInstance.path_selected
-            text: "You must select game program"
+            text: "You must select or intstall game program"
         }
         Button {
             id: gamePathButton

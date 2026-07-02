@@ -38,7 +38,12 @@ void Settings::set_player_name(const QString& name) {
 }
 
 void Settings::load() {
-    m_game_path = m_settings.value("game_path").toString();
+    if (m_settings.contains("game_path")) {
+        m_game_path = m_settings.value("game_path").toString();
+    }
+    qDebug() << "Settings Game Path {" << m_game_path << "}" << " empty "
+             << m_game_path.isEmpty();
+
     m_player_name = m_settings.value("player_name").toString();
 }
 void Settings::save(const QString& key, const QString& value) {

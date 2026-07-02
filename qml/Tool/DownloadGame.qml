@@ -12,37 +12,36 @@ Item {
     ColumnLayout {
         anchors.centerIn: parent
 
-        Button {
-            Material.roundedScale: Material.MediumScale
+        RowLayout {
             Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-            text: "Reset Path"
-            onClicked: {
-                CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
-                Settings.set_game_path(SystemInfo.defaultGameFilePath);
-                VersionUpdate.set_game_dir(SystemInfo.defaultGameFilePath);
+            Button {
+                id: gamePathButton
+
+                Material.roundedScale: Material.MediumScale
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 60
+
+                font.pixelSize: 20
+
+                highlighted: true
+                text: "Set Game Path"
+                onClicked: {
+                    gameFileDialog.open();
+                }
             }
-        }
-
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: "Game Path: " + Settings.gamePath
-        }
-        Button {
-            id: gamePathButton
-
-            Material.roundedScale: Material.MediumScale
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-
-            font.pixelSize: 20
-
-            highlighted: true
-            text: "Set Game Install Path"
-            onClicked: {
-                gameFileDialog.open();
+            Button {
+                Material.roundedScale: Material.MediumScale
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 60
+                font.pixelSize: 20
+                text: "Reset Path"
+                onClicked: {
+                    CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
+                    Settings.set_game_path(SystemInfo.defaultGameFilePath);
+                    VersionUpdate.set_game_dir(SystemInfo.defaultGameFilePath);
+                }
             }
         }
 
@@ -71,12 +70,16 @@ Item {
             }
 
             onClicked: {
-                VersionUpdate.download_from_github(useMirror.checked);
+                if (!Settings.pathSetted) {
+                    Settings.set_game_path(SystemInfo.defaultGameFilePath);
+                }
+
                 downloadProgress.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
+                VersionUpdate.download_from_github(useMirror.checked);
             }
         }
         Switch {
@@ -112,17 +115,21 @@ Item {
                 VersionUpdate.set_game_dir(Settings.gamePath);
             }
             onClicked: {
-                VersionUpdate.download_game(downloadLink.text);
+                if (!Settings.pathSetted) {
+                    Settings.set_game_path(SystemInfo.defaultGameFilePath);
+                }
+
                 downloadProgress.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
+                VersionUpdate.download_game(downloadLink.text);
             }
         }
 
         Label {
-            text: "Game Install Directory: " + Settings.gamePath
+            text: "Game Install Directory: " + VersionUpdate.gameInstallPath
             font.pixelSize: 16
         }
         ProgressBar {
@@ -143,6 +150,7 @@ Item {
                     downloadGameCustomButton.highlighted = true;
                     gamePathButton.enabled = true;
                     gamePathButton.highlighted = true;
+                    visible = false;
                 }
             }
         }

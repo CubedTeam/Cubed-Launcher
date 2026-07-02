@@ -18,8 +18,9 @@ QString VersionUpdate::local_version() const {
 QString VersionUpdate::remote_version() const {
     return m_remote_version.toString();
 }
-
-Q_INVOKABLE void VersionUpdate::check_update(QString onwer, QString repo) {
+QString VersionUpdate::game_install_path() const { return m_game_dir; }
+Q_INVOKABLE void VersionUpdate::check_update(const QString& onwer,
+                                             const QString& repo) {
     QUrl url(QString("https://api.github.com/repos/%1/%2/releases/latest")
                  .arg(onwer, repo));
     QNetworkRequest request(url);
@@ -36,6 +37,7 @@ Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
     if (std::exchange(m_downloading, true)) {
         return;
     }
+
     QString raw_url(
         "https://api.github.com/repos/CubedTeam/Cubed/releases/latest");
 
@@ -51,6 +53,8 @@ Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
         if (reply->error() != QNetworkReply::NoError) {
             qDebug() << reply->errorString();
             reply->deleteLater();
+            m_download_progress = 1.0f;
+            emit download_progress_changed();
             return;
         }
 
@@ -58,6 +62,8 @@ Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
 
         if (!doc.isObject()) {
             reply->deleteLater();
+            m_download_progress = 1.0f;
+            emit download_progress_changed();
             return;
         }
 
@@ -82,6 +88,8 @@ Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
 
         if (download_url.isEmpty()) {
             qDebug() << "No Windows package found.";
+            m_download_progress = 1.0f;
+            emit download_progress_changed();
             return;
         }
 
@@ -93,7 +101,7 @@ Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
     });
 }
 
-Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
+Q_INVOKABLE void VersionUpdate::download_game(const QString& download_url) {
     if (download_url.isEmpty()) {
         qDebug() << "Error Download Url is empty";
         m_download_progress = 1.0f;
@@ -161,10 +169,24 @@ Q_INVOKABLE void VersionUpdate::download_game(QString download_url) {
             });
 }
 
-Q_INVOKABLE void VersionUpdate::set_game_dir(QString game_file_dir) {
-    auto info = QFileInfo(game_file_dir);
+Q_INVOKABLE void VersionUpdate::set_game_dir(const QString& game_file_dir) {
+    QFileInfo info;
+    if (game_file_dir.isEmpty()) {
+        QString game_file_path{QCoreApplication::applicationDirPath() +
+                               "/game/"};
+#ifdef _WIN32
+        game_file_path.append("Cubed.exe");
+#else
+        game_file_path.append("Cubed");
+#endif
+        info = QFileInfo(game_file_path);
+    } else {
+        info = QFileInfo(game_file_dir);
+    }
+
     m_game_dir = info.absolutePath();
     qDebug() << "VersionUpdate: Change game dir" << m_game_dir;
+    emit game_install_path_changed();
 }
 
 QString VersionUpdate::buildUserAgent() {

@@ -18,7 +18,17 @@ Item {
         anchors.verticalCenterOffset: 300
         source: "qrc:/qt/qml/CubedLauncher/resources/logo.png"
     }
-
+    Label {
+        id: installGameTip
+        visible: !Settings.pathSetted
+        text: "You need to install the game in the manager tab next to it."
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.verticalCenterOffset: 20
+        font.bold: true
+        font.pixelSize: 20
+        color: Material.color(Material.Red)
+    }
     ColumnLayout {
         id: gameLayout
         anchors.bottom: parent.bottom
@@ -68,7 +78,7 @@ Item {
             font.pixelSize: 20
             text: "Start Game"
             //anchors.centerIn: parent
-            enabled: CubedInstance.path_selected
+            enabled: Settings.pathSetted
             highlighted: enabled
             Component.onCompleted: {
                 if (Settings.pathSetted) {

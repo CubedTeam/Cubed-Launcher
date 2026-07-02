@@ -3,18 +3,20 @@
 #include <QDebug>
 #include <QFileInfo>
 
-CubedInstance::CubedInstance() {
-#ifdef _WIN32
-    m_game_file_path.append("Cubed.exe");
-#else
-    m_game_file_path.append("Cubed");
-#endif
-
-    qDebug() << "Game File Path " << m_game_file_path;
-}
+CubedInstance::CubedInstance() {}
 
 Q_INVOKABLE void CubedInstance::start_cubed_instance() {
-    qDebug() << "Game Start";
+    if (m_game_file_path.isEmpty()) {
+        QString game_file_path{QCoreApplication::applicationDirPath() +
+                               "/game/"};
+#ifdef _WIN32
+        game_file_path.append("Cubed.exe");
+#else
+        game_file_path.append("Cubed");
+#endif
+        m_game_file_path = game_file_path;
+    }
+    qDebug() << "Game Start, path " << m_game_file_path;
 
     QProcess* process = new QProcess(this);
 
