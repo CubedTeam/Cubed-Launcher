@@ -23,7 +23,6 @@ Item {
     Switch {
         id: advancedSetting
         anchors.centerIn: parent
-        Layout.alignment: Qt.AlignCenter
         font.pixelSize: 20
         text: "Advanced Setting"
         checked: false

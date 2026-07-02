@@ -10,48 +10,25 @@ Item {
     anchors.fill: parent
 
     ColumnLayout {
+        id: managerColumn
         anchors.centerIn: parent
-
-        RowLayout {
-            Layout.alignment: Qt.AlignCenter
-            Button {
-                id: gamePathButton
-
-                Material.roundedScale: Material.MediumScale
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 250
-                Layout.preferredHeight: 60
-
-                font.pixelSize: 20
-
-                highlighted: true
-                text: "Set Game Path"
-                onClicked: {
-                    gameFileDialog.open();
-                }
-            }
-            Button {
-                Material.roundedScale: Material.MediumScale
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 250
-                Layout.preferredHeight: 60
-                font.pixelSize: 20
-                text: "Reset Path"
-                onClicked: {
-                    CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
-                    Settings.set_game_path(SystemInfo.defaultGameFilePath);
-                    VersionUpdate.set_game_dir(SystemInfo.defaultGameFilePath);
-                }
-            }
-        }
 
         Switch {
             id: downloadSource
             text: "Use Custom Link"
             checked: false
+            font.pixelSize: 20
             Layout.alignment: Qt.AlignCenter
         }
-
+        Switch {
+            id: useMirror
+            visible: !downloadSource.checked
+            enabled: !downloadSource.checked
+            Layout.alignment: Qt.AlignCenter
+            checked: SystemInfo.isInChina
+            font.pixelSize: 20
+            text: "Use Github Mirror"
+        }
         Button {
             id: downloadGameGithubButton
             visible: !downloadSource.checked
@@ -82,20 +59,14 @@ Item {
                 VersionUpdate.download_from_github(useMirror.checked);
             }
         }
-        Switch {
-            id: useMirror
-            visible: !downloadSource.checked
-            enabled: !downloadSource.checked
-            Layout.alignment: Qt.AlignCenter
-            checked: SystemInfo.isInChina
-            text: "Use Github Mirror"
-        }
+
         TextField {
             id: downloadLink
             visible: downloadSource.checked
             enabled: downloadSource.checked
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
+
             placeholderText: "Download Link"
         }
 
@@ -130,7 +101,7 @@ Item {
 
         Label {
             text: "Game Install Directory: " + VersionUpdate.gameInstallPath
-            font.pixelSize: 16
+            font.pixelSize: 20
         }
         ProgressBar {
             id: downloadProgress
@@ -138,7 +109,8 @@ Item {
             visible: false
             from: 0.0
             to: 1.0
-            height: 10
+            Layout.preferredHeight: 20
+            Layout.preferredWidth: 400
             value: VersionUpdate.downloadProgress
             onValueChanged: {
                 if (value >= to) {
@@ -151,7 +123,52 @@ Item {
                     gamePathButton.enabled = true;
                     gamePathButton.highlighted = true;
                     visible = false;
+                    CubedInstance.check_version();
                 }
+            }
+        }
+
+        Switch {
+            id: advancedOpt
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 20
+            text: "Advanced Option"
+            checked: false
+        }
+    }
+    RowLayout {
+        enabled: advancedOpt.checked
+        visible: advancedOpt.checked
+        anchors.top: managerColumn.bottom
+        anchors.horizontalCenter: managerColumn.horizontalCenter
+        anchors.topMargin: 20
+        Button {
+            id: gamePathButton
+
+            Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+
+            font.pixelSize: 20
+
+            highlighted: true
+            text: "Set Game Path"
+            onClicked: {
+                gameFileDialog.open();
+            }
+        }
+        Button {
+            Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+            font.pixelSize: 20
+            text: "Reset Path"
+            onClicked: {
+                CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
+                Settings.set_game_path(SystemInfo.defaultGameFilePath);
+                VersionUpdate.set_game_dir(SystemInfo.defaultGameFilePath);
             }
         }
     }

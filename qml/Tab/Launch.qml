@@ -10,7 +10,9 @@ Item {
     id: launchTab
     Layout.fillHeight: true
     Layout.fillWidth: true
-
+    Component.onCompleted: {
+        CubedInstance.check_version();
+    }
     Image {
         id: logoImage
         anchors.horizontalCenter: parent.horizontalCenter
@@ -20,7 +22,7 @@ Item {
     }
     Label {
         id: installGameTip
-        visible: !Settings.pathSetted
+        visible: !CubedInstance.installed
         text: "You need to install the game in the manager tab next to it."
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
@@ -56,6 +58,14 @@ Item {
             }
         }
 
+        Label {
+            visible: CubedInstance.installed
+            text: "Cubed Version: " + CubedInstance.version
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 20
+            Layout.bottomMargin: 20
+        }
+
         TextField {
             id: playerNameText
             Component.onCompleted: {
@@ -78,7 +88,7 @@ Item {
             font.pixelSize: 20
             text: "Start Game"
             //anchors.centerIn: parent
-            enabled: Settings.pathSetted
+            enabled: CubedInstance.installed
             highlighted: enabled
             Component.onCompleted: {
                 if (Settings.pathSetted) {
