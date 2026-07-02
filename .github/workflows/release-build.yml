@@ -30,7 +30,7 @@ jobs:
           - os: ubuntu-24.04
             platform: linux
             qt_host: linux
-            qt_arch: gcc_64
+            qt_arch: linux_gcc_64
             
 
     runs-on: ${{ matrix.os }}
@@ -61,7 +61,7 @@ jobs:
           host: ${{ matrix.qt_host }}
           target: desktop
           arch: ${{ matrix.qt_arch }}
-          version: '6.8.2'
+          version: '6.8.3'
 
       - name: Configure
         run: >
