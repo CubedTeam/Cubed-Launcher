@@ -45,6 +45,8 @@ public:
 
     Q_INVOKABLE void set_game_dir(const QString& game_dir);
 
+    Q_INVOKABLE void update_launcher(bool use_mirror);
+
 signals:
 
     void new_version_changed();
@@ -63,8 +65,6 @@ private:
     QNetworkAccessManager m_manager;
 
     QString m_game_dir;
-
+    QString m_latest_launcher_link;
     QString buildUserAgent();
-
-    void on_reply_finished();
 };

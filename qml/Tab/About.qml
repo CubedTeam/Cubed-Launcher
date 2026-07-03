@@ -8,6 +8,16 @@ Item {
     id: aboutTab
     Layout.fillHeight: true
     Layout.fillWidth: true
+    Loader {
+        active: VersionUpdate.hasNewVersion
+        width: 300
+        height: 200
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.rightMargin: 20
+        source: "qrc:/qt/qml/CubedLauncher/qml/Tool/CheckUpdate.qml"
+    }
     ColumnLayout {
         anchors.centerIn: parent
         width: 300

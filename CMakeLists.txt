@@ -74,6 +74,7 @@ qt_add_qml_module(${PROJECT_NAME}
         src/settings.hpp
         src/tool/version_update.hpp
         src/tool/version_update.cpp
+        src/tool/side_tool.hpp
     
 )
 

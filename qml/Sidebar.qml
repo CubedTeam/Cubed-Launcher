@@ -10,15 +10,6 @@ Rectangle {
 
     color: Material.backgroundColor
 
-    Loader {
-        active: VersionUpdate.hasNewVersion
-        anchors.right: parent.right
-        anchors.top: parent.top
-        anchors.topMargin: 20
-        anchors.rightMargin: 20
-        source: "qrc:/qt/qml/CubedLauncher/qml/Tool/CheckUpdate.qml"
-    }
-
     RowLayout {
         anchors.fill: parent
         Rectangle {
@@ -44,7 +35,7 @@ Rectangle {
                         title: "About"
                     }
                 }
-                currentIndex: 0
+                currentIndex: SideTool.currentIndex
 
                 delegate: ItemDelegate {
                     id: sideDelegate
@@ -57,7 +48,7 @@ Rectangle {
 
                     highlighted: ListView.isCurrentItem
 
-                    onClicked: navList.currentIndex = index
+                    onClicked: SideTool.currentIndex = index
                 }
             }
         }

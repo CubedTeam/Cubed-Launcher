@@ -13,6 +13,16 @@ Item {
     Component.onCompleted: {
         CubedInstance.check_version();
     }
+    Loader {
+        //active: VersionUpdate.hasNewVersion
+        width: 300
+        height: 200
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: 20
+        anchors.rightMargin: 20
+        source: "qrc:/qt/qml/CubedLauncher/qml/Tool/CheckUpdate.qml"
+    }
     Image {
         id: logoImage
         anchors.horizontalCenter: parent.horizontalCenter
@@ -20,17 +30,37 @@ Item {
         anchors.verticalCenterOffset: 300
         source: "qrc:/qt/qml/CubedLauncher/resources/logo.png"
     }
-    Label {
-        id: installGameTip
+    ColumnLayout {
+
         visible: !CubedInstance.installed
-        text: "You need to install the game in the manager tab next to it."
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
-        anchors.verticalCenterOffset: 20
-        font.bold: true
-        font.pixelSize: 20
-        color: Material.color(Material.Red)
+        anchors.verticalCenterOffset: 30
+
+        Label {
+            id: installGameTip
+
+            text: "You need to install the game in the manager tab next to it."
+
+            font.bold: true
+            font.pixelSize: 20
+            color: Material.color(Material.Red)
+        }
+        Button {
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 350
+            Layout.preferredHeight: 60
+            font.pixelSize: 20
+            enabled: !CubedInstance.installed
+            highlighted: !CubedInstance.installed
+
+            text: "Go to Install Game"
+            onClicked: {
+                SideTool.currentIndex = 1;
+            }
+        }
     }
+
     ColumnLayout {
         id: gameLayout
         anchors.bottom: parent.bottom
@@ -87,7 +117,6 @@ Item {
             Layout.preferredHeight: 60
             font.pixelSize: 20
             text: "Start Game"
-            //anchors.centerIn: parent
             enabled: CubedInstance.installed
             highlighted: enabled
             Component.onCompleted: {

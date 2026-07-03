@@ -27,6 +27,7 @@ QString VersionUpdate::remote_version() const {
     return m_remote_version.toString();
 }
 QString VersionUpdate::game_install_path() const { return m_game_dir; }
+
 Q_INVOKABLE void VersionUpdate::check_update(const QString& onwer,
                                              const QString& repo) {
     QUrl url(QString("https://api.github.com/repos/%1/%2/releases/latest")
@@ -36,8 +37,77 @@ Q_INVOKABLE void VersionUpdate::check_update(const QString& onwer,
                       buildUserAgent().toUtf8());
 
     auto* replay = m_manager.get(request);
-    connect(replay, &QNetworkReply::finished, this,
-            &VersionUpdate::on_reply_finished);
+
+    connect(replay, &QNetworkReply::finished, this, [this]() {
+        auto* reply = qobject_cast<QNetworkReply*>(sender());
+        if (!reply)
+            return;
+        if (reply->error() != QNetworkReply::NoError) {
+            qDebug() << "Network Error:" << reply->errorString();
+            reply->deleteLater();
+            return;
+        }
+
+        QByteArray response_data = reply->readAll();
+        QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
+        if (json_doc.isNull() || !json_doc.isObject()) {
+            qDebug() << "Invalid JSON response";
+            reply->deleteLater();
+            return;
+        }
+
+        QJsonObject json_obj = json_doc.object();
+        QString latest_version_str = json_obj["tag_name"].toString();
+
+        if (latest_version_str.startsWith('v', Qt::CaseInsensitive)) {
+            latest_version_str.remove(0, 1);
+        }
+
+        if (latest_version_str.isEmpty()) {
+            qDebug() << "No tag_name found in response";
+            reply->deleteLater();
+            return;
+        }
+
+        m_remote_version = QVersionNumber::fromString(latest_version_str);
+
+        if (m_remote_version.isNull()) {
+            qDebug() << "Failed to parse remote version:" << latest_version_str;
+            reply->deleteLater();
+            return;
+        }
+
+        if (m_remote_version > m_local_version) {
+            m_new_version = true;
+            qDebug() << "New version available! Remote:" << latest_version_str
+                     << "Local:" << m_local_version.toString();
+        } else {
+            qDebug() << "Already up to date. Local:"
+                     << m_local_version.toString()
+                     << "Remote:" << latest_version_str;
+        }
+
+        auto assets = json_obj["assets"].toArray();
+
+        QRegularExpression regex(R"(CubedLauncher-.*-windows-x64-setup\.exe)");
+
+        for (const auto& v : assets) {
+            auto obj = v.toObject();
+
+            QString name = obj["name"].toString();
+
+            if (regex.match(name).hasMatch()) {
+                m_latest_launcher_link = obj["browser_download_url"].toString();
+                qDebug() << "Find Launcher Url " << m_latest_launcher_link;
+                break;
+            }
+        }
+
+        reply->deleteLater();
+
+        emit remote_version_changed();
+        emit new_version_changed();
+    });
 }
 
 Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
@@ -224,6 +294,13 @@ Q_INVOKABLE void VersionUpdate::set_game_dir(const QString& game_file_dir) {
     emit game_install_path_changed();
 }
 
+Q_INVOKABLE void VersionUpdate::update_launcher(bool use_mirror) {
+    if (m_latest_launcher_link.isEmpty()) {
+        qDebug() << "Download Url is Null";
+        return;
+    }
+}
+
 QString VersionUpdate::buildUserAgent() {
     QString app_name = QCoreApplication::applicationName();
     if (app_name.isEmpty())
@@ -239,58 +316,4 @@ QString VersionUpdate::buildUserAgent() {
         .arg(qVersion())
         .arg(QSysInfo::prettyProductName())
         .arg(QSysInfo::currentCpuArchitecture());
-}
-
-void VersionUpdate::on_reply_finished() {
-    auto* reply = qobject_cast<QNetworkReply*>(sender());
-    if (!reply)
-        return;
-    if (reply->error() != QNetworkReply::NoError) {
-        qDebug() << "Network Error:" << reply->errorString();
-        reply->deleteLater();
-        return;
-    }
-
-    QByteArray response_data = reply->readAll();
-    QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
-    if (json_doc.isNull() || !json_doc.isObject()) {
-        qDebug() << "Invalid JSON response";
-        reply->deleteLater();
-        return;
-    }
-
-    QJsonObject json_obj = json_doc.object();
-    QString latest_version_str = json_obj["tag_name"].toString();
-
-    if (latest_version_str.startsWith('v', Qt::CaseInsensitive)) {
-        latest_version_str.remove(0, 1);
-    }
-
-    if (latest_version_str.isEmpty()) {
-        qDebug() << "No tag_name found in response";
-        reply->deleteLater();
-        return;
-    }
-
-    m_remote_version = QVersionNumber::fromString(latest_version_str);
-
-    if (m_remote_version.isNull()) {
-        qDebug() << "Failed to parse remote version:" << latest_version_str;
-        reply->deleteLater();
-        return;
-    }
-
-    if (m_remote_version > m_local_version) {
-        m_new_version = true;
-        qDebug() << "New version available! Remote:" << latest_version_str
-                 << "Local:" << m_local_version.toString();
-    } else {
-        qDebug() << "Already up to date. Local:" << m_local_version.toString()
-                 << "Remote:" << latest_version_str;
-    }
-
-    reply->deleteLater();
-
-    emit remote_version_changed();
-    emit new_version_changed();
 }
