@@ -26,11 +26,13 @@ class VersionUpdate : public QObject {
                    download_progress_changed)
     Q_PROPERTY(QString gameInstallPath READ game_install_path NOTIFY
                    game_install_path_changed)
-
+    Q_PROPERTY(
+        bool downloadFinish READ download_finish NOTIFY download_finish_changed)
 public:
     VersionUpdate();
 
     bool has_new_version() const;
+    bool download_finish() const;
     float download_progress() const;
     QString local_version() const;
     QString remote_version() const;
@@ -48,12 +50,14 @@ signals:
     void new_version_changed();
     void remote_version_changed();
     void download_progress_changed();
+    void download_finish_changed();
     void game_install_path_changed();
 
 private:
     bool m_new_version{false};
     float m_download_progress = 0.0f;
     bool m_downloading{false};
+    bool m_download_finish{false};
     QVersionNumber m_local_version;
     QVersionNumber m_remote_version;
     QNetworkAccessManager m_manager;

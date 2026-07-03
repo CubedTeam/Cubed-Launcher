@@ -103,6 +103,17 @@ Item {
             text: "Game Install Directory: " + VersionUpdate.gameInstallPath
             font.pixelSize: 20
         }
+
+        Label {
+            text: "Download Finished"
+            visible: VersionUpdate.downloadFinish
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 20
+            onVisibleChanged: {
+                CubedInstance.check_version()
+            }
+        }
+
         ProgressBar {
             id: downloadProgress
             Layout.alignment: Qt.AlignCenter

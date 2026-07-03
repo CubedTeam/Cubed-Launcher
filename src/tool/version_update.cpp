@@ -1,6 +1,9 @@
 #include "tool/version_update.hpp"
 
 #include "version.hpp"
+
+#include <qtmetamacros.h>
+
 VersionUpdate::VersionUpdate() {
     if (QString(APP_VERSION) == "dev") {
         m_local_version = QVersionNumber::fromString("0.0.1");
@@ -11,6 +14,7 @@ VersionUpdate::VersionUpdate() {
 }
 
 bool VersionUpdate::has_new_version() const { return m_new_version; }
+bool VersionUpdate::download_finish() const { return m_download_finish; }
 float VersionUpdate::download_progress() const { return m_download_progress; }
 QString VersionUpdate::local_version() const {
     return m_local_version.toString();
@@ -33,10 +37,6 @@ Q_INVOKABLE void VersionUpdate::check_update(const QString& onwer,
 }
 
 Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
-
-    if (std::exchange(m_downloading, true)) {
-        return;
-    }
 
     QString raw_url(
         "https://api.github.com/repos/CubedTeam/Cubed/releases/latest");
@@ -102,6 +102,11 @@ Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
 }
 
 Q_INVOKABLE void VersionUpdate::download_game(const QString& download_url) {
+    if (std::exchange(m_downloading, true)) {
+        return;
+    }
+    m_download_finish = false;
+    emit download_finish_changed();
     if (download_url.isEmpty()) {
         qDebug() << "Error Download Url is empty";
         m_download_progress = 1.0f;
@@ -183,9 +188,12 @@ Q_INVOKABLE void VersionUpdate::download_game(const QString& download_url) {
                 } else {
                     qDebug() << "Install Game Sucess";
                 }
-                // QFile::remove(zip_path);
+                QFile::remove(zip_path);
                 download_reply->deleteLater();
                 m_download_progress = 1.0f;
+                m_downloading = false;
+                m_download_finish = true;
+                emit download_finish_changed();
                 emit download_progress_changed();
             });
 
