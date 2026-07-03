@@ -14,12 +14,12 @@
 
 #if defined(MAKE_SHARED)
 #define QMICROZ_EXPORT Q_DECL_EXPORT
-#pragma message("Symbols Export is Enabled")
+#pragma message("QMicroz build is SHARED. Symbols export is Enabled")
 #else
 #define QMICROZ_EXPORT
 #endif
 
-#include <QStringList>
+#include <QObject>
 #include <QMap>
 #include <QDateTime>
 
@@ -45,22 +45,29 @@ using BufList = QMap<QString, QByteArray>;
 // List of files { "entry name/path" : index } contained in the archive
 using ZipContents = QMap<QString, int>;
 
-class QMICROZ_EXPORT QMicroz
+
+class QMICROZ_EXPORT QMicroz : public QObject
 {
+    Q_OBJECT
+
 public:
     enum Mode : qint8 { ModeAuto, ModeRead, ModeWrite };
 
-    QMicroz();
-    ~QMicroz();
+    explicit QMicroz(QObject *parent = nullptr);
 
     // To avoid ambiguity...
-    explicit QMicroz(const char *zipPath);
+    explicit QMicroz(const char *zipPath, QObject *parent = nullptr);
 
-    // Sets the <zipPath> and opens a new archive for Reading or Writing, just like the <setZipFile> func.
-    explicit QMicroz(const QString &zipPath, Mode mode = ModeAuto);
+    // Sets the <zipPath> with Mode::ModeAuto
+    explicit QMicroz(const QString &zipPath, QObject *parent = nullptr);
+
+    // Sets the <zipPath> and opens the archive for Reading or Writing, just like the <setZipFile> func.
+    explicit QMicroz(const QString &zipPath, Mode mode, QObject *parent = nullptr);
 
     // Opens the <bufferedZip> archive for Reading, just like the <setZipBuffer> func.
-    explicit QMicroz(const QByteArray &bufferedZip);
+    explicit QMicroz(const QByteArray &bufferedZip, QObject *parent = nullptr);
+
+    ~QMicroz();
 
     /* Sets and opens the zip for the current object.
      * ModeAuto
@@ -103,19 +110,22 @@ public:
     // The path to place the extracted files
     const QString& outputFolder() const;
 
+    // Archive size
+    qint64 sizeCompressed() const;
+
     // Total uncompressed data size (space required for extraction)
     qint64 sizeUncompressed() const;
 
 
     /*** Zipped Items Info ***/
     // Returns a list of entries { "name/path" : index } contained in the archive
-    const ZipContents& contents() const;
+    const ZipContents& contents();
 
     // Returns the number of items in the archive
     int count() const;
 
     // Returns the index of the <fileName> entry, -1 if not found
-    int findIndex(const QString &fileName) const;
+    int findIndex(const QString &fileName);
 
     // Whether the index belongs to the folder entry
     bool isFolder(int index) const;
@@ -177,20 +187,23 @@ public:
     // Finds the <fileName> and extracts to <outputPath>
     bool extractFile(const QString &fileName, const QString &outputPath);
 
-    /* Extracts a folder <index> and its contents to disk: <m_output_folder/folder_entry/contents> */
-    bool extractFolder(int index);
+    /* Extracts the <folderName> and its contents to disk: <m_output_folder/folderName/contents>
+     * <folderName> is also a path inside the archive.
+     * Appending '/' is not necessary (automatic).
+     */
+    bool extractFolder(const QString &folderName);
 
-    /* Extracts a folder <index> and its contents to disk: <outputPath/contents> */
-    bool extractFolder(int index, const QString &outputPath);
+    /* Extracts the <folderName> and its contents to disk: <outputPath/contents> */
+    bool extractFolder(const QString &folderName, const QString &outputPath);
 
     // Extracts all files into the RAM buffer { "name/path" : data }
-    BufList extractToBuf() const;
+    BufList extractToBuf();
 
     // Extracts a file with <index> into the buffer
     BufFile extractToBuf(int index) const;
 
     // Searches for a <fileName> and, if found, extracts it to the buffer; slower than <index>
-    BufFile extractFileToBuf(const QString &fileName) const;
+    BufFile extractFileToBuf(const QString &fileName);
 
     /* Returns the extracted file data.
      * The QByteArray owns the copied data.
@@ -200,7 +213,7 @@ public:
 
     /* Returns the extracted file data.
      * The QByteArray holds only a pointer and does NOT own the data!
-     * To free memory: delete byteArray.constData();
+     * To free memory: free((void*)ba.constData());
      * Recommended for performance optimization or more flexible handling of the data pointer.
      */
     QByteArray extractDataRef(int index) const;
@@ -277,9 +290,6 @@ public:
     /*** OBSOLETE ***/
 
 private:
-    // Updates the list of current archive contents <m_zip_entries>
-    const ZipContents& updateZipContents();
-
     /* If the <entryName> is not in the <m_zip_entries> list:
      * 1. adds item to the archive using the <addFunc>.
      * 2. adds the <entryName> to the <m_zip_entries>.

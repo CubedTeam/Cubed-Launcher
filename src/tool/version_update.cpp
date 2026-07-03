@@ -149,12 +149,41 @@ Q_INVOKABLE void VersionUpdate::download_game(const QString& download_url) {
                 qDebug() << "Before extract zip_path" << zip_path
                          << "to game path" << m_game_dir;
 
+                QFile check(zip_path);
+
+                if (!check.open(QIODevice::ReadOnly)) {
+                    qDebug() << "Can't open zip";
+                    return;
+                }
+
+                if (check.size() < 100) {
+                    qDebug() << "Downloaded file is invalid";
+                    check.close();
+                    return;
+                }
+
+                QByteArray header = check.read(4);
+                qDebug() << header.toHex();
+
+                check.close();
+
+                QFile f(zip_path);
+                qDebug() << "exists =" << f.exists();
+
+                if (f.open(QIODevice::ReadOnly)) {
+                    qDebug() << "QFile open OK";
+                    qDebug() << "size =" << f.size();
+                    f.close();
+                } else {
+                    qDebug() << "QFile open failed:" << f.errorString();
+                }
+
                 if (!QMicroz::extract(zip_path, m_game_dir)) {
                     qDebug() << "Extract file error";
                 } else {
                     qDebug() << "Install Game Sucess";
                 }
-                QFile::remove(zip_path);
+                // QFile::remove(zip_path);
                 download_reply->deleteLater();
                 m_download_progress = 1.0f;
                 emit download_progress_changed();

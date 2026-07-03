@@ -22,6 +22,7 @@ public:
 private slots:
     void test_compress_buf_file();
     void test_compress_buf_list();
+    void test_data_size();
     void test_entryName();
     void test_extractToBufList();
     void test_extractToBufFile();
@@ -124,6 +125,16 @@ void test_qmicroz::test_compress_buf_list()
     QString custom_output = tmp_test_dir + "/custom_folder/file111.txt";
     QVERIFY(qmz.extractFile("file1.txt", custom_output));
     QVERIFY(QFileInfo::exists(custom_output));
+}
+
+void test_qmicroz::test_data_size()
+{
+    QString path = tmp_test_dir + "/test_compress_buf_file.zip";
+
+    QMicroz qmz(path);
+    QVERIFY(qmz.sizeCompressed(0) > 0);
+    QVERIFY(qmz.sizeCompressed() > qmz.sizeCompressed(0));
+    QVERIFY(qmz.sizeUncompressed(0) > qmz.sizeCompressed(0));
 }
 
 void test_qmicroz::test_entryName()
@@ -390,16 +401,18 @@ void test_qmicroz::test_extractFolder()
 
     qmz.closeArchive();
     qmz.setZipFile(zip_file, QMicroz::ModeRead);
-    QVERIFY(qmz && !qmz.extractFolder(0));
-    QVERIFY(qmz.extractFolder(1));
+    QVERIFY(qmz && !qmz.extractFolder(QString()));
+    QVERIFY(!qmz.extractFolder(""));
+    QVERIFY(!qmz.extractFolder("file111.txt"));
+    QVERIFY(qmz.extractFolder("folder111"));
     QVERIFY(QFileInfo::exists(tmp_test_dir + "/folder111"));
 
-    QVERIFY(qmz.extractFolder(2));
+    QVERIFY(qmz.extractFolder("folder222/"));
     QVERIFY(QFileInfo::exists(tmp_test_dir + "/folder222"));
     QVERIFY(QFileInfo(tmp_test_dir + "/folder222/folder333").isDir());
     QVERIFY(QFileInfo(tmp_test_dir + "/folder222/file222-2.txt").isFile());
 
-    QVERIFY(qmz.extractFolder(2, (tmp_test_dir + "/folder111/custom_out")));
+    QVERIFY(qmz.extractFolder("folder222", (tmp_test_dir + "/folder111/custom_out")));
     QVERIFY(QFileInfo::exists(tmp_test_dir + "/folder111/custom_out"));
     QVERIFY(QFileInfo(tmp_test_dir + "/folder111/custom_out/folder333").isDir());
     QVERIFY(QFileInfo(tmp_test_dir + "/folder111/custom_out/file222-2.txt").isFile());
@@ -418,6 +431,7 @@ void test_qmicroz::test_noArchiveSet()
     QVERIFY(qmz.count() == 0);
     QVERIFY(qmz.sizeCompressed(0) == 0);
     QVERIFY(qmz.sizeCompressed(1) == 0);
+    QVERIFY(qmz.sizeCompressed() == 0);
     QVERIFY(qmz.sizeUncompressed() == 0);
     QVERIFY(qmz.sizeUncompressed(-1) == 0);
     QVERIFY(!qmz.lastModified(0).isValid());
