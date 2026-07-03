@@ -1,4 +1,6 @@
 #pragma once
+#include "tool/game_path.hpp"
+
 #include <QCoreApplication>
 #include <QObject>
 #include <QQmlEngine>
@@ -22,16 +24,7 @@ public:
     QString kernelVersion() const { return QSysInfo::kernelVersion(); }
     QString machineUniqueId() const { return QSysInfo::machineUniqueId(); }
     QString qtVersion() const { return QString::fromLatin1(QT_VERSION_STR); }
-    QString defaultGameFilePath() const {
-        QString game_file_path{QCoreApplication::applicationDirPath() +
-                               "/game/"};
-#ifdef _WIN32
-        game_file_path.append("Cubed.exe");
-#else
-        game_file_path.append("Cubed");
-#endif
-        return game_file_path;
-    }
+    QString defaultGameFilePath() const { return get_default_game_file_path(); }
 
     bool isInChina() const {
         QLocale::Country current = QLocale::system().territory();

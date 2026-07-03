@@ -1,5 +1,7 @@
 #include "game-mgmt/cubed_instance.hpp"
 
+#include "tool/game_path.hpp"
+
 #include <QDebug>
 #include <QFileInfo>
 
@@ -7,14 +9,7 @@ CubedInstance::CubedInstance() {}
 
 Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     if (m_game_file_path.isEmpty()) {
-        QString game_file_path{QCoreApplication::applicationDirPath() +
-                               "/game/"};
-#ifdef _WIN32
-        game_file_path.append("Cubed.exe");
-#else
-        game_file_path.append("Cubed");
-#endif
-        m_game_file_path = game_file_path;
+        m_game_file_path = get_default_game_file_path();
     }
     qDebug() << "Game Start, path " << m_game_file_path;
 

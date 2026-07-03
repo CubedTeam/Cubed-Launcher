@@ -1,10 +1,14 @@
 #include "tool/version_update.hpp"
 
+#include "tool/game_path.hpp"
 #include "version.hpp"
 
 #include <qtmetamacros.h>
 
 VersionUpdate::VersionUpdate() {
+
+    m_game_dir = get_default_game_file_path();
+
     if (QString(APP_VERSION) == "dev") {
         m_local_version = QVersionNumber::fromString("0.0.1");
     } else {
@@ -208,15 +212,9 @@ Q_INVOKABLE void VersionUpdate::download_game(const QString& download_url) {
 
 Q_INVOKABLE void VersionUpdate::set_game_dir(const QString& game_file_dir) {
     QFileInfo info;
+
     if (game_file_dir.isEmpty()) {
-        QString game_file_path{QCoreApplication::applicationDirPath() +
-                               "/game/"};
-#ifdef _WIN32
-        game_file_path.append("Cubed.exe");
-#else
-        game_file_path.append("Cubed");
-#endif
-        info = QFileInfo(game_file_path);
+        info = QFileInfo(get_default_game_file_path());
     } else {
         info = QFileInfo(game_file_dir);
     }

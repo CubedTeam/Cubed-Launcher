@@ -37,7 +37,7 @@ signals:
     void version_changed();
 
 private:
-    QString m_game_file_path{QCoreApplication::applicationDirPath() + "/game/"};
+    QString m_game_file_path;
     QString m_wrapper_command;
     QString m_peer_mode{"--host"};
     QString m_port{"25530"};

@@ -62,7 +62,7 @@ private:
     QVersionNumber m_remote_version;
     QNetworkAccessManager m_manager;
 
-    QString m_game_dir{QCoreApplication::applicationDirPath() + "/game"};
+    QString m_game_dir;
 
     QString buildUserAgent();
 
