@@ -40,7 +40,7 @@ Item {
             highlighted: true
 
             font.pixelSize: 20
-            text: "Intall Game"
+            text: CubedInstance.installed ? "Update Game" : "Install Game"
 
             Component.onCompleted: {
                 VersionUpdate.set_game_dir(Settings.gamePath);
@@ -98,20 +98,21 @@ Item {
                 VersionUpdate.download_game(downloadLink.text);
             }
         }
+        Label {
+            text: "Install Finished"
+            visible: VersionUpdate.downloadFinish
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 24
+            font.bold: true
+            color: Material.color(Material.Green)
 
+            onVisibleChanged: {
+                CubedInstance.check_version();
+            }
+        }
         Label {
             text: "Game Install Directory: " + VersionUpdate.gameInstallPath
             font.pixelSize: 20
-        }
-
-        Label {
-            text: "Download Finished"
-            visible: VersionUpdate.downloadFinish
-            Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 20
-            onVisibleChanged: {
-                CubedInstance.check_version()
-            }
         }
 
         ProgressBar {
