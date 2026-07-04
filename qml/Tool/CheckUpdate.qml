@@ -60,7 +60,7 @@ Item {
     Popup {
         id: updatePopup
         anchors.centerIn: Overlay.overlay
-        width: 300
+        width: 500
         height: 300
         modal: true
         focus: true

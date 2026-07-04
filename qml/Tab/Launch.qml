@@ -14,7 +14,7 @@ Item {
         CubedInstance.check_version();
     }
     Loader {
-        //active: VersionUpdate.hasNewVersion
+        active: VersionUpdate.hasNewVersion
         width: 300
         height: 200
         anchors.right: parent.right

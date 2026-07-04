@@ -53,9 +53,6 @@ begin
 end;
 
 [Run]
-Filename: "{app}\vc_redist.x64.exe";
-Parameters: "/install /quiet /norestart";
-Flags: waituntilterminated;
-Check: NeedsVCRedist
+Filename: "{app}\vc_redist.x64.exe"; Parameters: "/install /quiet /norestart"; Flags: waituntilterminated; Check: NeedsVCRedist
 
 Filename: "{app}\CubedLauncher.exe"; Description: "Launch Cubed Launcher"; Flags: nowait postinstall skipifsilent
