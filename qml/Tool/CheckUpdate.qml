@@ -71,7 +71,7 @@ Item {
             spacing: 10
 
             Label {
-                text: "Update Launcher"
+                text: "Update Launcher(Only Support Windows)"
                 Layout.alignment: Qt.AlignCenter
 
                 font.pixelSize: 20
@@ -99,7 +99,28 @@ Item {
                 font.pixelSize: 20
                 highlighted: true
                 onClicked: {
+                    launcherProgress.visible = true;
+                    downloadUpdateButton.enabled = false;
+                    downloadUpdateButton.highlighted = false;
                     VersionUpdate.update_launcher(mirrorSwitch.checked);
+                }
+            }
+            ProgressBar {
+                id: launcherProgress
+                visible: false
+                Layout.alignment: Qt.AlignCenter
+                from: 0.0
+                to: 1.0
+                Layout.preferredHeight: 20
+                Layout.preferredWidth: 400
+                value: VersionUpdate.launcherProgress
+                onValueChanged: {
+                    if (value >= to) {
+                        console.log("Launcher Download Finish");
+                        downloadUpdateButton.enabled = true;
+                        downloadUpdateButton.highlighted = true;
+                        visible = false;
+                    }
                 }
             }
         }

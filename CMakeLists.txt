@@ -78,6 +78,10 @@ qt_add_qml_module(${PROJECT_NAME}
     
 )
 
+if (MSVC)
+target_sources(${PROJECT_NAME} PRIVATE CubedLauncher.rc)
+endif()
+
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_BINARY_DIR}/generated

@@ -28,6 +28,13 @@ class VersionUpdate : public QObject {
                    game_install_path_changed)
     Q_PROPERTY(
         bool downloadFinish READ download_finish NOTIFY download_finish_changed)
+
+    Q_PROPERTY(
+        bool launcherFinish READ launcher_finish NOTIFY launcher_finish_changed)
+
+    Q_PROPERTY(float launcherProgress READ launcher_progress NOTIFY
+                   launcher_progress_changed)
+
 public:
     VersionUpdate();
 
@@ -37,6 +44,10 @@ public:
     QString local_version() const;
     QString remote_version() const;
     QString game_install_path() const;
+
+    bool launcher_finish() const;
+    float launcher_progress() const;
+
     Q_INVOKABLE void check_update(const QString& onwer, const QString& repo);
 
     Q_INVOKABLE void download_from_github(bool use_mirror);
@@ -54,12 +65,19 @@ signals:
     void download_progress_changed();
     void download_finish_changed();
     void game_install_path_changed();
+    void launcher_finish_changed();
+    void launcher_progress_changed();
 
 private:
     bool m_new_version{false};
     float m_download_progress = 0.0f;
     bool m_downloading{false};
     bool m_download_finish{false};
+
+    float m_launcher_progress = 0.0f;
+    bool m_launcher_downloading{false};
+    bool m_launcher_finish{false};
+
     QVersionNumber m_local_version;
     QVersionNumber m_remote_version;
     QNetworkAccessManager m_manager;

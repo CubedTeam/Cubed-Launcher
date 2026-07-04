@@ -3,7 +3,12 @@
 #include "tool/game_path.hpp"
 #include "version.hpp"
 
+#include <QProcess>
 #include <qtmetamacros.h>
+
+namespace {
+const QStringList mirror{"https://v4.gh-proxy.org/"};
+}
 
 VersionUpdate::VersionUpdate() {
 
@@ -27,6 +32,9 @@ QString VersionUpdate::remote_version() const {
     return m_remote_version.toString();
 }
 QString VersionUpdate::game_install_path() const { return m_game_dir; }
+
+bool VersionUpdate::launcher_finish() const { return m_launcher_finish; }
+float VersionUpdate::launcher_progress() const { return m_launcher_progress; }
 
 Q_INVOKABLE void VersionUpdate::check_update(const QString& onwer,
                                              const QString& repo) {
@@ -168,7 +176,7 @@ Q_INVOKABLE void VersionUpdate::download_from_github(bool use_mirror) {
         }
 
         if (use_mirror) {
-            download_url.prepend("https://v4.gh-proxy.org/");
+            download_url.prepend(mirror[0]);
         }
 
         download_game(download_url);
@@ -295,10 +303,99 @@ Q_INVOKABLE void VersionUpdate::set_game_dir(const QString& game_file_dir) {
 }
 
 Q_INVOKABLE void VersionUpdate::update_launcher(bool use_mirror) {
-    if (m_latest_launcher_link.isEmpty()) {
-        qDebug() << "Download Url is Null";
+    if (std::exchange(m_launcher_downloading, true)) {
+
         return;
     }
+
+    if (m_latest_launcher_link.isEmpty()) {
+        qDebug() << "Download Url is Null";
+        m_launcher_downloading = false;
+        m_download_progress = 1.0f;
+        emit download_progress_changed();
+        return;
+    }
+    QString download_url = m_latest_launcher_link;
+    if (use_mirror) {
+        download_url.prepend(mirror[0]);
+    }
+
+    QNetworkRequest download_request(download_url);
+    download_request.setHeader(QNetworkRequest::UserAgentHeader,
+                               buildUserAgent().toUtf8());
+
+    auto* download_reply = m_manager.get(download_request);
+
+    QString setup_path =
+        QDir::temp().filePath("CubedLauncher-setup-latest.exe");
+    auto* file = new QFile(setup_path);
+    if (!file->open(QIODevice::WriteOnly)) {
+        qDebug() << "Can't open file";
+        download_reply->abort();
+        download_reply->deleteLater();
+        delete file;
+
+        m_launcher_progress = 1.0f;
+        emit launcher_progress_changed();
+        m_launcher_downloading = false;
+        return;
+    }
+
+    connect(
+        download_reply, &QNetworkReply::readyRead, this,
+        [download_reply, file]() { file->write(download_reply->readAll()); });
+
+    connect(download_reply, &QNetworkReply::finished, this,
+            [download_reply, file, setup_path, this]() {
+                file->close();
+                delete file;
+
+                if (download_reply->error() != QNetworkReply::NoError) {
+                    qDebug() << download_reply->errorString();
+                    download_reply->deleteLater();
+                    m_launcher_progress = 1.0f;
+                    emit launcher_progress_changed();
+                    m_launcher_downloading = false;
+                    return;
+                }
+
+                QFile check(setup_path);
+
+                if (!check.open(QIODevice::ReadOnly)) {
+                    qDebug() << "Can't open setup file";
+                    m_launcher_progress = 1.0f;
+                    emit launcher_progress_changed();
+                    m_launcher_downloading = false;
+                    return;
+                }
+
+                if (check.size() < 100) {
+                    qDebug() << "Downloaded file is invalid";
+                    check.close();
+                    m_launcher_progress = 1.0f;
+                    emit launcher_progress_changed();
+                    m_launcher_downloading = false;
+                    return;
+                }
+                qDebug() << "Download Finish Start Installing...";
+                if (!QProcess::startDetached(setup_path)) {
+                    qDebug() << "Error can't start Installing Program";
+                }
+                download_reply->deleteLater();
+                m_launcher_progress = 1.0f;
+                m_launcher_finish = true;
+                emit launcher_finish_changed();
+                emit launcher_progress_changed();
+                QCoreApplication::quit();
+            });
+
+    connect(download_reply, &QNetworkReply::downloadProgress, this,
+            [this](qint64 received, qint64 total) {
+                if (total > 0) {
+                    m_launcher_progress = float(received) / float(total);
+                    emit launcher_progress_changed();
+                }
+            });
 }
 
 QString VersionUpdate::buildUserAgent() {
