@@ -37,5 +37,25 @@ Source: "..\build\CubedLauncher\*"; DestDir: "{app}"; Flags: recursesubdirs crea
 Name: "{group}\Cubed Launcher"; Filename: "{app}\CubedLauncher.exe"
 Name: "{commondesktop}\Cubed Launcher"; Filename: "{app}\CubedLauncher.exe"
 
+[Code]
+
+function NeedsVCRedist: Boolean;
+var
+  Installed: Cardinal;
+begin
+  Result :=
+    (not RegQueryDWordValue(
+      HKLM64,
+      'SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64',
+      'Installed',
+      Installed))
+    or (Installed = 0);
+end;
+
 [Run]
+Filename: "{app}\vc_redist.x64.exe";
+Parameters: "/install /quiet /norestart";
+Flags: waituntilterminated;
+Check: NeedsVCRedist
+
 Filename: "{app}\CubedLauncher.exe"; Description: "Launch Cubed Launcher"; Flags: nowait postinstall skipifsilent
