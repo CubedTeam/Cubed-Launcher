@@ -9,6 +9,7 @@ Item {
     anchors.fill: parent
     ColumnLayout {
         anchors.centerIn: parent
+
         Button {
             id: updateButton
             Layout.preferredWidth: 250
@@ -31,7 +32,7 @@ Item {
                 Text {
                     Layout.alignment: Qt.AlignCenter
 
-                    text: VersionUpdate.localVersion + " -> " + VersionUpdate.remoteVersion
+                    text: LauncherUpdate.localVersion + " -> " + LauncherUpdate.remoteVersion
                     color: "white"
                     font.bold: true
                     font.pixelSize: 16
@@ -54,6 +55,19 @@ Item {
             onClicked: {
                 updatePopup.open();
             }
+        }
+
+        Label {
+            enabled: LauncherUpdate.hasError
+            visible: LauncherUpdate.hasError
+            text: LauncherUpdate.errorMessage
+            color: Material.color(Material.Red)
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 20
+            font.bold: true
+            wrapMode: Text.WrapAnywhere
+            Layout.preferredWidth: 500
+            horizontalAlignment: Text.AlignHCenter
         }
     }
 
@@ -78,7 +92,7 @@ Item {
             }
 
             Label {
-                text: VersionUpdate.localVersion + " -> " + VersionUpdate.remoteVersion
+                text: LauncherUpdate.localVersion + " -> " + LauncherUpdate.remoteVersion
                 Layout.alignment: Qt.AlignCenter
 
                 font.pixelSize: 20
@@ -102,7 +116,7 @@ Item {
                     launcherProgress.visible = true;
                     downloadUpdateButton.enabled = false;
                     downloadUpdateButton.highlighted = false;
-                    VersionUpdate.update_launcher(mirrorSwitch.checked);
+                    LauncherUpdate.update_launcher(mirrorSwitch.checked);
                 }
             }
             ProgressBar {
@@ -113,7 +127,7 @@ Item {
                 to: 1.0
                 Layout.preferredHeight: 20
                 Layout.preferredWidth: 400
-                value: VersionUpdate.launcherProgress
+                value: LauncherUpdate.downloadProgress
                 onValueChanged: {
                     if (value >= to) {
                         console.log("Launcher Download Finish");
@@ -122,6 +136,18 @@ Item {
                         visible = false;
                     }
                 }
+            }
+
+            Label {
+                enabled: LauncherUpdate.hasError
+                visible: LauncherUpdate.hasError
+                text: LauncherUpdate.errorMessage
+                Layout.alignment: Qt.AlignCenter
+                font.pixelSize: 20
+                color: Material.color(Material.Red)
+                wrapMode: Text.WrapAnywhere
+                Layout.preferredWidth: 500
+                horizontalAlignment: Text.AlignHCenter
             }
         }
     }

@@ -72,9 +72,11 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/system_info.hpp
         src/settings.cpp
         src/settings.hpp
-        src/tool/version_update.hpp
-        src/tool/version_update.cpp
+        src/tool/launcher_update.hpp
+        src/tool/launcher_update.cpp
         src/tool/side_tool.hpp
+        src/tool/game_update.hpp
+        src/tool/game_update.cpp
     
 )
 

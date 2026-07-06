@@ -9,7 +9,7 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
     Loader {
-        active: VersionUpdate.hasNewVersion
+        active: LauncherUpdate.hasNewVersion || LauncherUpdate.hasError
         width: 300
         height: 200
         anchors.right: parent.right
@@ -75,7 +75,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 24
             onClicked: {
-                VersionUpdate.check_update("CubedTeam", "Cubed-Launcher");
+                LauncherUpdate.check_update("CubedTeam", "Cubed-Launcher");
             }
         }
     }

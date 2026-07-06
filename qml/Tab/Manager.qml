@@ -19,7 +19,10 @@ Item {
     }
     ColumnLayout {
         anchors.centerIn: parent
-
+        Component.onCompleted: {
+            CubedInstance.check_version();
+            GameUpdate.check_update(CubedInstance.version);
+        }
         Loader {
             id: gameDownload
             Layout.fillWidth: true

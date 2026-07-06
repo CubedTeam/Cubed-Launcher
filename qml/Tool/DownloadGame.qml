@@ -12,7 +12,9 @@ Item {
     ColumnLayout {
         id: managerColumn
         anchors.centerIn: parent
-
+        Component.onCompleted: {
+            GameUpdate.gameInstallPath = Settings.gamePath;
+        }
         Switch {
             id: downloadSource
             text: "Use Custom Link"
@@ -42,10 +44,6 @@ Item {
             font.pixelSize: 20
             text: CubedInstance.installed ? "Update Game" : "Install Game"
 
-            Component.onCompleted: {
-                VersionUpdate.set_game_dir(Settings.gamePath);
-            }
-
             onClicked: {
                 if (!Settings.pathSetted) {
                     Settings.set_game_path(SystemInfo.defaultGameFilePath);
@@ -56,7 +54,7 @@ Item {
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
-                VersionUpdate.download_from_github(useMirror.checked);
+                GameUpdate.download_from_github(useMirror.checked);
             }
         }
 
@@ -81,10 +79,7 @@ Item {
             highlighted: true
 
             font.pixelSize: 20
-            text: "Intall Game"
-            Component.onCompleted: {
-                VersionUpdate.set_game_dir(Settings.gamePath);
-            }
+            text: CubedInstance.installed ? "Update Game" : "Install Game"
             onClicked: {
                 if (!Settings.pathSetted) {
                     Settings.set_game_path(SystemInfo.defaultGameFilePath);
@@ -95,12 +90,12 @@ Item {
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
-                VersionUpdate.download_game(downloadLink.text);
+                GameUpdate.download_game(downloadLink.text);
             }
         }
         Label {
             text: "Install Finished"
-            visible: VersionUpdate.downloadFinish
+            visible: GameUpdate.downloadFinish && !GameUpdate.hasError
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 24
             font.bold: true
@@ -110,8 +105,22 @@ Item {
                 CubedInstance.check_version();
             }
         }
+
         Label {
-            text: "Game Install Directory: " + VersionUpdate.gameInstallPath
+            text: GameUpdate.errorMessage
+            visible: GameUpdate.hasError
+            enabled: GameUpdate.hasError
+            font.bold: true
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 24
+            color: Material.color(Material.Red)
+            wrapMode: Text.WrapAnywhere
+            Layout.preferredWidth: 500
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        Label {
+            text: "Game Install Directory: " + GameUpdate.gameInstallPath
             font.pixelSize: 20
         }
 
@@ -123,7 +132,7 @@ Item {
             to: 1.0
             Layout.preferredHeight: 20
             Layout.preferredWidth: 400
-            value: VersionUpdate.downloadProgress
+            value: GameUpdate.downloadProgress
             onValueChanged: {
                 if (value >= to) {
                     console.log("Download Finish");
@@ -180,7 +189,7 @@ Item {
             onClicked: {
                 CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
                 Settings.set_game_path(SystemInfo.defaultGameFilePath);
-                VersionUpdate.set_game_dir(SystemInfo.defaultGameFilePath);
+                GameUpdate.gameInstallPath = SystemInfo.defaultGameFilePath;
             }
         }
     }
@@ -190,7 +199,7 @@ Item {
         onAccepted: {
             CubedInstance.set_game_path_url(selectedFile);
             Settings.gamePath = selectedFile;
-            VersionUpdate.set_game_dir(Settings.gamePath);
+            GameUpdate.gameInstallPath = Settings.gamePath;
         }
     }
 }
