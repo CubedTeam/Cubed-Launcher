@@ -99,10 +99,7 @@ Q_INVOKABLE void CubedInstance::kill_all() {
 
 Q_INVOKABLE void CubedInstance::check_version() {
     if (m_game_file_path.isEmpty()) {
-        m_installed = false;
-        emit installed_changed();
-        emit version_changed();
-        return;
+        m_game_file_path = get_default_game_file_path();
     }
     auto info = QFileInfo(m_game_file_path);
     if (!info.isFile()) {

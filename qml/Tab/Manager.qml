@@ -17,11 +17,24 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 100
     }
+    Connections {
+        id: checkConnections
+        target: CubedInstance
+        property bool checked: false
+        function onVersion_changed() {
+            if (checked) {
+                return;
+            }
+            checked = true;
+            console.log("version changed:", CubedInstance.version);
+            GameUpdate.check_update(CubedInstance.version);
+        }
+    }
+
     ColumnLayout {
         anchors.centerIn: parent
         Component.onCompleted: {
             CubedInstance.check_version();
-            GameUpdate.check_update(CubedInstance.version);
         }
         Loader {
             id: gameDownload
