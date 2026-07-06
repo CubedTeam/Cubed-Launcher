@@ -122,7 +122,7 @@ Item {
             font.pixelSize: 24
             color: Material.color(Material.Red)
             wrapMode: Text.WrapAnywhere
-            Layout.preferredWidth: 500
+            Layout.preferredWidth: 600
             horizontalAlignment: Text.AlignHCenter
         }
 

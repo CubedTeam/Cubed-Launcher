@@ -89,6 +89,13 @@ Item {
         }
 
         Label {
+            visible: GameUpdate.hasNewVersion
+            text: "New Cubed Version: " + GameUpdate.remoteVersion + " Available!"
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 18
+        }
+
+        Label {
             visible: CubedInstance.installed
             text: "Cubed Version: " + CubedInstance.version
             Layout.alignment: Qt.AlignCenter

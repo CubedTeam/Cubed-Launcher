@@ -11,6 +11,7 @@
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <qmicroz.h>
+#include <qtmetamacros.h>
 #include <utility>
 
 GameUpdate::GameUpdate() { m_game_install_path = get_default_game_file_path(); }
@@ -20,6 +21,7 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
         emit checking_update_changed();
         return;
     }
+    qDebug() << "Loacl Version: " << local_version;
     bool installed = true;
     if (local_version.isEmpty()) {
         installed = false;
@@ -138,6 +140,10 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                              << m_local_version.toString()
                              << "Remote:" << latest_version_str;
                 }
+                emit new_version_changed();
+            } else {
+                m_new_version = true;
+                emit new_version_changed();
             }
 
             auto assets = json_obj["assets"].toArray();
@@ -347,6 +353,10 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                 m_download_progress = 1.0f;
                 m_downloading = false;
                 m_download_finish = true;
+                m_new_version = false;
+                m_local_version = m_remote_version;
+                emit new_version_changed();
+                emit local_version_changed();
                 emit download_finish_changed();
                 emit download_progress_changed();
             });
