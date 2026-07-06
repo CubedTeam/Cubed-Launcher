@@ -7,12 +7,19 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QJsonArray>
+#include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkReply>
 #include <qmicroz.h>
+#include <utility>
+
 GameUpdate::GameUpdate() { m_game_install_path = get_default_game_file_path(); }
 
 Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
+    if (std::exchange(m_checking_update, true)) {
+        emit checking_update_changed();
+        return;
+    }
     bool installed = true;
     if (local_version.isEmpty()) {
         installed = false;
@@ -41,6 +48,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 m_error_message = "Check update failed: reply is null";
                 emit has_error_changed();
                 emit error_message_changed();
+                m_checking_update = false;
+                emit checking_update_changed();
                 return;
             }
 
@@ -51,6 +60,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit has_error_changed();
                 emit error_message_changed();
                 replay->deleteLater();
+                m_checking_update = false;
+                emit checking_update_changed();
                 return;
             }
 
@@ -63,6 +74,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit has_error_changed();
                 emit error_message_changed();
                 replay->deleteLater();
+                m_checking_update = false;
+                emit checking_update_changed();
                 return;
             }
 
@@ -75,6 +88,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit has_error_changed();
                 emit error_message_changed();
                 replay->deleteLater();
+                m_checking_update = false;
+                emit checking_update_changed();
                 return;
             }
 
@@ -91,6 +106,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit has_error_changed();
                 emit error_message_changed();
                 replay->deleteLater();
+                m_checking_update = false;
+                emit checking_update_changed();
                 return;
             }
 
@@ -105,6 +122,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit has_error_changed();
                 emit error_message_changed();
                 replay->deleteLater();
+                m_checking_update = false;
+                emit checking_update_changed();
                 return;
             }
 
@@ -146,6 +165,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 m_error_message = "No Windows package found.";
                 emit has_error_changed();
                 emit error_message_changed();
+                m_checking_update = false;
+                emit checking_update_changed();
                 return;
             }
 
@@ -155,6 +176,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
             emit new_version_changed();
             emit remote_version_changed();
             emit local_version_changed();
+            m_checking_update = false;
+            emit checking_update_changed();
         });
 }
 
@@ -168,6 +191,7 @@ Q_INVOKABLE void GameUpdate::download_from_github(bool use_mirror) {
         qDebug() << "Game Download Url is empty";
         m_has_error = true;
         m_error_message = "Game Download Url is empty";
+        m_download_progress = 1.0f;
         emit has_error_changed();
         emit error_message_changed();
         return;
@@ -352,6 +376,7 @@ void GameUpdate::set_game_install_path(const QString& game_file_dir) {
 QString GameUpdate::game_install_path() const { return m_game_install_path; }
 
 bool GameUpdate::has_new_version() const { return m_new_version; }
+bool GameUpdate::checking_update() const { return m_checking_update; }
 QString GameUpdate::local_version() const { return m_local_version.toString(); }
 QString GameUpdate::remote_version() const {
     return m_remote_version.toString();

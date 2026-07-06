@@ -2,6 +2,7 @@
 #include <QNetworkAccessManager>
 #include <QObject>
 #include <QQmlEngine>
+#include <qtmetamacros.h>
 class GameUpdate : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -22,7 +23,8 @@ class GameUpdate : public QObject {
     Q_PROPERTY(bool hasError READ has_error NOTIFY has_error_changed)
     Q_PROPERTY(
         QString errorMessage READ error_message NOTIFY error_message_changed)
-
+    Q_PROPERTY(
+        bool checkingUpdate READ checking_update NOTIFY checking_update_changed)
 public:
     GameUpdate();
 
@@ -32,6 +34,7 @@ public:
     QString game_install_path() const;
 
     bool has_new_version() const;
+    bool checking_update() const;
     QString local_version() const;
     QString remote_version() const;
     float download_progress() const;
@@ -51,6 +54,7 @@ signals:
     void local_version_changed();
     void error_message_changed();
     void has_error_changed();
+    void checking_update_changed();
 
 private:
     QNetworkAccessManager m_manager;
@@ -63,7 +67,7 @@ private:
     float m_download_progress = 0.0f;
     bool m_downloading{false};
     bool m_download_finish{false};
-
+    bool m_checking_update = false;
     QString m_game_install_path;
 
     bool m_has_error{false};

@@ -34,12 +34,12 @@ Item {
         Button {
             id: downloadGameGithubButton
             visible: !downloadSource.checked
-            enabled: !downloadSource.checked
+            enabled: !downloadSource.checked && !GameUpdate.checkingUpdate
             Layout.alignment: Qt.AlignCenter
             Material.roundedScale: Material.MediumScale
             Layout.preferredWidth: 250
             Layout.preferredHeight: 60
-            highlighted: true
+            highlighted: enabled
 
             font.pixelSize: 20
             text: CubedInstance.installed ? "Update Game" : "Install Game"
@@ -92,6 +92,13 @@ Item {
                 highlighted = false;
                 GameUpdate.download_game(downloadLink.text);
             }
+        }
+        Label {
+            text: "Checking Update..."
+            visible: GameUpdate.checkingUpdate
+            Layout.alignment: Qt.AlignCenter
+            font.pixelSize: 24
+            font.bold: true
         }
         Label {
             text: "Install Finished"
