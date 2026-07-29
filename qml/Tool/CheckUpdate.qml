@@ -113,14 +113,36 @@ Item {
             Button {
                 id: downloadUpdateButton
                 text: "Update"
+                enabled: !LauncherUpdate.downloading
                 Layout.alignment: Qt.AlignCenter
                 font.pixelSize: 20
-                highlighted: true
+                Material.roundedScale: Material.MediumScale
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 60
+                highlighted: enabled
                 onClicked: {
                     launcherProgress.visible = true;
+                    cancelLauncherButton.visible = true;
                     downloadUpdateButton.enabled = false;
                     downloadUpdateButton.highlighted = false;
                     LauncherUpdate.update_launcher(mirrorCombo.currentIndex);
+                }
+            }
+
+            // AI-generated: abort the running launcher update download.
+            Button {
+                id: cancelLauncherButton
+                visible: false
+                enabled: LauncherUpdate.downloading
+                Layout.alignment: Qt.AlignCenter
+                Material.roundedScale: Material.MediumScale
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 60
+                Material.background: Material.color(Material.Red)
+                font.pixelSize: 20
+                text: "Cancel Download"
+                onClicked: {
+                    LauncherUpdate.cancel_download();
                 }
             }
             ProgressBar {
@@ -148,12 +170,21 @@ Item {
                         launcherProgress.visible = false;
                         downloadUpdateButton.enabled = true;
                         downloadUpdateButton.highlighted = true;
+                        cancelLauncherButton.visible = false;
                     }
                 }
                 function onDownloadFinishChanged() {
                     if (LauncherUpdate.downloadFinish) {
                         downloadUpdateButton.enabled = true;
                         downloadUpdateButton.highlighted = true;
+                        cancelLauncherButton.visible = false;
+                    }
+                }
+                // AI-generated: hide cancel when download ends.
+                function onDownloadingChanged() {
+                    if (!LauncherUpdate.downloading) {
+                        cancelLauncherButton.visible = false;
+                        launcherProgress.visible = false;
                     }
                 }
             }

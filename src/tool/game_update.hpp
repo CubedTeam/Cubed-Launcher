@@ -1,5 +1,6 @@
 #pragma once
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QObject>
 #include <QQmlEngine>
 #include <qtmetamacros.h>
@@ -25,6 +26,8 @@ class GameUpdate : public QObject {
         QString errorMessage READ error_message NOTIFY error_message_changed)
     Q_PROPERTY(
         bool checkingUpdate READ checking_update NOTIFY checking_update_changed)
+    // AI-generated: whether a download is in progress.
+    Q_PROPERTY(bool downloading READ downloading NOTIFY downloading_changed)
 public:
     GameUpdate();
 
@@ -32,10 +35,13 @@ public:
     // AI-generated: mirror index, 0 = direct.
     Q_INVOKABLE void download_from_github(int mirror_index);
     Q_INVOKABLE void download_game(const QString& url);
+    // AI-generated: abort the in-flight download, if any.
+    Q_INVOKABLE void cancel_download();
     QString game_install_path() const;
 
     bool has_new_version() const;
     bool checking_update() const;
+    bool downloading() const;
     QString local_version() const;
     QString remote_version() const;
     float download_progress() const;
@@ -56,6 +62,7 @@ signals:
     void error_message_changed();
     void has_error_changed();
     void checking_update_changed();
+    void downloading_changed();
 
 private:
     QNetworkAccessManager m_manager;
@@ -69,7 +76,10 @@ private:
     bool m_downloading{false};
     bool m_download_finish{false};
     bool m_checking_update = false;
+    bool m_cancelling{false};
     QString m_game_install_path;
+    // AI-generated: active download reply, used to abort on cancel.
+    QNetworkReply* m_download_reply{nullptr};
 
     bool m_has_error{false};
     QString m_error_message;

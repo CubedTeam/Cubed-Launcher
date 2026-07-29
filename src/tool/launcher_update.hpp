@@ -10,6 +10,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QObject>
+#include <QPointer>
 #include <QQmlEngine>
 #include <qmicroz.h>
 class LauncherUpdate : public QObject {
@@ -29,6 +30,8 @@ class LauncherUpdate : public QObject {
     Q_PROPERTY(bool hasError READ has_error NOTIFY has_error_changed)
     Q_PROPERTY(
         QString errorMessage READ error_message NOTIFY error_message_changed)
+    // AI-generated: whether a download is in progress.
+    Q_PROPERTY(bool downloading READ downloading NOTIFY downloading_changed)
 
 public:
     LauncherUpdate();
@@ -46,6 +49,10 @@ public:
     // AI-generated: mirror index, 0 = direct.
     Q_INVOKABLE void update_launcher(int mirror_index);
 
+    // AI-generated: abort the in-flight update download, if any.
+    Q_INVOKABLE void cancel_download();
+
+    bool downloading() const;
 signals:
     void new_version_changed();
     void remote_version_changed();
@@ -54,16 +61,20 @@ signals:
     void game_install_path_changed();
     void error_message_changed();
     void has_error_changed();
+    void downloading_changed();
 
 private:
     bool m_new_version{false};
     float m_download_progress = 0.0f;
     bool m_downloading{false};
     bool m_download_finish{false};
+    bool m_cancelling{false};
 
     QVersionNumber m_local_version;
     QVersionNumber m_remote_version;
     QNetworkAccessManager m_manager;
+    // AI-generated: active update reply, used to abort on cancel.
+    QPointer<QNetworkReply> m_download_reply;
 
     QString m_latest_launcher_link;
 

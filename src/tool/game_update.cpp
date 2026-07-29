@@ -227,6 +227,12 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
     // AI-generated: reset progress so UI can re-trigger on finish/error.
     m_download_progress = 0.0f;
     emit download_progress_changed();
+    m_cancelling = false;
+    m_has_error = false;
+    m_error_message.clear();
+    emit has_error_changed();
+    emit error_message_changed();
+    emit downloading_changed();
     if (download_url.isEmpty()) {
         qDebug() << "Error Download Url is empty";
         m_has_error = true;
@@ -236,6 +242,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
         m_download_progress = 1.0f;
         emit download_progress_changed();
         m_downloading = false;
+        emit downloading_changed();
         return;
     }
     qDebug() << "Download url" << download_url;
@@ -246,6 +253,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
     download_request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                                   QNetworkRequest::NoLessSafeRedirectPolicy);
     auto* download_reply = m_manager.get(download_request);
+    m_download_reply = download_reply;
 
     QString zip_path = QDir::temp().filePath("Cubed-latest.zip");
     auto file = std::make_shared<QFile>(zip_path);
@@ -260,9 +268,11 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
 
         download_reply->abort();
         download_reply->deleteLater();
+        m_download_reply = nullptr;
         m_download_progress = 1.0f;
         emit download_progress_changed();
         m_downloading = false;
+        emit downloading_changed();
         return;
     }
 
@@ -273,6 +283,21 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
     connect(download_reply, &QNetworkReply::finished, this,
             [download_reply, file, zip_path, this]() {
                 file->close();
+                if (m_download_reply == download_reply) {
+                    m_download_reply = nullptr;
+                }
+
+                // AI-generated: user-cancelled download, finish quietly.
+                if (m_cancelling) {
+                    m_cancelling = false;
+                    download_reply->deleteLater();
+                    QFile::remove(zip_path);
+                    m_downloading = false;
+                    m_download_progress = 0.0f;
+                    emit downloading_changed();
+                    emit download_progress_changed();
+                    return;
+                }
 
                 if (download_reply->error() != QNetworkReply::NoError) {
                     qDebug() << download_reply->errorString();
@@ -284,6 +309,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                     m_download_progress = 1.0f;
                     emit download_progress_changed();
                     m_downloading = false;
+                    emit downloading_changed();
                     return;
                 }
 
@@ -300,6 +326,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                     emit has_error_changed();
                     emit error_message_changed();
                     m_downloading = false;
+                    emit downloading_changed();
                     return;
                 }
 
@@ -314,6 +341,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                     emit error_message_changed();
                     check.close();
                     m_downloading = false;
+                    emit downloading_changed();
                     return;
                 }
 
@@ -337,6 +365,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                     QFile::remove(zip_path);
                     download_reply->deleteLater();
                     m_downloading = false;
+                    emit downloading_changed();
                     return;
                 }
 
@@ -351,6 +380,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                     QFile::remove(zip_path);
                     download_reply->deleteLater();
                     m_downloading = false;
+                    emit downloading_changed();
                     return;
                 } else {
                     qDebug() << "Install Game Success";
@@ -359,6 +389,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                 download_reply->deleteLater();
                 m_download_progress = 1.0f;
                 m_downloading = false;
+                emit downloading_changed();
                 m_download_finish = true;
                 m_new_version = false;
                 m_local_version = m_remote_version;
@@ -375,6 +406,15 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                     emit download_progress_changed();
                 }
             });
+}
+
+// AI-generated: abort the in-flight download; finished handler clears state.
+void GameUpdate::cancel_download() {
+    if (!m_downloading || m_cancelling || !m_download_reply) {
+        return;
+    }
+    m_cancelling = true;
+    m_download_reply->abort();
 }
 
 void GameUpdate::set_game_install_path(const QString& game_file_dir) {
@@ -394,6 +434,7 @@ QString GameUpdate::game_install_path() const { return m_game_install_path; }
 
 bool GameUpdate::has_new_version() const { return m_new_version; }
 bool GameUpdate::checking_update() const { return m_checking_update; }
+bool GameUpdate::downloading() const { return m_downloading; }
 QString GameUpdate::local_version() const { return m_local_version.toString(); }
 QString GameUpdate::remote_version() const {
     return m_remote_version.toString();

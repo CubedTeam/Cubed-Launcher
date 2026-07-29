@@ -39,7 +39,7 @@ Item {
         Button {
             id: downloadGameGithubButton
             visible: !downloadSource.checked
-            enabled: !downloadSource.checked && !GameUpdate.checkingUpdate
+            enabled: !downloadSource.checked && !GameUpdate.checkingUpdate && !GameUpdate.downloading
             Layout.alignment: Qt.AlignCenter
             Material.roundedScale: Material.MediumScale
             Layout.preferredWidth: 250
@@ -55,11 +55,31 @@ Item {
                 }
 
                 downloadProgress.visible = true;
+                cancelButton.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
                 GameUpdate.download_from_github(mirrorCombo.currentIndex);
+            }
+        }
+
+        // AI-generated: abort the running download; shown only while downloading.
+        Button {
+            id: cancelButton
+            visible: false
+            enabled: GameUpdate.downloading
+            Layout.alignment: Qt.AlignCenter
+            Material.roundedScale: Material.MediumScale
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+            highlighted: enabled
+            Material.background: Material.color(Material.Red)
+
+            font.pixelSize: 20
+            text: "Cancel Download"
+            onClicked: {
+                GameUpdate.cancel_download();
             }
         }
 
@@ -91,6 +111,7 @@ Item {
                 }
 
                 downloadProgress.visible = true;
+                cancelButton.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
                 enabled = false;
@@ -154,8 +175,7 @@ Item {
             }
         }
 
-        // AI-generated: re-enable controls on error or finish so a download
-        // can be restarted instead of staying disabled.
+        // AI-generated: re-enable controls on finish so a download can be restarted.
         Connections {
             target: GameUpdate
             function onHasErrorChanged() {
@@ -167,6 +187,7 @@ Item {
                     downloadGameCustomButton.highlighted = true;
                     gamePathButton.enabled = true;
                     gamePathButton.highlighted = true;
+                    cancelButton.visible = false;
                 }
             }
             function onDownloadFinishChanged() {
@@ -177,6 +198,14 @@ Item {
                     downloadGameCustomButton.highlighted = true;
                     gamePathButton.enabled = true;
                     gamePathButton.highlighted = true;
+                    cancelButton.visible = false;
+                }
+            }
+            // AI-generated: hide cancel button when download ends.
+            function onDownloadingChanged() {
+                if (!GameUpdate.downloading) {
+                    cancelButton.visible = false;
+                    downloadProgress.visible = false;
                 }
             }
         }
