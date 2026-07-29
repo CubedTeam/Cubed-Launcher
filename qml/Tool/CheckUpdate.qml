@@ -162,29 +162,18 @@ Item {
                 }
             }
 
-            // AI-generated: recover the Update button on error/finish.
+            // AI-generated: recover the Update button once download ends any way.
             Connections {
                 target: LauncherUpdate
-                function onHasErrorChanged() {
-                    if (LauncherUpdate.hasError) {
-                        launcherProgress.visible = false;
-                        downloadUpdateButton.enabled = true;
-                        downloadUpdateButton.highlighted = true;
-                        cancelLauncherButton.visible = false;
-                    }
-                }
-                function onDownloadFinishChanged() {
-                    if (LauncherUpdate.downloadFinish) {
-                        downloadUpdateButton.enabled = true;
-                        downloadUpdateButton.highlighted = true;
-                        cancelLauncherButton.visible = false;
-                    }
-                }
-                // AI-generated: hide cancel when download ends.
                 function onDownloadingChanged() {
                     if (!LauncherUpdate.downloading) {
-                        cancelLauncherButton.visible = false;
-                        launcherProgress.visible = false;
+                        downloadUpdateButton.enabled = true
+                            && !LauncherUpdate.downloading
+                        downloadUpdateButton.highlighted = downloadUpdateButton.enabled
+                        cancelLauncherButton.visible = false
+                        if (!LauncherUpdate.downloadFinish || LauncherUpdate.hasError) {
+                            launcherProgress.visible = false
+                        }
                     }
                 }
             }

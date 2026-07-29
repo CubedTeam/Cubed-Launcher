@@ -175,37 +175,24 @@ Item {
             }
         }
 
-        // AI-generated: re-enable controls on finish so a download can be restarted.
+        // AI-generated: re-enable controls once any download ends (finish,
+        // error, or cancel) so Install Game never stays disabled.
         Connections {
             target: GameUpdate
-            function onHasErrorChanged() {
-                if (GameUpdate.hasError) {
-                    downloadProgress.visible = false;
-                    downloadGameGithubButton.enabled = true;
-                    downloadGameGithubButton.highlighted = true;
-                    downloadGameCustomButton.enabled = true;
-                    downloadGameCustomButton.highlighted = true;
-                    gamePathButton.enabled = true;
-                    gamePathButton.highlighted = true;
-                    cancelButton.visible = false;
-                }
-            }
-            function onDownloadFinishChanged() {
-                if (GameUpdate.downloadFinish) {
-                    downloadGameGithubButton.enabled = true;
-                    downloadGameGithubButton.highlighted = true;
-                    downloadGameCustomButton.enabled = true;
-                    downloadGameCustomButton.highlighted = true;
-                    gamePathButton.enabled = true;
-                    gamePathButton.highlighted = true;
-                    cancelButton.visible = false;
-                }
-            }
-            // AI-generated: hide cancel button when download ends.
             function onDownloadingChanged() {
                 if (!GameUpdate.downloading) {
-                    cancelButton.visible = false;
-                    downloadProgress.visible = false;
+                    downloadGameGithubButton.enabled = true
+                        && !downloadSource.checked
+                        && !GameUpdate.checkingUpdate
+                    downloadGameGithubButton.highlighted = downloadGameGithubButton.enabled
+                    downloadGameCustomButton.enabled = true && downloadSource.checked
+                    downloadGameCustomButton.highlighted = downloadGameCustomButton.enabled
+                    gamePathButton.enabled = true
+                    gamePathButton.highlighted = true
+                    cancelButton.visible = false
+                    if (!GameUpdate.downloadFinish || GameUpdate.hasError) {
+                        downloadProgress.visible = false
+                    }
                 }
             }
         }
