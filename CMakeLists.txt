@@ -75,6 +75,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/launcher_update.hpp
         src/tool/launcher_update.cpp
         src/tool/side_tool.hpp
+        src/tool/mirror.hpp
+        src/tool/mirror.cpp
         src/tool/game_update.hpp
         src/tool/game_update.cpp
     

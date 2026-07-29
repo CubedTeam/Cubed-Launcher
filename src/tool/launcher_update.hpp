@@ -43,7 +43,8 @@ public:
 
     Q_INVOKABLE void check_update(const QString& onwer, const QString& repo);
 
-    Q_INVOKABLE void update_launcher(bool use_mirror);
+    // AI-generated: index selects a mirror from mirror_sources (0 = direct).
+    Q_INVOKABLE void update_launcher(int mirror_index);
 
 signals:
     void new_version_changed();

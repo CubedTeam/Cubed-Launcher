@@ -98,12 +98,16 @@ Item {
                 font.pixelSize: 20
             }
 
-            Switch {
-                id: mirrorSwitch
-                text: "Use Mirror"
-                checked: SystemInfo.isInChina
+            // AI-generated: mirror source selector (same model as DownloadGame).
+            ComboBox {
+                id: mirrorCombo
                 Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 250
                 font.pixelSize: 20
+                model: MirrorSource.names
+                currentIndex: Settings.mirrorIndex >= 0 ? Settings.mirrorIndex
+                                                        : (SystemInfo.isInChina ? 1 : 0)
+                onActivated: Settings.mirrorIndex = currentIndex
             }
 
             Button {
@@ -116,7 +120,7 @@ Item {
                     launcherProgress.visible = true;
                     downloadUpdateButton.enabled = false;
                     downloadUpdateButton.highlighted = false;
-                    LauncherUpdate.update_launcher(mirrorSwitch.checked);
+                    LauncherUpdate.update_launcher(mirrorCombo.currentIndex);
                 }
             }
             ProgressBar {

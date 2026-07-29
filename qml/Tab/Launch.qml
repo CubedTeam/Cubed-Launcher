@@ -15,6 +15,7 @@ Item {
     }
     Loader {
         active: LauncherUpdate.hasNewVersion || LauncherUpdate.hasError
+        //active: true
         width: 300
         height: 200
         anchors.right: parent.right

@@ -22,14 +22,21 @@ Item {
             font.pixelSize: 20
             Layout.alignment: Qt.AlignCenter
         }
-        Switch {
-            id: useMirror
+        // AI-generated: mirror source selector. Index 0 is the direct GitHub
+        // source; remaining entries are loaded from the MirrorSource singleton.
+        ComboBox {
+            id: mirrorCombo
             visible: !downloadSource.checked
             enabled: !downloadSource.checked
             Layout.alignment: Qt.AlignCenter
-            checked: SystemInfo.isInChina
+            Layout.preferredWidth: 250
             font.pixelSize: 20
-            text: "Use Github Mirror"
+            model: MirrorSource.names
+            // AI-generated: restore persisted selection or pick the first
+            // mirror by default when the user is in China.
+            currentIndex: Settings.mirrorIndex >= 0 ? Settings.mirrorIndex
+                                                    : (SystemInfo.isInChina ? 1 : 0)
+            onActivated: Settings.mirrorIndex = currentIndex
         }
         Button {
             id: downloadGameGithubButton
@@ -54,7 +61,7 @@ Item {
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
-                GameUpdate.download_from_github(useMirror.checked);
+                GameUpdate.download_from_github(mirrorCombo.currentIndex);
             }
         }
 

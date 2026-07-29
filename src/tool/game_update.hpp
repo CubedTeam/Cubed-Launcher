@@ -29,7 +29,8 @@ public:
     GameUpdate();
 
     Q_INVOKABLE void check_update(const QString& local_version);
-    Q_INVOKABLE void download_from_github(bool use_mirror);
+    // AI-generated: index selects a mirror from mirror_sources (0 = direct).
+    Q_INVOKABLE void download_from_github(int mirror_index);
     Q_INVOKABLE void download_game(const QString& url);
     QString game_install_path() const;
 

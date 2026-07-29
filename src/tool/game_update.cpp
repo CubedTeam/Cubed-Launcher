@@ -187,7 +187,7 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
         });
 }
 
-Q_INVOKABLE void GameUpdate::download_from_github(bool use_mirror) {
+Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
     m_has_error = false;
     m_error_message.clear();
     emit has_error_changed();
@@ -203,8 +203,12 @@ Q_INVOKABLE void GameUpdate::download_from_github(bool use_mirror) {
         return;
     }
     QString download_url = m_download_url;
-    if (use_mirror) {
-        download_url.prepend(mirror[0]);
+    // AI-generated: prepend the selected mirror prefix (0 means direct).
+    if (mirror_index > 0 && mirror_index < mirror_sources.size()) {
+        const QString& prefix = mirror_sources.at(mirror_index).prefix;
+        if (!prefix.isEmpty()) {
+            download_url = prefix + download_url;
+        }
     }
     download_game(download_url);
 }
