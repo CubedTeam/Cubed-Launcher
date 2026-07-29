@@ -98,7 +98,7 @@ Item {
                 font.pixelSize: 20
             }
 
-            // AI-generated: mirror source selector (same model as DownloadGame).
+            // AI-generated: mirror selector, same as DownloadGame.
             ComboBox {
                 id: mirrorCombo
                 Layout.alignment: Qt.AlignCenter

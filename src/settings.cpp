@@ -55,7 +55,7 @@ void Settings::load() {
 
     m_player_name = m_settings.value("player_name").toString();
 
-    // AI-generated: load persisted mirror index; -1 means "never set".
+    // AI-generated: load mirror index, -1 means unset.
     m_mirror_index = m_settings.value("mirror_index", -1).toInt();
 }
 void Settings::save(const QString& key, const QString& value) {

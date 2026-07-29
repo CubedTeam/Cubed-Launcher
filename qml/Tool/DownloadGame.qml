@@ -22,8 +22,7 @@ Item {
             font.pixelSize: 20
             Layout.alignment: Qt.AlignCenter
         }
-        // AI-generated: mirror source selector. Index 0 is the direct GitHub
-        // source; remaining entries are loaded from the MirrorSource singleton.
+        // AI-generated: mirror selector. 0 = direct.
         ComboBox {
             id: mirrorCombo
             visible: !downloadSource.checked
@@ -32,8 +31,7 @@ Item {
             Layout.preferredWidth: 250
             font.pixelSize: 20
             model: MirrorSource.names
-            // AI-generated: restore persisted selection or pick the first
-            // mirror by default when the user is in China.
+            // AI-generated: saved choice, else first mirror in China.
             currentIndex: Settings.mirrorIndex >= 0 ? Settings.mirrorIndex
                                                     : (SystemInfo.isInChina ? 1 : 0)
             onActivated: Settings.mirrorIndex = currentIndex

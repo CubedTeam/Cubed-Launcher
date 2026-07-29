@@ -5,20 +5,15 @@
 #include <QVector>
 #include <qtmetamacros.h>
 
-// AI-generated: a single mirror source entry.
-// name:    human-readable label shown in the UI ComboBox.
-// prefix:  URL prefix prepended to a GitHub download URL (empty for direct).
+// AI-generated: one mirror source. name is the UI label, prefix is prepended
+// to the GitHub URL (empty for direct).
 struct MirrorEntry {
     QString name;
     QString prefix;
 };
 
-// AI-generated: built-in mirror catalogue.
-// Index 0 is always the direct GitHub source (empty prefix) and acts as the
-// fallback when no mirror is chosen. The remaining entries are public GitHub
-// proxy mirrors; they may go offline at any time, so the list is intentionally
-// generous. The order is part of the persisted Settings contract (the selected
-// index is stored by position), so do not reorder existing entries.
+// AI-generated: built-in mirrors. Index 0 is always direct GitHub. Order is
+// part of the persisted Settings contract, so don't reorder existing entries.
 inline const QVector<MirrorEntry> mirror_sources{
     {QStringLiteral("Direct (GitHub)"), QStringLiteral("")},
     {QStringLiteral("gh-proxy.org"), QStringLiteral("https://gh-proxy.org/")},
@@ -32,8 +27,7 @@ inline const QVector<MirrorEntry> mirror_sources{
      QStringLiteral("https://mirror.ghproxy.com/")},
 };
 
-// AI-generated: QML singleton exposing the mirror catalogue to the UI and a
-// helper that prepends the selected mirror prefix to a GitHub download URL.
+// AI-generated: QML singleton exposing the mirror list and URL prefixing.
 class MirrorSource : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -42,7 +36,7 @@ class MirrorSource : public QObject {
 public:
     explicit MirrorSource(QObject* parent = nullptr);
     QStringList names() const;
-    // AI-generated: returns url unchanged for the direct source (index 0) or
-    // when index is out of range, otherwise prepends the mirror prefix.
+    // AI-generated: prepend mirror prefix at index; 0 or out-of-range ==
+    // direct.
     Q_INVOKABLE QString apply(const QString& url, int index) const;
 };

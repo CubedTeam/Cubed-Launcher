@@ -11,9 +11,7 @@ class Settings : public QObject {
     Q_PROPERTY(QString playerName READ player_name WRITE set_player_name NOTIFY
                    player_name_changed FINAL)
     Q_PROPERTY(bool pathSetted READ path_set NOTIFY path_set_changed FINAL)
-    // AI-generated: index into MirrorSource::names() selected by the user.
-    // A value of -1 means "never set"; the QML layer resolves the first-run
-    // default (based on SystemInfo.isInChina) and persists the real index.
+    // AI-generated: selected mirror index, -1 means unset.
     Q_PROPERTY(int mirrorIndex READ mirror_index WRITE set_mirror_index NOTIFY
                    mirror_index_changed FINAL)
 public:
@@ -26,7 +24,7 @@ public slots:
     void set_game_path_url(const QUrl& path);
     void set_game_path(const QString& path);
     void set_player_name(const QString& name);
-    // AI-generated: persists the selected mirror source index.
+    // AI-generated: persist selected mirror index.
     void set_mirror_index(int index);
 signals:
     void game_path_changed();
@@ -38,7 +36,7 @@ private:
     QSettings m_settings;
     QString m_game_path;
     QString m_player_name;
-    // AI-generated: -1 means "unset", resolved by QML on first run.
+    // AI-generated: -1 means unset.
     int m_mirror_index{-1};
     void load();
     void save(const QString& key, const QString& value);

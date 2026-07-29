@@ -203,7 +203,7 @@ Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
         return;
     }
     QString download_url = m_download_url;
-    // AI-generated: prepend the selected mirror prefix (0 means direct).
+    // AI-generated: prepend mirror prefix, 0 = direct.
     if (mirror_index > 0 && mirror_index < mirror_sources.size()) {
         const QString& prefix = mirror_sources.at(mirror_index).prefix;
         if (!prefix.isEmpty()) {
