@@ -146,17 +146,37 @@ Item {
             Layout.preferredWidth: 400
             value: GameUpdate.downloadProgress
             onValueChanged: {
-                if (value >= to) {
+                if (value >= to && !GameUpdate.hasError) {
                     console.log("Download Finish");
-                    downloadProgress.visible = true;
+                    visible = false;
+                    CubedInstance.check_version();
+                }
+            }
+        }
+
+        // AI-generated: re-enable controls on error or finish so a download
+        // can be restarted instead of staying disabled.
+        Connections {
+            target: GameUpdate
+            function onHasErrorChanged() {
+                if (GameUpdate.hasError) {
+                    downloadProgress.visible = false;
                     downloadGameGithubButton.enabled = true;
                     downloadGameGithubButton.highlighted = true;
                     downloadGameCustomButton.enabled = true;
                     downloadGameCustomButton.highlighted = true;
                     gamePathButton.enabled = true;
                     gamePathButton.highlighted = true;
-                    visible = false;
-                    CubedInstance.check_version();
+                }
+            }
+            function onDownloadFinishChanged() {
+                if (GameUpdate.downloadFinish) {
+                    downloadGameGithubButton.enabled = true;
+                    downloadGameGithubButton.highlighted = true;
+                    downloadGameCustomButton.enabled = true;
+                    downloadGameCustomButton.highlighted = true;
+                    gamePathButton.enabled = true;
+                    gamePathButton.highlighted = true;
                 }
             }
         }

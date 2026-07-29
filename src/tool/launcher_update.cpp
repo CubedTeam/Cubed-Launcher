@@ -149,6 +149,11 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
 
         return;
     }
+    // AI-generated: reset progress so UI can re-trigger on finish/error.
+    m_download_progress = 0.0f;
+    emit download_progress_changed();
+    m_download_finish = false;
+    emit download_finish_changed();
 
     if (m_latest_launcher_link.isEmpty()) {
         qDebug() << "Download Url is Null";

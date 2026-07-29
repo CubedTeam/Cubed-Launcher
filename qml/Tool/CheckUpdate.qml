@@ -133,11 +133,27 @@ Item {
                 Layout.preferredWidth: 400
                 value: LauncherUpdate.downloadProgress
                 onValueChanged: {
-                    if (value >= to) {
+                    if (value >= to && !LauncherUpdate.hasError) {
                         console.log("Launcher Download Finish");
+                        visible = false;
+                    }
+                }
+            }
+
+            // AI-generated: recover the Update button on error/finish.
+            Connections {
+                target: LauncherUpdate
+                function onHasErrorChanged() {
+                    if (LauncherUpdate.hasError) {
+                        launcherProgress.visible = false;
                         downloadUpdateButton.enabled = true;
                         downloadUpdateButton.highlighted = true;
-                        visible = false;
+                    }
+                }
+                function onDownloadFinishChanged() {
+                    if (LauncherUpdate.downloadFinish) {
+                        downloadUpdateButton.enabled = true;
+                        downloadUpdateButton.highlighted = true;
                     }
                 }
             }

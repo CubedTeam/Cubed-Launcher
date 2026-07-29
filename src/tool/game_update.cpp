@@ -224,6 +224,9 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
     }
     m_download_finish = false;
     emit download_finish_changed();
+    // AI-generated: reset progress so UI can re-trigger on finish/error.
+    m_download_progress = 0.0f;
+    emit download_progress_changed();
     if (download_url.isEmpty()) {
         qDebug() << "Error Download Url is empty";
         m_has_error = true;
