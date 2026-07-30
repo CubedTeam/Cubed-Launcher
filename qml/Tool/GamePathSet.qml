@@ -19,7 +19,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Material.foreground: Material.Red
             visible: !CubedInstance.path_selected
-            text: "You must select or intstall game program"
+            text: qsTr("You must select or intstall game program")
         }
         Button {
             id: gamePathButton
@@ -32,7 +32,7 @@ Item {
             font.pixelSize: 20
 
             highlighted: true
-            text: "Select Game"
+            text: qsTr("Select Game")
             onClicked: {
                 gameFileDialog.open();
             }
@@ -40,7 +40,7 @@ Item {
     }
     FileDialog {
         id: gameFileDialog
-        title: "Select Cubed Game"
+        title: qsTr("Select Cubed Game")
         onAccepted: {
             CubedInstance.set_game_path_url(selectedFile);
             Settings.gamePath = selectedFile;

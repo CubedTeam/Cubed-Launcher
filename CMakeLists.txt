@@ -32,7 +32,7 @@ configure_file(
 
 add_subdirectory(third_party/qmicroz)
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2 Network)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2 Network LinguistTools)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -82,6 +82,12 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/game_update.cpp
     
 )
+
+qt_add_translations(${PROJECT_NAME}
+    TS_FILES
+        i18n/CubedLauncher_zh_CN.ts
+)
+
 
 if (MSVC)
 target_sources(${PROJECT_NAME} PRIVATE CubedLauncher.rc)

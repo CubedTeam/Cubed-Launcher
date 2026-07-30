@@ -14,23 +14,32 @@ class Settings : public QObject {
     // AI-generated: selected mirror index, -1 means unset.
     Q_PROPERTY(int mirrorIndex READ mirror_index WRITE set_mirror_index NOTIFY
                    mirror_index_changed FINAL)
+    // AI-generated: UI language code, e.g. "zh_CN" / "en".
+    Q_PROPERTY(QString language READ language WRITE set_language NOTIFY
+                   language_changed FINAL)
 public:
     explicit Settings(QObject* parent = nullptr);
     QString game_path() const;
     QString player_name() const;
     bool path_set() const;
     int mirror_index() const;
+    // AI-generated: access the live QML-singleton instance from C++.
+    QString language() const;
+    static Settings* instance();
 public slots:
     void set_game_path_url(const QUrl& path);
     void set_game_path(const QString& path);
     void set_player_name(const QString& name);
     // AI-generated: persist selected mirror index.
     void set_mirror_index(int index);
+    // AI-generated: persist chosen UI language code.
+    void set_language(const QString& lang);
 signals:
     void game_path_changed();
     void player_name_changed();
     void path_set_changed();
     void mirror_index_changed();
+    void language_changed();
 
 private:
     QSettings m_settings;
@@ -38,6 +47,10 @@ private:
     QString m_player_name;
     // AI-generated: -1 means unset.
     int m_mirror_index{-1};
+    // AI-generated: empty means not yet configured.
+    QString m_language;
+    // AI-generated: tracks the single QML-singleton instance.
+    static Settings* s_instance;
     void load();
     void save(const QString& key, const QString& value);
 

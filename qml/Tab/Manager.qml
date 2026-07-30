@@ -8,7 +8,7 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
     Label {
-        text: "Intalling Game only be available in Windows"
+        text: qsTr("Intalling Game only be available in Windows")
         visible: {
             return Qt.platform.os != "windows";
         }
@@ -39,7 +39,6 @@ Item {
         Loader {
             id: gameDownload
             Layout.fillWidth: true
-            height: 100
             Layout.alignment: Qt.AlignCenter
             source: "qrc:/qt/qml/CubedLauncher/qml/Tool/DownloadGame.qml"
         }

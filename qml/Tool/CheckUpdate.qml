@@ -24,7 +24,7 @@ Item {
 
                 Text {
                     Layout.alignment: Qt.AlignCenter
-                    text: "Launcher New Version"
+                    text: qsTr("Launcher New Version")
                     font.bold: true
                     font.pixelSize: 16
                     color: "white"
@@ -49,7 +49,7 @@ Item {
             Layout.preferredHeight: 60
             Material.roundedScale: Material.MediumScale
             highlighted: true
-            text: "Click me to Update"
+            text: qsTr("Click me to Update")
             font.bold: true
             font.pixelSize: 16
             onClicked: {
@@ -85,7 +85,7 @@ Item {
             spacing: 10
 
             Label {
-                text: "Update Launcher(Only Support Windows)"
+                text: qsTr("Update Launcher(Only Support Windows)")
                 Layout.alignment: Qt.AlignCenter
 
                 font.pixelSize: 20
@@ -109,7 +109,7 @@ Item {
                 font.pixelSize: 20
                 text: {
                     const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                    return "Mirror: " + MirrorSource.names[idx];
+                    return qsTr("Mirror: ") + MirrorSource.names[idx];
                 }
                 onClicked: mirrorPopup.open()
             }
@@ -122,7 +122,7 @@ Item {
 
             Button {
                 id: downloadUpdateButton
-                text: "Update"
+                text: qsTr("Update")
                 enabled: !LauncherUpdate.downloading
                 Layout.alignment: Qt.AlignCenter
                 font.pixelSize: 20
@@ -151,7 +151,7 @@ Item {
                 Layout.preferredHeight: 60
                 Material.background: Material.color(Material.Red)
                 font.pixelSize: 20
-                text: "Cancel Download"
+                text: qsTr("Cancel Download")
                 onClicked: {
                     LauncherUpdate.cancel_download();
                 }

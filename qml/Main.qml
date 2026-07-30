@@ -7,7 +7,7 @@ ApplicationWindow {
     visible: true
     width: 1280
     height: 720
-    title: "Cubed Launcher"
+    title: qsTr("Cubed Launcher")
 
     Material.background: Material.color(Material.Orange, Material.Shade50)
     Material.accent: Material.color(Material.Orange)

@@ -10,21 +10,41 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    Loader {
-        id: pathSetLoader
+    // AI-generated: always-visible language picker near the page top.
+    ColumnLayout {
+        id: languageLayout
 
         anchors.bottom: advancedSetting.top
         anchors.horizontalCenter: advancedSetting.horizontalCenter
         anchors.bottomMargin: 50
+        spacing: 10
 
-        source: "qrc:/qt/qml/CubedLauncher/qml/Tool/GamePathSet.qml"
+        Label {
+            text: qsTr("Language")
+            font.pixelSize: 20
+            Layout.alignment: Qt.AlignCenter
+        }
+
+        ComboBox {
+            id: languageCombo
+            // AI-generated: index 0 -> zh_CN, index 1 -> en. "English" is left
+            // untranslated on purpose per the spec.
+            model: ["简体中文", "English"]
+            currentIndex: Settings.language === "en" ? 1 : 0
+            font.pixelSize: 20
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 300
+            onActivated: {
+                Settings.language = currentIndex === 1 ? "en" : "zh_CN";
+            }
+        }
     }
 
     Switch {
         id: advancedSetting
         anchors.centerIn: parent
         font.pixelSize: 20
-        text: "Advanced Setting"
+        text: qsTr("Advanced Setting")
         checked: false
     }
 
@@ -41,7 +61,7 @@ Item {
             id: wrapperCommand
             visible: advancedSetting.checked
             Layout.fillWidth: true
-            placeholderText: "Wrapper Command"
+            placeholderText: qsTr("Wrapper Command")
             onEditingFinished: {
                 CubedInstance.set_wrapper_command(wrapperCommand.text);
             }
@@ -52,7 +72,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             checked: false
             font.pixelSize: 20
-            text: "Log"
+            text: qsTr("Log")
             onCheckedChanged: {
                 CubedInstance.logOn = logStatus.checked;
             }
@@ -64,7 +84,8 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
             font.pixelSize: 20
-            model: ["Host", "Client"]
+            // AI-generated: host/client labels translated for display.
+            model: [qsTr("Host"), qsTr("Client")]
             currentIndex: 0
             onCurrentIndexChanged: {
                 CubedInstance.set_peer(peerMode.currentIndex);
@@ -75,7 +96,7 @@ Item {
             id: hostPort
             visible: advancedSetting.checked && peerMode.currentIndex == 0
             Layout.fillWidth: true
-            placeholderText: "Port"
+            placeholderText: qsTr("Port")
             onEditingFinished: {
                 CubedInstance.set_port(hostPort.text);
             }
@@ -88,7 +109,7 @@ Item {
             TextField {
                 id: serverIp
                 Layout.fillWidth: true
-                placeholderText: "Ip"
+                placeholderText: qsTr("Ip")
                 onEditingFinished: {
                     CubedInstance.set_ip(serverIp.text);
                 }
@@ -96,7 +117,7 @@ Item {
             TextField {
                 id: serverPort
                 Layout.fillWidth: true
-                placeholderText: "Port"
+                placeholderText: qsTr("Port")
                 onEditingFinished: {
                     CubedInstance.set_port(serverPort.text);
                 }

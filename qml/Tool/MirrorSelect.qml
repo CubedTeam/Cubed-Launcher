@@ -40,7 +40,7 @@ Popup {
         }
 
         Label {
-            text: "Select Mirror Source"
+            text: qsTr("Select Mirror Source")
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 24
             font.bold: true
@@ -101,12 +101,12 @@ Popup {
                         }
                         text: {
                             if (row.testing) {
-                                return "testing...";
+                                return qsTr("testing...");
                             }
                             if (row.latency < 0) {
-                                return "timeout";
+                                return qsTr("timeout");
                             }
-                            return row.latency + " ms";
+                            return row.latency + " " + qsTr("ms");
                         }
 
                         BusyIndicator {
@@ -132,7 +132,7 @@ Popup {
             font.pixelSize: 18
             Material.roundedScale: Material.MediumScale
             highlighted: enabled
-            text: "Test Latency"
+            text: qsTr("Test Latency")
             enabled: mirrorPopup.pendingTests === 0
             onClicked: {
                 mirrorPopup.pendingTests = mirrorModel.count;

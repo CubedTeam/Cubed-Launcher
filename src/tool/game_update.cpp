@@ -200,6 +200,12 @@ Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
         m_download_progress = 1.0f;
         emit has_error_changed();
         emit error_message_changed();
+        // AI-generated: drive the downloading lifecycle so the UI re-enables
+        // buttons even when we bail out before a real download starts.
+        m_downloading = true;
+        emit downloading_changed();
+        m_downloading = false;
+        emit downloading_changed();
         return;
     }
     QString download_url = m_download_url;

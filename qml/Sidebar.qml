@@ -20,31 +20,27 @@ Rectangle {
                 id: navList
                 anchors.fill: parent
 
-                //clip: true
-                model: ListModel {
-                    ListElement {
-                        title: "Launcher"
-                    }
-                    ListElement {
-                        title: "Manager"
-                    }
-                    ListElement {
-                        title: "Setting"
-                    }
-                    ListElement {
-                        title: "About"
-                    }
-                }
+                // AI-generated: plain string keys only, so model never rebuilds
+                // on retranslate and currentIndex stays stable.
+                model: ["Launcher", "Manager", "Setting", "About"]
                 currentIndex: SideTool.currentIndex
 
                 delegate: ItemDelegate {
                     id: sideDelegate
                     required property int index
-                    required property string title
+                    required property string modelData
                     width: ListView.view.width
                     height: 60
                     font.pixelSize: 20
-                    text: title
+                    // AI-generated: literal qsTr lookups so retranslate refreshes
+                    // the text without touching the stable string-key model.
+                    text: {
+                        if (modelData === "Launcher") return qsTr("Launcher")
+                        if (modelData === "Manager") return qsTr("Manager")
+                        if (modelData === "Setting") return qsTr("Setting")
+                        if (modelData === "About") return qsTr("About")
+                        return modelData
+                    }
 
                     highlighted: ListView.isCurrentItem
 
@@ -57,7 +53,8 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            currentIndex: navList.currentIndex
+            // AI-generated: bind to the C++ singleton so the active page stays put.
+            currentIndex: SideTool.currentIndex
 
             Launch {}
             Manager {}
