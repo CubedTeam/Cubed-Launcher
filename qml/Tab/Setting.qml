@@ -1,3 +1,4 @@
+// @checkPropertyInstance Settings C++
 pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Material

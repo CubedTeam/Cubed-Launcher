@@ -4,6 +4,7 @@ import QtQuick.Controls.Material
 import QtQuick.Controls
 import CubedLauncher
 import QtQuick.Layouts
+import QtQuick.Controls.Material.impl
 
 Rectangle {
     anchors.fill: parent
@@ -15,7 +16,7 @@ Rectangle {
         Rectangle {
             Layout.preferredWidth: 140
             Layout.fillHeight: true
-            color: Material.color(Material.Amber, Material.Shade50)
+            color: Material.backgroundColor
             ListView {
                 id: navList
                 anchors.fill: parent
@@ -32,14 +33,50 @@ Rectangle {
                     width: ListView.view.width
                     height: 60
                     font.pixelSize: 20
+
+                    contentItem: Label {
+                        text: sideDelegate.text
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
+
+                    background: Rectangle {
+                        id: bg
+                        anchors.fill: parent
+                        anchors.margins: 8
+                        radius: 16
+                        color: sideDelegate.highlighted ? Material.color(Material.Orange, Material.Shade100) : "transparent"
+                        clip: true
+
+                        Ripple {
+                            clipRadius: bg.radius
+                            width: parent.width
+                            height: parent.height
+                            pressed: sideDelegate.pressed
+                            active: sideDelegate.pressed
+                            anchor: sideDelegate
+                            color: Material.color(Material.Orange, Material.Shade300)
+                        }
+                        Rectangle {
+                            anchors.fill: parent
+                            radius: parent.radius
+                            color: sideDelegate.pressed ? Qt.rgba(0, 0, 0, 0.1) : (sideDelegate.hovered && !sideDelegate.highlighted ? Qt.rgba(0, 0, 0, 0.05) : "transparent")
+                        }
+                    }
+
                     // AI-generated: literal qsTr lookups so retranslate refreshes
                     // the text without touching the stable string-key model.
                     text: {
-                        if (modelData === "Launcher") return qsTr("Launcher")
-                        if (modelData === "Manager") return qsTr("Manager")
-                        if (modelData === "Setting") return qsTr("Setting")
-                        if (modelData === "About") return qsTr("About")
-                        return modelData
+                        if (modelData === "Launcher")
+                            return qsTr("Launcher");
+                        if (modelData === "Manager")
+                            return qsTr("Manager");
+                        if (modelData === "Setting")
+                            return qsTr("Setting");
+                        if (modelData === "About")
+                            return qsTr("About");
+                        return modelData;
                     }
 
                     highlighted: ListView.isCurrentItem
