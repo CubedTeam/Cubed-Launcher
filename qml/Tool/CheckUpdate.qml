@@ -142,16 +142,16 @@ Item {
 
             // AI-generated: abort the running launcher update download.
             Button {
-id: cancelLauncherButton
-            visible: false
-            enabled: LauncherUpdate.downloading
-            Layout.alignment: Qt.AlignCenter
-            Material.roundedScale: Material.MediumScale
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-            Material.background: Material.color(Material.Red)
-            font.pixelSize: 20
-            text: qsTr("Cancel Download")
+                id: cancelLauncherButton
+                visible: false
+                enabled: LauncherUpdate.downloading
+                Layout.alignment: Qt.AlignCenter
+                Material.roundedScale: Material.MediumScale
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 60
+                Material.background: Material.color(Material.Red)
+                font.pixelSize: 20
+                text: qsTr("Cancel Download")
                 onClicked: {
                     LauncherUpdate.cancel_download();
                 }

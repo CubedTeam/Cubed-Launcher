@@ -19,14 +19,14 @@ static void apply_language(const QString& lang) {
     if (lang == g_current_language) {
         return;
     }
-    if (g_translator != nullptr) {
+    if (g_translator) {
         qApp->removeTranslator(g_translator);
     }
-    if (g_translator->load("CubedLauncher_" + lang, ":/i18n")) {
+    if (g_translator && g_translator->load("CubedLauncher_" + lang, ":/i18n")) {
         qApp->installTranslator(g_translator);
     }
     g_current_language = lang;
-    if (g_engine != nullptr) {
+    if (g_engine) {
         g_engine->retranslate();
     }
 }
