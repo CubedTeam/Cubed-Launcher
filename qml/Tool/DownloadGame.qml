@@ -20,7 +20,7 @@ Item {
         width: 520
         spacing: 10
         Component.onCompleted: {
-            GameUpdate.gameInstallPath = Settings.gamePath;
+            GameUpdate.gameInstallPath = Settings.gameDir;
         }
 
             Card {
@@ -93,7 +93,7 @@ Item {
 
                         onClicked: {
                             if (!Settings.pathSetted) {
-                                Settings.set_game_path(SystemInfo.defaultGameFilePath);
+                                Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
                             }
 
                             downloadProgress.visible = true;
@@ -121,7 +121,7 @@ Item {
                         text: CubedInstance.installed ? qsTr("Update Game") : qsTr("Install Game")
                         onClicked: {
                             if (!Settings.pathSetted) {
-                                Settings.set_game_path(SystemInfo.defaultGameFilePath);
+                                Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
                             }
 
                             downloadProgress.visible = true;
@@ -273,9 +273,9 @@ Item {
                             font.pixelSize: 20
 
                             highlighted: true
-                            text: qsTr("Set Game Path")
+                            text: qsTr("Set Game Folder")
                             onClicked: {
-                                gameFileDialog.open();
+                                gameFolderDialog.open();
                             }
                         }
                         Button {
@@ -285,11 +285,11 @@ Item {
                             Layout.preferredHeight: 60
                             font.pixelSize: 20
                             text: qsTr("Reset Path")
-                            onClicked: {
-                                CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
-                                Settings.set_game_path(SystemInfo.defaultGameFilePath);
-                                GameUpdate.gameInstallPath = SystemInfo.defaultGameFilePath;
-                            }
+                        onClicked: {
+                            CubedInstance.set_game_dir(SystemInfo.defaultGameInstallDir);
+                            Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
+                            GameUpdate.gameInstallPath = SystemInfo.defaultGameInstallDir;
+                        }
                         }
                     }
                 }
@@ -301,13 +301,13 @@ Item {
         parent: Overlay.overlay
     }
 
-    FileDialog {
-        id: gameFileDialog
-        title: qsTr("Select Cubed Game")
+    FolderDialog {
+        id: gameFolderDialog
+        title: qsTr("Select Game Folder")
         onAccepted: {
-            CubedInstance.set_game_path_url(selectedFile);
-            Settings.gamePath = selectedFile;
-            GameUpdate.gameInstallPath = Settings.gamePath;
+            CubedInstance.set_game_dir_url(selectedFolder);
+            Settings.set_game_dir_url(selectedFolder);
+            GameUpdate.gameInstallPath = Settings.gameDir;
         }
     }
 }

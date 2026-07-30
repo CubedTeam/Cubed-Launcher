@@ -142,19 +142,52 @@
         <translation>高级选项</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="284"/>
-        <source>Set Game Path</source>
-        <translation>设置游戏路径</translation>
+        <location filename="../qml/Tool/DownloadGame.qml" line="276"/>
+        <source>Set Game Folder</source>
+        <translation>设置游戏文件夹</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="295"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="287"/>
         <source>Reset Path</source>
         <translation>重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="314"/>
-        <source>Select Cubed Game</source>
-        <translation>选择 Cubed 游戏</translation>
+        <location filename="../qml/Tool/DownloadGame.qml" line="306"/>
+        <source>Select Game Folder</source>
+        <translation>选择游戏文件夹</translation>
+    </message>
+</context>
+<context>
+    <name>FirstLaunchDialog</name>
+    <message>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="11"/>
+        <source>Welcome to Cubed Launcher</source>
+        <translation>欢迎使用 Cubed 启动器</translation>
+    </message>
+    <message>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="34"/>
+        <source>Choose where to install Cubed game files. You can change this later in Settings.</source>
+        <translation>选择 Cubed 游戏的安装位置。后续可在“设置”页签中修改。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="40"/>
+        <source>Default location:</source>
+        <translation>默认位置：</translation>
+    </message>
+    <message>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="54"/>
+        <source>Use Default Folder</source>
+        <translation>使用默认文件夹</translation>
+    </message>
+    <message>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="65"/>
+        <source>Choose Install Folder</source>
+        <translation>选择安装文件夹</translation>
+    </message>
+    <message>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="74"/>
+        <source>Select Game Install Folder</source>
+        <translation>选择游戏安装文件夹</translation>
     </message>
 </context>
 <context>

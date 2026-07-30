@@ -163,8 +163,8 @@ Item {
                     highlighted: enabled
                     Component.onCompleted: {
                         if (Settings.pathSetted) {
-                            console.log("Set Cubed Instance game path sucessful");
-                            CubedInstance.set_game_path(Settings.gamePath);
+                            console.log("Set Cubed Instance game dir sucessful");
+                            CubedInstance.set_game_dir(Settings.gameDir);
                         }
                     }
                     Material.roundedScale: Material.MediumScale

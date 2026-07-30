@@ -1,5 +1,9 @@
 #include "settings.hpp"
 
+#include "game_path.hpp"
+
+#include <QFileInfo>
+
 Settings* Settings::s_instance = nullptr;
 
 Settings::Settings(QObject* parent)
@@ -11,10 +15,10 @@ Settings::Settings(QObject* parent)
     }
 }
 
-QString Settings::game_path() const { return m_game_path; }
+QString Settings::game_dir() const { return m_game_dir; }
 QString Settings::player_name() const { return m_player_name; }
 
-bool Settings::path_set() const { return !m_game_path.isEmpty(); }
+bool Settings::path_set() const { return !m_game_dir.isEmpty(); }
 int Settings::mirror_index() const { return m_mirror_index; }
 QString Settings::language() const { return m_language; }
 
@@ -23,24 +27,25 @@ bool Settings::card_colorful_border() const { return m_card_colorful_border; }
 
 Settings* Settings::instance() { return s_instance; }
 
-void Settings::set_game_path_url(const QUrl& path) {
+void Settings::set_game_dir_url(const QUrl& path) {
     QString local = path.toLocalFile();
-    if (!update_value(m_game_path, local, "game_path")) {
+    if (!update_value(m_game_dir, local, "game_path")) {
         return;
     }
 
-    emit game_path_changed();
+    emit game_dir_changed();
     emit path_set_changed();
 }
 
-void Settings::set_game_path(const QString& path) {
-    if (!update_value(m_game_path, path, "game_path")) {
+void Settings::set_game_dir(const QString& path) {
+    if (!update_value(m_game_dir, path, "game_path")) {
         return;
     }
 
-    emit game_path_changed();
+    emit game_dir_changed();
     emit path_set_changed();
 }
+
 void Settings::set_player_name(const QString& name) {
     if (!update_value(m_player_name, name, "player_name")) {
         return;
@@ -86,10 +91,20 @@ void Settings::set_card_colorful_border(bool enabled) {
 
 void Settings::load() {
     if (m_settings.contains("game_path")) {
-        m_game_path = m_settings.value("game_path").toString();
+        QString raw = m_settings.value("game_path").toString();
+        // Migration: older versions stored the full file path. If the
+        // basename matches the platform executable, strip it so the stored
+        // value is the install directory.
+        if (!raw.isEmpty()) {
+            QFileInfo info(raw);
+            if (info.fileName() == get_default_game_executable_name()) {
+                raw = info.absolutePath();
+            }
+        }
+        m_game_dir = raw;
     }
-    qDebug() << "Settings Game Path {" << m_game_path << "}" << " empty "
-             << m_game_path.isEmpty();
+    qDebug() << "Settings Game Dir {" << m_game_dir << "}" << " empty "
+             << m_game_dir.isEmpty();
 
     m_player_name = m_settings.value("player_name").toString();
 

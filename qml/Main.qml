@@ -15,4 +15,5 @@ ApplicationWindow {
     Material.accent: Settings.accentColor
     Material.roundedScale: Material.MediumScale
     Sidebar {}
+    FirstLaunchDialog {}
 }

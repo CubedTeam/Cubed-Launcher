@@ -14,7 +14,9 @@
 #include <qtmetamacros.h>
 #include <utility>
 
-GameUpdate::GameUpdate() { m_game_install_path = get_default_game_file_path(); }
+GameUpdate::GameUpdate() {
+    m_game_install_path = get_default_game_install_dir();
+}
 
 Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
     if (std::exchange(m_checking_update, true)) {
@@ -438,16 +440,12 @@ void GameUpdate::cancel_download() {
     m_download_reply->abort();
 }
 
-void GameUpdate::set_game_install_path(const QString& game_file_dir) {
-    QFileInfo info;
-
-    if (game_file_dir.isEmpty()) {
-        info = QFileInfo(get_default_game_file_path());
+void GameUpdate::set_game_install_path(const QString& game_dir) {
+    if (game_dir.isEmpty()) {
+        m_game_install_path = get_default_game_install_dir();
     } else {
-        info = QFileInfo(game_file_dir);
+        m_game_install_path = game_dir;
     }
-
-    m_game_install_path = info.absolutePath();
     qDebug() << "VersionUpdate: Change game dir" << m_game_install_path;
     emit game_install_path_changed();
 }

@@ -12,7 +12,7 @@ Item {
         anchors.centerIn: parent
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: gameFileDialog.selectedFile
+            text: gameFolderDialog.selectedFolder
         }
         Label {
             id: selectMessgae
@@ -34,17 +34,17 @@ Item {
             highlighted: true
             text: qsTr("Select Game")
             onClicked: {
-                gameFileDialog.open();
+                gameFolderDialog.open();
             }
         }
     }
-    FileDialog {
-        id: gameFileDialog
+    FolderDialog {
+        id: gameFolderDialog
         title: qsTr("Select Cubed Game")
         onAccepted: {
-            CubedInstance.set_game_path_url(selectedFile);
-            Settings.gamePath = selectedFile;
-            VersionUpdate.set_game_dir(Settings.gamePath);
+            CubedInstance.set_game_dir_url(selectedFolder);
+            Settings.set_game_dir_url(selectedFolder);
+            GameUpdate.gameInstallPath = Settings.gameDir;
         }
     }
 }

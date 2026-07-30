@@ -28,8 +28,6 @@ Popup {
             }
         }
     }
-        }
-    }
 
     ColumnLayout {
         anchors.fill: parent

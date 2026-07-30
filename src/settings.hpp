@@ -1,4 +1,5 @@
 #pragma once
+
 #include <QColor>
 #include <QObject>
 #include <QQmlEngine>
@@ -7,8 +8,8 @@ class Settings : public QObject {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(QString gamePath READ game_path WRITE set_game_path_url NOTIFY
-                   game_path_changed FINAL)
+    Q_PROPERTY(QString gameDir READ game_dir WRITE set_game_dir_url NOTIFY
+                   game_dir_changed FINAL)
     Q_PROPERTY(QString playerName READ player_name WRITE set_player_name NOTIFY
                    player_name_changed FINAL)
     Q_PROPERTY(bool pathSetted READ path_set NOTIFY path_set_changed FINAL)
@@ -23,7 +24,7 @@ class Settings : public QObject {
             set_card_colorful_border NOTIFY card_colorful_border_changed FINAL)
 public:
     explicit Settings(QObject* parent = nullptr);
-    QString game_path() const;
+    QString game_dir() const;
     QString player_name() const;
     bool path_set() const;
     int mirror_index() const;
@@ -32,15 +33,15 @@ public:
     bool card_colorful_border() const;
     static Settings* instance();
 public slots:
-    void set_game_path_url(const QUrl& path);
-    void set_game_path(const QString& path);
+    void set_game_dir_url(const QUrl& path);
+    void set_game_dir(const QString& path);
     void set_player_name(const QString& name);
     void set_mirror_index(int index);
     void set_language(const QString& lang);
     void set_accent_color(const QColor& color);
     void set_card_colorful_border(bool enabled);
 signals:
-    void game_path_changed();
+    void game_dir_changed();
     void player_name_changed();
     void path_set_changed();
     void mirror_index_changed();
@@ -50,7 +51,7 @@ signals:
 
 private:
     QSettings m_settings;
-    QString m_game_path;
+    QString m_game_dir;
     QString m_player_name;
     int m_mirror_index{-1};
     QString m_language;
