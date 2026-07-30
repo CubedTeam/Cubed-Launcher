@@ -93,8 +93,8 @@ void Settings::load() {
 
     m_language = m_settings.value("language").toString();
     // AI-generated: default to Material Blue 500 when unset.
-    m_accent_color =
-        QColor(m_settings.value("accent_color", "#2196F3").toString());
+    m_accent_color = QColor(
+        m_settings.value("accent_color", QColor("#2196F3").name()).toString());
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

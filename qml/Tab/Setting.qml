@@ -39,6 +39,40 @@ Item {
                 Settings.language = currentIndex === 1 ? "en" : "zh_CN";
             }
         }
+
+        // AI-generated: accent color picker. Each swatch stores its 1.2x
+        // lighter MD color into Settings.accentColor; Main.qml binds the
+        // global Material.accent to it.
+        Label {
+            text: qsTr("Theme Color")
+            font.pixelSize: 20
+            Layout.alignment: Qt.AlignCenter
+        }
+
+        RowLayout {
+            Layout.alignment: Qt.AlignCenter
+            spacing: 12
+
+            Repeater {
+                model: [Material.Red, Material.Pink, Material.Purple, Material.Indigo, Material.Blue, Material.Cyan, Material.Teal, Material.Green, Material.Orange, Material.DeepOrange]
+
+                delegate: Rectangle {
+                    required property int modelData
+                    width: 32
+                    height: 32
+                    radius: 16
+                    color: Qt.lighter(Material.color(modelData), 1.2)
+                    border.width: Settings.accentColor === Qt.lighter(Material.color(modelData), 1.2) ? 3 : 0
+                    border.color: Material.color(Material.Grey, Material.Shade700)
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Settings.accentColor = Qt.lighter(Material.color(modelData), 1.2)
+                    }
+                }
+            }
+        }
     }
 
     Switch {
