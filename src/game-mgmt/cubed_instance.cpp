@@ -109,11 +109,13 @@ Q_INVOKABLE void CubedInstance::check_version() {
     }
     const QString program_path =
         m_game_install_dir + "/" + get_default_game_executable_name();
+
     auto info = QFileInfo(program_path);
     if (!info.isFile()) {
         m_installed = false;
         emit installed_changed();
         emit version_changed();
+        qDebug() << program_path << " is not a file";
         return;
     }
     QProcess* process = new QProcess(this);
@@ -130,7 +132,10 @@ Q_INVOKABLE void CubedInstance::check_version() {
             });
 
     connect(process, &QProcess::errorOccurred, this,
-            [](QProcess::ProcessError error) { qDebug() << error; });
+            [](QProcess::ProcessError error) {
+                qDebug() << "check_version fail";
+                qDebug() << error;
+            });
 
     connect(process, &QProcess::readyReadStandardOutput, this,
             [process, this]() {

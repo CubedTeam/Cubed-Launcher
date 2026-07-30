@@ -1,7 +1,5 @@
 #include "settings.hpp"
 
-#include "game_path.hpp"
-
 #include <QFileInfo>
 
 Settings* Settings::s_instance = nullptr;
@@ -106,8 +104,9 @@ void Settings::load() {
         // value is the install directory.
         if (!raw.isEmpty()) {
             QFileInfo info(raw);
-            if (info.fileName() == get_default_game_executable_name()) {
+            if (info.isFile()) {
                 raw = info.absolutePath();
+                save("game_path", raw);
             }
         }
         m_game_dir = raw;
