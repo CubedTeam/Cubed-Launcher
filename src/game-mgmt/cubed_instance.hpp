@@ -22,7 +22,6 @@ public:
     Q_INVOKABLE void set_port(const QString& port);
     Q_INVOKABLE void set_ip(const QString& ip);
     Q_INVOKABLE void set_name(const QString& name);
-    Q_INVOKABLE void set_wrapper_command(const QString& wrapper);
     Q_INVOKABLE void kill_all();
     Q_INVOKABLE void check_version();
     bool running() const;
@@ -38,7 +37,6 @@ signals:
 
 private:
     QString m_game_install_dir;
-    QString m_wrapper_command;
     QString m_peer_mode{"--host"};
     QString m_port{"25530"};
     QString m_ip{"127.0.0.1"};

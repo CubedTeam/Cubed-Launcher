@@ -1,5 +1,6 @@
 #include "game-mgmt/cubed_instance.hpp"
 
+#include "settings.hpp"
 #include "tool/game_path.hpp"
 
 #include <QDebug>
@@ -20,10 +21,13 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
 
     QStringList argument;
     QString program;
-    if (m_wrapper_command.isEmpty()) {
+    const QString wrapper = Settings::instance()
+                                ? Settings::instance()->wrapper_command()
+                                : QString();
+    if (wrapper.isEmpty()) {
         program = program_path;
     } else {
-        program = m_wrapper_command;
+        program = wrapper;
         argument.append(program_path);
     }
     argument.append(
@@ -147,10 +151,6 @@ Q_INVOKABLE void CubedInstance::check_version() {
             });
 
     process->start();
-}
-
-Q_INVOKABLE void CubedInstance::set_wrapper_command(const QString& wrapper) {
-    m_wrapper_command = wrapper;
 }
 
 bool CubedInstance::running() const { return !m_processes.isEmpty(); }

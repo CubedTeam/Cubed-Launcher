@@ -24,6 +24,7 @@ QString Settings::language() const { return m_language; }
 
 QColor Settings::accent_color() const { return m_accent_color; }
 bool Settings::card_colorful_border() const { return m_card_colorful_border; }
+QString Settings::wrapper_command() const { return m_wrapper_command; }
 
 Settings* Settings::instance() { return s_instance; }
 
@@ -89,6 +90,14 @@ void Settings::set_card_colorful_border(bool enabled) {
     emit card_colorful_border_changed();
 }
 
+void Settings::set_wrapper_command(const QString& command) {
+    if (!update_value(m_wrapper_command, command, "wrapper_command")) {
+        return;
+    }
+
+    emit wrapper_command_changed();
+}
+
 void Settings::load() {
     if (m_settings.contains("game_path")) {
         QString raw = m_settings.value("game_path").toString();
@@ -115,6 +124,7 @@ void Settings::load() {
         m_settings.value("accent_color", QColor("#2196F3").name()).toString());
     m_card_colorful_border =
         m_settings.value("card_colorful_border", true).toBool();
+    m_wrapper_command = m_settings.value("wrapper_command").toString();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

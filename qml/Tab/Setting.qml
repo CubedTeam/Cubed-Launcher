@@ -141,8 +141,9 @@ Item {
                         Layout.preferredWidth: 300
                         Layout.alignment: Qt.AlignCenter
                         placeholderText: qsTr("Wrapper Command")
+                        text: Settings.wrapperCommand
                         onEditingFinished: {
-                            CubedInstance.set_wrapper_command(wrapperCommand.text);
+                            Settings.wrapperCommand = wrapperCommand.text;
                         }
                     }
                 }
