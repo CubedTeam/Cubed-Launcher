@@ -90,7 +90,7 @@ void Settings::load() {
 
     // AI-generated: load mirror index, -1 means unset.
     m_mirror_index = m_settings.value("mirror_index", -1).toInt();
-    // AI-generated: load saved UI language, empty means not configured yet.
+
     m_language = m_settings.value("language").toString();
     // AI-generated: default to Material Blue 500 when unset.
     m_accent_color =

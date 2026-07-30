@@ -59,7 +59,7 @@ private:
     int m_mirror_index{-1};
     // AI-generated: empty means not yet configured.
     QString m_language;
-    // AI-generated: persisted theme accent color.
+
     QColor m_accent_color;
     // AI-generated: tracks the single QML-singleton instance.
     static Settings* s_instance;
