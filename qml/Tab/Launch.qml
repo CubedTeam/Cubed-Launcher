@@ -44,12 +44,16 @@ Item {
             Layout.preferredHeight: installGameLayout.implicitHeight + 20
             ColumnLayout {
                 id: installGameLayout
-                anchors.centerIn: parent
+                anchors.fill: parent
+                anchors.margins: 2
                 spacing: installTip.spacing
                 Label {
                     id: installGameTip
                     Layout.alignment: Qt.AlignCenter
                     text: qsTr("You need to install the game in the manager tab next to it.")
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
+                    horizontalAlignment: Text.AlignHCenter
 
                     font.bold: true
                     font.pixelSize: 20
