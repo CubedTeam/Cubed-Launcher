@@ -1,4 +1,5 @@
 #pragma once
+#include <QNetworkAccessManager>
 #include <QQmlEngine>
 #include <QString>
 #include <QStringList>
@@ -39,4 +40,15 @@ public:
     // AI-generated: prepend mirror prefix at index; 0 or out-of-range ==
     // direct.
     Q_INVOKABLE QString apply(const QString& url, int index) const;
+    // AI-generated: probe every mirror and report round-trip ms per index.
+    // Emits latencyReady(index, ms) for each; ms < 0 means timeout/failure.
+    Q_INVOKABLE void test_all_latency();
+signals:
+    // AI-generated: fired once per mirror probe. ms<0 = unreachable.
+    void latencyReady(int index, int ms);
+
+private:
+    // AI-generated: holds the probe request until it completes.
+    QNetworkAccessManager m_manager;
+    void probe(int index, const QString& url);
 };

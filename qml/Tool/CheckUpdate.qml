@@ -98,16 +98,26 @@ Item {
                 font.pixelSize: 20
             }
 
-            // AI-generated: mirror selector, same as DownloadGame.
-            ComboBox {
-                id: mirrorCombo
+            // AI-generated: mirror picker button, same as DownloadGame.
+            Button {
+                id: mirrorButton
                 Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 250
+                Layout.preferredWidth: 400
+                Layout.preferredHeight: 60
+                Material.roundedScale: Material.MediumScale
+                highlighted: true
                 font.pixelSize: 20
-                model: MirrorSource.names
-                currentIndex: Settings.mirrorIndex >= 0 ? Settings.mirrorIndex
-                                                        : (SystemInfo.isInChina ? 1 : 0)
-                onActivated: Settings.mirrorIndex = currentIndex
+                text: {
+                    const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                    return "Mirror: " + MirrorSource.names[idx];
+                }
+                onClicked: mirrorPopup.open()
+            }
+
+            // AI-generated: shared mirror picker popup.
+            MirrorSelect {
+                id: mirrorPopup
+                parent: Overlay.overlay
             }
 
             Button {
@@ -125,7 +135,8 @@ Item {
                     cancelLauncherButton.visible = true;
                     downloadUpdateButton.enabled = false;
                     downloadUpdateButton.highlighted = false;
-                    LauncherUpdate.update_launcher(mirrorCombo.currentIndex);
+                    const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                    LauncherUpdate.update_launcher(idx);
                 }
             }
 
@@ -167,12 +178,11 @@ Item {
                 target: LauncherUpdate
                 function onDownloadingChanged() {
                     if (!LauncherUpdate.downloading) {
-                        downloadUpdateButton.enabled = true
-                            && !LauncherUpdate.downloading
-                        downloadUpdateButton.highlighted = downloadUpdateButton.enabled
-                        cancelLauncherButton.visible = false
+                        downloadUpdateButton.enabled = true && !LauncherUpdate.downloading;
+                        downloadUpdateButton.highlighted = downloadUpdateButton.enabled;
+                        cancelLauncherButton.visible = false;
                         if (!LauncherUpdate.downloadFinish || LauncherUpdate.hasError) {
-                            launcherProgress.visible = false
+                            launcherProgress.visible = false;
                         }
                     }
                 }

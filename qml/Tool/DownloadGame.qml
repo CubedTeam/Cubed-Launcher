@@ -22,19 +22,28 @@ Item {
             font.pixelSize: 20
             Layout.alignment: Qt.AlignCenter
         }
-        // AI-generated: mirror selector. 0 = direct.
-        ComboBox {
-            id: mirrorCombo
+        // AI-generated: opens the mirror picker popup. The chosen index is read
+        // back from Settings.mirrorIndex at click time.
+        Button {
+            id: mirrorButton
             visible: !downloadSource.checked
             enabled: !downloadSource.checked
             Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
+            Layout.preferredWidth: 400
+            Layout.preferredHeight: 60
+            Material.roundedScale: Material.MediumScale
+            highlighted: enabled
             font.pixelSize: 20
-            model: MirrorSource.names
-            // AI-generated: saved choice, else first mirror in China.
-            currentIndex: Settings.mirrorIndex >= 0 ? Settings.mirrorIndex
-                                                    : (SystemInfo.isInChina ? 1 : 0)
-            onActivated: Settings.mirrorIndex = currentIndex
+            text: {
+                const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                return "Mirror: " + MirrorSource.names[idx];
+            }
+            onClicked: mirrorPopup.open()
+        }
+
+        MirrorSelect {
+            id: mirrorPopup
+            parent: Overlay.overlay
         }
         Button {
             id: downloadGameGithubButton
@@ -60,7 +69,8 @@ Item {
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
-                GameUpdate.download_from_github(mirrorCombo.currentIndex);
+                const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                GameUpdate.download_from_github(idx);
             }
         }
 
@@ -181,17 +191,15 @@ Item {
             target: GameUpdate
             function onDownloadingChanged() {
                 if (!GameUpdate.downloading) {
-                    downloadGameGithubButton.enabled = true
-                        && !downloadSource.checked
-                        && !GameUpdate.checkingUpdate
-                    downloadGameGithubButton.highlighted = downloadGameGithubButton.enabled
-                    downloadGameCustomButton.enabled = true && downloadSource.checked
-                    downloadGameCustomButton.highlighted = downloadGameCustomButton.enabled
-                    gamePathButton.enabled = true
-                    gamePathButton.highlighted = true
-                    cancelButton.visible = false
+                    downloadGameGithubButton.enabled = true && !downloadSource.checked && !GameUpdate.checkingUpdate;
+                    downloadGameGithubButton.highlighted = downloadGameGithubButton.enabled;
+                    downloadGameCustomButton.enabled = true && downloadSource.checked;
+                    downloadGameCustomButton.highlighted = downloadGameCustomButton.enabled;
+                    gamePathButton.enabled = true;
+                    gamePathButton.highlighted = true;
+                    cancelButton.visible = false;
                     if (!GameUpdate.downloadFinish || GameUpdate.hasError) {
-                        downloadProgress.visible = false
+                        downloadProgress.visible = false;
                     }
                 }
             }

@@ -60,6 +60,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tab/Setting.qml
         qml/Tab/About.qml
         qml/Tool/GamePathSet.qml
+        qml/Tool/MirrorSelect.qml
         qml/Tool/CheckUpdate.qml
         qml/Tab/Manager.qml
         qml/Tool/DownloadGame.qml
