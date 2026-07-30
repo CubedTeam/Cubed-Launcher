@@ -28,7 +28,7 @@ Item {
         id: logoImage
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.top
-        anchors.verticalCenterOffset: 300
+        anchors.verticalCenterOffset: 250
         source: "qrc:/qt/qml/CubedLauncher/resources/logo.png"
     }
     ColumnLayout {
@@ -37,11 +37,11 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: 30
-
+        spacing: 10
         Label {
             id: installGameTip
 
-            text: "You need to install the game in the manager tab next to it."
+            text: qsTr("You need to install the game in the manager tab next to it.")
 
             font.bold: true
             font.pixelSize: 20
@@ -55,7 +55,7 @@ Item {
             enabled: !CubedInstance.installed
             highlighted: !CubedInstance.installed
 
-            text: "Go to Install Game"
+            text: qsTr("Go to Install Game")
             onClicked: {
                 SideTool.currentIndex = 1;
             }
@@ -73,7 +73,7 @@ Item {
         spacing: 10
 
         Button {
-            text: "Kill All Process"
+            text: qsTr("Kill All Process")
             visible: CubedInstance.running
             Layout.margins: 15
             Material.roundedScale: Material.MediumScale
@@ -91,14 +91,14 @@ Item {
 
         Label {
             visible: GameUpdate.hasNewVersion
-            text: "New Cubed Version: " + GameUpdate.remoteVersion + " Available!"
+            text: qsTr("New Cubed Version: %1 Available!").arg(GameUpdate.remoteVersion)
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 18
         }
 
         Label {
             visible: CubedInstance.installed
-            text: "Cubed Version: " + CubedInstance.version
+            text: qsTr("Cubed Version: %1").arg(CubedInstance.version)
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 20
             Layout.bottomMargin: 20
@@ -111,7 +111,7 @@ Item {
             }
             text: Settings.playerName
             Layout.fillWidth: true
-            placeholderText: "Enter Player Name"
+            placeholderText: qsTr("Enter Player Name")
             onEditingFinished: {
                 Settings.playerName = playerNameText.text;
                 CubedInstance.set_name(playerNameText.text);
@@ -124,7 +124,7 @@ Item {
             Layout.preferredWidth: 250
             Layout.preferredHeight: 60
             font.pixelSize: 20
-            text: "Start Game"
+            text: qsTr("Start Game")
             enabled: CubedInstance.installed
             highlighted: enabled
             Component.onCompleted: {

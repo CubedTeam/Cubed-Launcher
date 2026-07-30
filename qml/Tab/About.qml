@@ -24,54 +24,54 @@ Item {
         spacing: 24
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "Application: " + Qt.application.name
+            text: qsTr("Application: %L1").arg(Qt.application.name)
             font.pixelSize: 24
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "Version: " + AppVersion
+            text: qsTr("Version: %L1").arg(AppVersion)
             font.pixelSize: 24
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "OS: " + Qt.platform.os
+            text: qsTr("OS: %L1").arg(Qt.platform.os)
             font.pixelSize: 24
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "ProductType: " + SystemInfo.productType
+            text: qsTr("SystemType: ") + SystemInfo.productType
             font.pixelSize: 24
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "ProductVersion: " + SystemInfo.productVersion
+            text: qsTr("SystemVersion: ") + SystemInfo.productVersion
             font.pixelSize: 24
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "KernelType: " + SystemInfo.kernelType
+            text: qsTr("KernelType: ") + SystemInfo.kernelType
             font.pixelSize: 24
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "KernelVersion: " + SystemInfo.kernelVersion
+            text: qsTr("KernelVersion: ") + SystemInfo.kernelVersion
             font.pixelSize: 24
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: "QtVersion: " + SystemInfo.qtVersion
+            text: qsTr("QtVersion: ") + SystemInfo.qtVersion
             font.pixelSize: 24
         }
 
         Button {
-            text: "Check Update"
+            text: qsTr("Check Update")
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 24
             onClicked: {

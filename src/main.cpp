@@ -4,10 +4,15 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
-
+#include <QTranslator>
 int main(int argc, char** argv) {
 
     QGuiApplication app(argc, argv);
+
+    QTranslator translator;
+    if (translator.load(QLocale(), "CubedLauncher", "_", ":/i18n")) {
+        app.installTranslator(&translator);
+    }
 
     QQuickStyle::setStyle("Material");
     QString version(APP_VERSION);

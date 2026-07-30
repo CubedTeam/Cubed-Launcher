@@ -24,7 +24,7 @@ Item {
         id: advancedSetting
         anchors.centerIn: parent
         font.pixelSize: 20
-        text: "Advanced Setting"
+        text: qsTr("Advanced Setting")
         checked: false
     }
 
@@ -41,7 +41,7 @@ Item {
             id: wrapperCommand
             visible: advancedSetting.checked
             Layout.fillWidth: true
-            placeholderText: "Wrapper Command"
+            placeholderText: qsTr("Wrapper Command")
             onEditingFinished: {
                 CubedInstance.set_wrapper_command(wrapperCommand.text);
             }
@@ -52,7 +52,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             checked: false
             font.pixelSize: 20
-            text: "Log"
+            text: qsTr("Log")
             onCheckedChanged: {
                 CubedInstance.logOn = logStatus.checked;
             }
@@ -64,7 +64,8 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
             font.pixelSize: 20
-            model: ["Host", "Client"]
+            // AI-generated: host/client labels translated for display.
+            model: [qsTr("Host"), qsTr("Client")]
             currentIndex: 0
             onCurrentIndexChanged: {
                 CubedInstance.set_peer(peerMode.currentIndex);
@@ -75,7 +76,7 @@ Item {
             id: hostPort
             visible: advancedSetting.checked && peerMode.currentIndex == 0
             Layout.fillWidth: true
-            placeholderText: "Port"
+            placeholderText: qsTr("Port")
             onEditingFinished: {
                 CubedInstance.set_port(hostPort.text);
             }
@@ -88,7 +89,7 @@ Item {
             TextField {
                 id: serverIp
                 Layout.fillWidth: true
-                placeholderText: "Ip"
+                placeholderText: qsTr("Ip")
                 onEditingFinished: {
                     CubedInstance.set_ip(serverIp.text);
                 }
@@ -96,7 +97,7 @@ Item {
             TextField {
                 id: serverPort
                 Layout.fillWidth: true
-                placeholderText: "Port"
+                placeholderText: qsTr("Port")
                 onEditingFinished: {
                     CubedInstance.set_port(serverPort.text);
                 }

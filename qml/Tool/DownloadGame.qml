@@ -17,7 +17,7 @@ Item {
         }
         Switch {
             id: downloadSource
-            text: "Use Custom Link"
+            text: qsTr("Use Custom Link")
             checked: false
             font.pixelSize: 20
             Layout.alignment: Qt.AlignCenter
@@ -36,7 +36,7 @@ Item {
             font.pixelSize: 20
             text: {
                 const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                return "Mirror: " + MirrorSource.names[idx];
+                return qsTr("Mirror: ") + MirrorSource.names[idx];
             }
             onClicked: mirrorPopup.open()
         }
@@ -56,7 +56,7 @@ Item {
             highlighted: enabled
 
             font.pixelSize: 20
-            text: CubedInstance.installed ? "Update Game" : "Install Game"
+            text: CubedInstance.installed ? qsTr("Update Game") : qsTr("Install Game")
 
             onClicked: {
                 if (!Settings.pathSetted) {
@@ -87,7 +87,7 @@ Item {
             Material.background: Material.color(Material.Red)
 
             font.pixelSize: 20
-            text: "Cancel Download"
+            text: qsTr("Cancel Download")
             onClicked: {
                 GameUpdate.cancel_download();
             }
@@ -100,7 +100,7 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.fillWidth: true
 
-            placeholderText: "Download Link"
+            placeholderText: qsTr("Download Link")
         }
 
         Button {
@@ -114,7 +114,7 @@ Item {
             highlighted: true
 
             font.pixelSize: 20
-            text: CubedInstance.installed ? "Update Game" : "Install Game"
+            text: CubedInstance.installed ? qsTr("Update Game") : qsTr("Install Game")
             onClicked: {
                 if (!Settings.pathSetted) {
                     Settings.set_game_path(SystemInfo.defaultGameFilePath);
@@ -130,14 +130,14 @@ Item {
             }
         }
         Label {
-            text: "Checking Update..."
+            text: qsTr("Checking Update...")
             visible: GameUpdate.checkingUpdate
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 24
             font.bold: true
         }
         Label {
-            text: "Install Finished"
+            text: qsTr("Install Finished")
             visible: GameUpdate.downloadFinish && !GameUpdate.hasError
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 24
@@ -163,7 +163,7 @@ Item {
         }
 
         Label {
-            text: "Game Install Directory: " + GameUpdate.gameInstallPath
+            text: qsTr("Game Install Directory: ") + GameUpdate.gameInstallPath
             font.pixelSize: 20
         }
 
@@ -209,7 +209,7 @@ Item {
             id: advancedOpt
             Layout.alignment: Qt.AlignCenter
             font.pixelSize: 20
-            text: "Advanced Option"
+            text: qsTr("Advanced Option")
             checked: false
         }
     }
@@ -230,7 +230,7 @@ Item {
             font.pixelSize: 20
 
             highlighted: true
-            text: "Set Game Path"
+            text: qsTr("Set Game Path")
             onClicked: {
                 gameFileDialog.open();
             }
@@ -241,7 +241,7 @@ Item {
             Layout.preferredWidth: 250
             Layout.preferredHeight: 60
             font.pixelSize: 20
-            text: "Reset Path"
+            text: qsTr("Reset Path")
             onClicked: {
                 CubedInstance.set_game_path(SystemInfo.defaultGameFilePath);
                 Settings.set_game_path(SystemInfo.defaultGameFilePath);
@@ -251,7 +251,7 @@ Item {
     }
     FileDialog {
         id: gameFileDialog
-        title: "Select Cubed Game"
+        title: qsTr("Select Cubed Game")
         onAccepted: {
             CubedInstance.set_game_path_url(selectedFile);
             Settings.gamePath = selectedFile;

@@ -21,20 +21,13 @@ Rectangle {
                 anchors.fill: parent
 
                 //clip: true
-                model: ListModel {
-                    ListElement {
-                        title: "Launcher"
-                    }
-                    ListElement {
-                        title: "Manager"
-                    }
-                    ListElement {
-                        title: "Setting"
-                    }
-                    ListElement {
-                        title: "About"
-                    }
-                }
+                // AI-generated: JS array model so nav titles can pass through qsTr.
+                model: [
+                    { title: qsTr("Launcher") },
+                    { title: qsTr("Manager") },
+                    { title: qsTr("Setting") },
+                    { title: qsTr("About") }
+                ]
                 currentIndex: SideTool.currentIndex
 
                 delegate: ItemDelegate {
@@ -44,7 +37,8 @@ Rectangle {
                     width: ListView.view.width
                     height: 60
                     font.pixelSize: 20
-                    text: title
+                    // AI-generated: translate nav entry at render time.
+                    text: qsTr(title)
 
                     highlighted: ListView.isCurrentItem
 
