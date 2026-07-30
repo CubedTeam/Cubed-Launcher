@@ -7,16 +7,43 @@ Item {
     id: mamagerTab
     Layout.fillHeight: true
     Layout.fillWidth: true
-    Label {
-        text: qsTr("Intalling Game only be available in Windows")
-        visible: {
-            return Qt.platform.os != "windows";
+
+    // AI-generated: scrollable page so the download cards never get clipped
+    // on small windows, mirroring the Setting tab.
+    Flickable {
+        id: managerScroll
+        anchors.fill: parent
+        contentWidth: width
+        contentHeight: managerContent.implicitHeight + 40
+        clip: true
+        boundsMovement: Flickable.StopAtBounds
+
+        ScrollBar.vertical: ScrollBar {}
+
+        ColumnLayout {
+            id: managerContent
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            width: 520
+            spacing: 10
+
+            Label {
+                text: qsTr("Intalling Game only be available in Windows")
+                visible: Qt.platform.os != "windows"
+                font.pixelSize: 24
+                Layout.alignment: Qt.AlignCenter
+            }
+
+            Loader {
+                id: gameDownload
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                source: "qrc:/qt/qml/CubedLauncher/qml/Tool/DownloadGame.qml"
+            }
         }
-        font.pixelSize: 24
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        anchors.topMargin: 100
     }
+
     Connections {
         id: checkConnections
         target: CubedInstance
@@ -28,19 +55,6 @@ Item {
             checked = true;
             console.log("version changed:", CubedInstance.version);
             GameUpdate.check_update(CubedInstance.version);
-        }
-    }
-
-    ColumnLayout {
-        anchors.centerIn: parent
-        Component.onCompleted: {
-            CubedInstance.check_version();
-        }
-        Loader {
-            id: gameDownload
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            source: "qrc:/qt/qml/CubedLauncher/qml/Tool/DownloadGame.qml"
         }
     }
 }

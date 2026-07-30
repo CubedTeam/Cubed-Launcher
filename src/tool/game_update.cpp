@@ -51,6 +51,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit has_error_changed();
                 emit error_message_changed();
                 m_checking_update = false;
+                m_new_version = false;
+                emit new_version_changed();
                 emit checking_update_changed();
                 return;
             }
@@ -63,6 +65,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit error_message_changed();
                 replay->deleteLater();
                 m_checking_update = false;
+                m_new_version = false;
+                emit new_version_changed();
                 emit checking_update_changed();
                 return;
             }
@@ -77,6 +81,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit error_message_changed();
                 replay->deleteLater();
                 m_checking_update = false;
+                m_new_version = false;
+                emit new_version_changed();
                 emit checking_update_changed();
                 return;
             }
@@ -91,6 +97,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit error_message_changed();
                 replay->deleteLater();
                 m_checking_update = false;
+                m_new_version = false;
+                emit new_version_changed();
                 emit checking_update_changed();
                 return;
             }
@@ -109,6 +117,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit error_message_changed();
                 replay->deleteLater();
                 m_checking_update = false;
+                m_new_version = false;
+                emit new_version_changed();
                 emit checking_update_changed();
                 return;
             }
@@ -125,6 +135,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit error_message_changed();
                 replay->deleteLater();
                 m_checking_update = false;
+                m_new_version = false;
+                emit new_version_changed();
                 emit checking_update_changed();
                 return;
             }
@@ -142,7 +154,12 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 }
                 emit new_version_changed();
             } else {
-                m_new_version = true;
+                if (m_has_error) {
+                    m_new_version = false;
+                } else {
+                    m_new_version = true;
+                }
+
                 emit new_version_changed();
             }
 
@@ -172,6 +189,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 emit has_error_changed();
                 emit error_message_changed();
                 m_checking_update = false;
+                m_new_version = false;
+                emit new_version_changed();
                 emit checking_update_changed();
                 return;
             }

@@ -18,77 +18,89 @@ Item {
         anchors.rightMargin: 20
         source: "qrc:/qt/qml/CubedLauncher/qml/Tool/CheckUpdate.qml"
     }
-    Rectangle {
+    ColumnLayout {
+        id: aboutLayout
+        width: 500
+        spacing: 24
         anchors.centerIn: parent
-        color: "white"
-        width: aboutLayout.width + 10
-        height: aboutLayout.height + 10
-        radius: 16
-        border.color: Material.color(Material.Grey, Material.Shade300)
-        border.width: 1
+        Rectangle {
+            radius: 16
+            color: "white"
+            border.color: Material.color(Material.Grey, Material.Shade300)
+            border.width: 1
+            Layout.fillWidth: true
+            Layout.preferredHeight: infoLayout.implicitHeight + 20
 
-        ColumnLayout {
-            id: aboutLayout
-            //width: 300
-            spacing: 24
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("Application: %L1").arg(Qt.application.name)
-                font.pixelSize: 24
-            }
+            ColumnLayout {
+                id: infoLayout
+                spacing: 24
+                anchors.centerIn: parent
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("Application: %L1").arg(Qt.application.name)
+                    font.pixelSize: 24
+                }
 
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("Version: %L1").arg(AppVersion)
-                font.pixelSize: 24
-            }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("Version: %L1").arg(AppVersion)
+                    font.pixelSize: 24
+                }
 
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("OS: %L1").arg(Qt.platform.os)
-                font.pixelSize: 24
-            }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("OS: %L1").arg(Qt.platform.os)
+                    font.pixelSize: 24
+                }
 
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("SystemType: ") + SystemInfo.productType
-                font.pixelSize: 24
-            }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("SystemType: ") + SystemInfo.productType
+                    font.pixelSize: 24
+                }
 
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("SystemVersion: ") + SystemInfo.productVersion
-                font.pixelSize: 24
-            }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("SystemVersion: ") + SystemInfo.productVersion
+                    font.pixelSize: 24
+                }
 
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("KernelType: ") + SystemInfo.kernelType
-                font.pixelSize: 24
-            }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("KernelType: ") + SystemInfo.kernelType
+                    font.pixelSize: 24
+                }
 
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("KernelVersion: ") + SystemInfo.kernelVersion
-                font.pixelSize: 24
-            }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("KernelVersion: ") + SystemInfo.kernelVersion
+                    font.pixelSize: 24
+                }
 
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("QtVersion: ") + SystemInfo.qtVersion
-                font.pixelSize: 24
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("QtVersion: ") + SystemInfo.qtVersion
+                    font.pixelSize: 24
+                }
             }
         }
-        Button {
-            text: qsTr("Check Update")
-            anchors.horizontalCenter: aboutLayout.horizontalCenter
-            anchors.top: aboutLayout.bottom
-            anchors.topMargin: aboutLayout.spacing
-            width: aboutLayout.width
+        Rectangle {
+            radius: 16
+            color: "white"
+            border.color: Material.color(Material.Grey, Material.Shade300)
+            border.width: 1
+            Layout.fillWidth: true
+            Layout.preferredHeight: checkUpdateButton.implicitHeight + 20
+            Button {
+                id: checkUpdateButton
+                text: qsTr("Check Update")
+                anchors.centerIn: parent
+                width: 300
 
-            font.pixelSize: 24
-            onClicked: {
-                LauncherUpdate.check_update("CubedTeam", "Cubed-Launcher");
+                font.pixelSize: 24
+                onClicked: {
+                    LauncherUpdate.check_update("CubedTeam", "Cubed-Launcher");
+                }
             }
         }
     }
