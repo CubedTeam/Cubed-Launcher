@@ -13,6 +13,6 @@ ApplicationWindow {
     Material.background: "#F5F5F5"
 
     Material.accent: Settings.accentColor
-
+    Material.roundedScale: Material.MediumScale
     Sidebar {}
 }

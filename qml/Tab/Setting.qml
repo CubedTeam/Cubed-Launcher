@@ -13,62 +13,85 @@ Item {
 
     // AI-generated: always-visible language picker near the page top.
     ColumnLayout {
-        id: languageLayout
+        id: languageAndColorLayout
 
         anchors.bottom: advancedSetting.top
         anchors.horizontalCenter: advancedSetting.horizontalCenter
         anchors.bottomMargin: 50
+        width: 500
         spacing: 10
+        Rectangle {
+            Layout.preferredHeight: languageLayout.implicitHeight + 20
 
-        Label {
-            text: qsTr("Language")
-            font.pixelSize: 20
+            Layout.fillWidth: true
+            radius: 16
+            border.color: Material.color(Material.Grey, Material.Shade300)
+            border.width: 1
             Layout.alignment: Qt.AlignCenter
-        }
-
-        ComboBox {
-            id: languageCombo
-            // AI-generated: index 0 -> zh_CN, index 1 -> en. "English" is left
-            // untranslated on purpose per the spec.
-            model: ["简体中文", "English"]
-            currentIndex: Settings.language === "en" ? 1 : 0
-            font.pixelSize: 20
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 300
-            onActivated: {
-                Settings.language = currentIndex === 1 ? "en" : "zh_CN";
+            ColumnLayout {
+                id: languageLayout
+                anchors.centerIn: parent
+                spacing: languageAndColorLayout.spacing
+                Label {
+                    text: qsTr("Language")
+                    font.pixelSize: 20
+                    Layout.alignment: Qt.AlignCenter
+                }
+                ComboBox {
+                    id: languageCombo
+                    // AI-generated: index 0 -> zh_CN, index 1 -> en. "English" is left
+                    // untranslated on purpose per the spec.
+                    model: ["简体中文", "English"]
+                    currentIndex: Settings.language === "en" ? 1 : 0
+                    font.pixelSize: 20
+                    Layout.alignment: Qt.AlignCenter
+                    Layout.preferredWidth: 300
+                    onActivated: {
+                        Settings.language = currentIndex === 1 ? "en" : "zh_CN";
+                    }
+                }
             }
         }
 
-        // AI-generated: accent color picker. Each swatch stores its 1.2x
-        // lighter MD color into Settings.accentColor; Main.qml binds the
-        // global Material.accent to it.
-        Label {
-            text: qsTr("Theme Color")
-            font.pixelSize: 20
+        Rectangle {
+            Layout.preferredHeight: colorLayout.implicitHeight + 20
+
+            Layout.fillWidth: true
+            radius: 16
+            border.color: Material.color(Material.Grey, Material.Shade300)
+            border.width: 1
             Layout.alignment: Qt.AlignCenter
-        }
+            ColumnLayout {
+                id: colorLayout
+                anchors.centerIn: parent
+                spacing: languageAndColorLayout.spacing
+                Label {
+                    text: qsTr("Theme Color")
+                    font.pixelSize: 20
+                    Layout.alignment: Qt.AlignCenter
+                }
+                RowLayout {
 
-        RowLayout {
-            Layout.alignment: Qt.AlignCenter
-            spacing: 12
+                    spacing: 12
 
-            Repeater {
-                model: [Material.Red, Material.Pink, Material.Purple, Material.Indigo, Material.Blue, Material.Cyan, Material.Teal, Material.Green, Material.Orange, Material.DeepOrange]
+                    Repeater {
+                        model: [Material.Red, Material.Pink, Material.Purple, Material.Indigo, Material.Blue, Material.Cyan, Material.Teal, Material.Green, Material.Orange, Material.DeepOrange]
 
-                delegate: Rectangle {
-                    required property int modelData
-                    width: 32
-                    height: 32
-                    radius: 16
-                    color: Qt.lighter(Material.color(modelData), 1.2)
-                    border.width: Settings.accentColor === Qt.lighter(Material.color(modelData), 1.2) ? 3 : 0
-                    border.color: Material.color(Material.Grey, Material.Shade700)
+                        delegate: Rectangle {
+                            required property int modelData
+                            width: 32
+                            height: 32
+                            radius: 16
+                            color: Qt.lighter(Material.color(modelData), 1.2)
+                            border.width: Settings.accentColor === Qt.lighter(Material.color(modelData), 1.2) ? 3 : 0
+                            border.color: Material.color(Material.Grey, Material.Shade700)
 
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: Settings.accentColor = Qt.lighter(Material.color(modelData), 1.2)
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: Settings.accentColor = Qt.lighter(Material.color(modelData), 1.2)
+                            }
+                        }
                     }
                 }
             }

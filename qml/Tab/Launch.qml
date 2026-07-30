@@ -32,21 +32,30 @@ Item {
         source: "qrc:/qt/qml/CubedLauncher/resources/logo.png"
     }
     ColumnLayout {
-
+        id: installTip
         visible: !CubedInstance.installed
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: 30
         spacing: 10
-        Label {
-            id: installGameTip
+        Rectangle {
+            radius: 16
+            color: "white"
+            border.color: Material.color(Material.Grey, Material.Shade300)
+            border.width: 1
+            Layout.preferredWidth: installTip.width
+            Layout.preferredHeight: 50
+            Label {
+                id: installGameTip
+                anchors.centerIn: parent
+                text: qsTr("You need to install the game in the manager tab next to it.")
 
-            text: qsTr("You need to install the game in the manager tab next to it.")
-
-            font.bold: true
-            font.pixelSize: 20
-            color: Material.color(Material.Red)
+                font.bold: true
+                font.pixelSize: 20
+                color: Material.color(Material.Red)
+            }
         }
+
         Button {
             Layout.alignment: Qt.AlignCenter
             Layout.preferredWidth: 350
@@ -54,7 +63,7 @@ Item {
             font.pixelSize: 20
             enabled: !CubedInstance.installed
             highlighted: !CubedInstance.installed
-
+            Material.roundedScale: Material.MediumScale
             text: qsTr("Go to Install Game")
             onClicked: {
                 SideTool.currentIndex = 1;
