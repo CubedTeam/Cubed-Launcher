@@ -20,6 +20,8 @@ int Settings::mirror_index() const { return m_mirror_index; }
 QString Settings::language() const { return m_language; }
 
 QColor Settings::accent_color() const { return m_accent_color; }
+// AI-generated: read the colorful card border flag.
+bool Settings::card_colorful_border() const { return m_card_colorful_border; }
 
 Settings* Settings::instance() { return s_instance; }
 
@@ -79,6 +81,16 @@ void Settings::set_accent_color(const QColor& color) {
     emit accent_color_changed();
 }
 
+// AI-generated: persist the colorful card border toggle.
+void Settings::set_card_colorful_border(bool enabled) {
+    if (!update_value(m_card_colorful_border, enabled,
+                      "card_colorful_border")) {
+        return;
+    }
+
+    emit card_colorful_border_changed();
+}
+
 void Settings::load() {
     if (m_settings.contains("game_path")) {
         m_game_path = m_settings.value("game_path").toString();
@@ -95,6 +107,9 @@ void Settings::load() {
     // AI-generated: default to Material Blue 500 when unset.
     m_accent_color = QColor(
         m_settings.value("accent_color", QColor("#2196F3").name()).toString());
+    // AI-generated: default to colorful borders.
+    m_card_colorful_border =
+        m_settings.value("card_colorful_border", true).toBool();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

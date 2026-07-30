@@ -275,6 +275,11 @@
         <translation>高级设置</translation>
     </message>
     <message>
+        <location filename="../qml/Tab/Setting.qml" line="106"/>
+        <source>Colorful Card Border</source>
+        <translation>彩色卡片边框</translation>
+    </message>
+    <message>
         <location filename="../qml/Tab/Setting.qml" line="126"/>
         <location filename="../qml/Tab/Setting.qml" line="134"/>
         <source>Wrapper Command</source>

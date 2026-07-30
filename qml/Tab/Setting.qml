@@ -100,6 +100,21 @@ Item {
                 }
             }
             Card {
+                Layout.preferredHeight: colorfulBorder.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                // AI-generated: toggle between accent and neutral grey card borders.
+                Switch {
+                    id: colorfulBorder
+                    anchors.centerIn: parent
+                    font.pixelSize: 20
+                    text: qsTr("Colorful Card Border")
+                    checked: Settings.cardColorfulBorder
+                    onCheckedChanged: Settings.cardColorfulBorder = checked
+                }
+            }
+
+            Card {
                 Layout.preferredHeight: advancedSetting.implicitHeight + 20
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter
