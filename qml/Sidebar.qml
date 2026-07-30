@@ -41,6 +41,16 @@ Rectangle {
                         elide: Text.ElideRight
                     }
 
+                    // AI-generated: separator below each item except the last.
+                    Rectangle {
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        visible: sideDelegate.index < ListView.view.count - 1
+                        height: 1
+                        color: Qt.rgba(0, 0, 0, 0.12)
+                    }
+
                     background: Rectangle {
                         id: bg
                         anchors.fill: parent
