@@ -2,11 +2,13 @@
 // Usage: wrap inner content in a ColumnLayout with id <innerId>, then set
 // Layout.preferredHeight: innerId.implicitHeight + 20 inside the Card.
 import QtQuick
-import QtQuick.Controls.Material
+
+import CubedLauncher
 
 Rectangle {
     color: "white"
     radius: 16
-    border.color: Material.color(Material.Grey, Material.Shade300)
-    border.width: 1
+    border.color: Qt.lighter(Settings.accentColor, 1.4)
+    //border.color: Material.color(Material.Grey, Material.Shade300)
+    border.width: 2
 }
