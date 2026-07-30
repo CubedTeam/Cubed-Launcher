@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
+import CubedLauncher
 
 ApplicationWindow {
     id: cbedLauncher
@@ -10,7 +11,8 @@ ApplicationWindow {
     title: qsTr("Cubed Launcher")
 
     Material.background: "#F5F5F5"
-    Material.accent: Material.color(Material.Orange)
+
+    Material.accent: Settings.accentColor
 
     Sidebar {}
 }

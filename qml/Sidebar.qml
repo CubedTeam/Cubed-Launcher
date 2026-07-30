@@ -46,7 +46,7 @@ Rectangle {
                         anchors.fill: parent
                         anchors.margins: 8
                         radius: 16
-                        color: sideDelegate.highlighted ? Material.color(Material.Orange, Material.Shade100) : "transparent"
+                        color: sideDelegate.highlighted ? Qt.lighter(Material.accent, 1.8) : "transparent"
                         clip: true
 
                         Ripple {
@@ -56,7 +56,7 @@ Rectangle {
                             pressed: sideDelegate.pressed
                             active: sideDelegate.pressed
                             anchor: sideDelegate
-                            color: Material.color(Material.Orange, Material.Shade300)
+                            color: Qt.lighter(Material.accent, 1.6)
                         }
                         Rectangle {
                             anchors.fill: parent

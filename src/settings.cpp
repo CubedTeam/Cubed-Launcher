@@ -19,6 +19,8 @@ bool Settings::path_set() const { return !m_game_path.isEmpty(); }
 int Settings::mirror_index() const { return m_mirror_index; }
 QString Settings::language() const { return m_language; }
 
+QColor Settings::accent_color() const { return m_accent_color; }
+
 Settings* Settings::instance() { return s_instance; }
 
 void Settings::set_game_path_url(const QUrl& path) {
@@ -65,6 +67,18 @@ void Settings::set_language(const QString& lang) {
     emit language_changed();
 }
 
+// AI-generated: persist accent as hex string so it round-trips through
+// IniFormat.
+void Settings::set_accent_color(const QColor& color) {
+    if (m_accent_color == color) {
+        return;
+    }
+
+    m_accent_color = color;
+    m_settings.setValue("accent_color", color.name());
+    emit accent_color_changed();
+}
+
 void Settings::load() {
     if (m_settings.contains("game_path")) {
         m_game_path = m_settings.value("game_path").toString();
@@ -78,6 +92,9 @@ void Settings::load() {
     m_mirror_index = m_settings.value("mirror_index", -1).toInt();
     // AI-generated: load saved UI language, empty means not configured yet.
     m_language = m_settings.value("language").toString();
+    // AI-generated: default to Material Blue 500 when unset.
+    m_accent_color =
+        QColor(m_settings.value("accent_color", "#2196F3").toString());
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);
