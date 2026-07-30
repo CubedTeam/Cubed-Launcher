@@ -1,11 +1,10 @@
 #pragma once
 
+#include "tool/github_release.hpp"
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
@@ -70,6 +69,7 @@ private:
     QVersionNumber m_local_version;
     QVersionNumber m_remote_version;
     QNetworkAccessManager m_manager;
+    GithubReleaseFetcher m_fetcher;
     QPointer<QNetworkReply> m_download_reply;
 
     QString m_latest_launcher_link;

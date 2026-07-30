@@ -5,9 +5,10 @@
 #include "version.hpp"
 
 #include <QProcess>
+#include <QUrl>
 #include <qtmetamacros.h>
 
-LauncherUpdate::LauncherUpdate() {
+LauncherUpdate::LauncherUpdate() : m_fetcher(&m_manager, this) {
 
     if (QString(APP_VERSION) == "dev") {
         m_local_version = QVersionNumber::fromString("0.0.1");
@@ -34,115 +35,30 @@ bool LauncherUpdate::has_error() const { return m_has_error; }
 
 Q_INVOKABLE void LauncherUpdate::check_update(const QString& owner,
                                               const QString& repo) {
-    QUrl url(QString("https://api.github.com/repos/%1/%2/releases/latest")
-                 .arg(owner, repo));
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::UserAgentHeader,
-                      buildUserAgent().toUtf8());
-
-    auto* replay = m_manager.get(request);
-
-    connect(replay, &QNetworkReply::finished, this, [this, replay]() {
-        if (!replay) {
-            m_has_error = true;
-            m_error_message = "Check Update Fail can't find reply";
-            emit has_error_changed();
-            emit error_message_changed();
-            return;
-        }
-
-        if (replay->error() != QNetworkReply::NoError) {
-            qDebug() << "Network Error:" << replay->errorString();
-            m_has_error = true;
-            m_error_message = replay->errorString();
-            emit has_error_changed();
-            emit error_message_changed();
-            replay->deleteLater();
-            return;
-        }
-
-        QByteArray response_data = replay->readAll();
-        QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
-        if (json_doc.isNull() || !json_doc.isObject()) {
-            qDebug() << "Invalid JSON response";
-            m_has_error = true;
-            m_error_message = "Invalid JSON response";
-            emit has_error_changed();
-            emit error_message_changed();
-            replay->deleteLater();
-            return;
-        }
-
-        QJsonObject json_obj = json_doc.object();
-        QString latest_version_str = json_obj["tag_name"].toString();
-
-        if (latest_version_str.startsWith('v', Qt::CaseInsensitive)) {
-            latest_version_str.remove(0, 1);
-        }
-
-        if (latest_version_str.isEmpty()) {
-            qDebug() << "No tag_name found in response";
-            m_has_error = true;
-            m_error_message = "No tag_name found in response";
-            emit has_error_changed();
-            emit error_message_changed();
-            replay->deleteLater();
-            return;
-        }
-
-        m_remote_version = QVersionNumber::fromString(latest_version_str);
-
-        if (m_remote_version.isNull()) {
-            qDebug() << "Failed to parse remote version:" << latest_version_str;
-            m_has_error = true;
-            m_error_message =
-                "Failed to parse remote version:" + latest_version_str;
-            emit has_error_changed();
-            emit error_message_changed();
-            replay->deleteLater();
-            return;
-        }
-
-        if (m_remote_version > m_local_version) {
-            m_new_version = true;
-            qDebug() << "New version available! Remote:" << latest_version_str
-                     << "Local:" << m_local_version.toString();
-        } else {
-            qDebug() << "Already up to date. Local:"
-                     << m_local_version.toString()
-                     << "Remote:" << latest_version_str;
-        }
-
-        auto assets = json_obj["assets"].toArray();
-
-        QRegularExpression regex(R"(CubedLauncher-.*-windows-x64-setup\.exe)");
-
-        for (const auto& v : assets) {
-            auto obj = v.toObject();
-
-            QString name = obj["name"].toString();
-
-            if (regex.match(name).hasMatch()) {
-                m_latest_launcher_link = obj["browser_download_url"].toString();
-                qDebug() << "Find Launcher Url " << m_latest_launcher_link;
-                break;
+    m_fetcher.fetch(
+        owner, repo,
+        QRegularExpression(R"(CubedLauncher-.*-windows-x64-setup\.exe)"),
+        [this](GithubReleaseFetcher::Result r) {
+            if (!r.ok) {
+                m_has_error = true;
+                m_error_message = r.errorMessage;
+                emit has_error_changed();
+                emit error_message_changed();
+                return;
             }
-        }
-
-        if (m_latest_launcher_link.isEmpty()) {
-            m_has_error = true;
-            m_error_message = "No Windows package found.";
-            emit has_error_changed();
-            emit error_message_changed();
-            replay->deleteLater();
-            return;
-        }
-
-        replay->deleteLater();
-
-        emit remote_version_changed();
-        emit new_version_changed();
-    });
+            m_remote_version = QVersionNumber::fromString(r.version);
+            if (m_remote_version.isNull()) {
+                m_has_error = true;
+                m_error_message = "Failed to parse remote version:" + r.version;
+                emit has_error_changed();
+                emit error_message_changed();
+                return;
+            }
+            m_new_version = m_remote_version > m_local_version;
+            m_latest_launcher_link = r.downloadUrl;
+            emit remote_version_changed();
+            emit new_version_changed();
+        });
 }
 
 Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
@@ -161,16 +77,36 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
     emit error_message_changed();
     emit downloading_changed();
 
-    if (m_latest_launcher_link.isEmpty()) {
-        qDebug() << "Download Url is Null";
+    auto fail = [this](const QString& message) {
         m_has_error = true;
-        m_error_message = "Download Url is Null.";
+        m_error_message = message;
         emit has_error_changed();
         emit error_message_changed();
-        m_downloading = false;
-        emit downloading_changed();
         m_download_progress = 1.0f;
         emit download_progress_changed();
+        m_downloading = false;
+        emit downloading_changed();
+    };
+    auto cancel = [this](const QString& path) {
+        m_cancelling = false;
+        QFile::remove(path);
+        m_download_progress = 0.0f;
+        m_downloading = false;
+        emit downloading_changed();
+        emit download_progress_changed();
+    };
+    auto finish = [this]() {
+        m_download_progress = 1.0f;
+        m_downloading = false;
+        m_download_finish = true;
+        emit downloading_changed();
+        emit download_finish_changed();
+        emit download_progress_changed();
+    };
+
+    if (m_latest_launcher_link.isEmpty()) {
+        qDebug() << "Download Url is Null";
+        fail("Download Url is Null.");
         return;
     }
     QString download_url = m_latest_launcher_link;
@@ -189,7 +125,7 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
     auto* download_reply = m_manager.get(download_request);
     m_download_reply = download_reply;
 
-    QString setup_path =
+    const QString setup_path =
         QDir::temp().filePath("CubedLauncher-setup-latest.exe");
     auto file = std::make_shared<QFile>(setup_path);
     if (!file->open(QIODevice::WriteOnly)) {
@@ -197,101 +133,52 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
         download_reply->abort();
         download_reply->deleteLater();
         m_download_reply = nullptr;
-        m_has_error = true;
-        m_error_message = "Can't open file";
-        emit has_error_changed();
-        emit error_message_changed();
-        m_download_progress = 1.0f;
-        emit download_progress_changed();
-        m_downloading = false;
-        emit downloading_changed();
+        fail("Can't open file");
         return;
     }
 
     connect(
-        download_reply, &QNetworkReply::readyRead, this,
+        download_reply, &QNetworkReply::readyRead, download_reply,
         [download_reply, file]() { file->write(download_reply->readAll()); });
 
     connect(download_reply, &QNetworkReply::finished, this,
-            [download_reply, file, setup_path, this]() {
+            [download_reply, file, setup_path, fail, cancel, finish, this]() {
                 file->close();
                 m_download_reply = nullptr;
 
                 if (m_cancelling) {
-                    m_cancelling = false;
                     download_reply->deleteLater();
-                    QFile::remove(setup_path);
-                    m_downloading = false;
-                    m_download_progress = 0.0f;
-                    emit downloading_changed();
-                    emit download_progress_changed();
+                    cancel(setup_path);
                     return;
                 }
 
                 if (download_reply->error() != QNetworkReply::NoError) {
                     qDebug() << download_reply->errorString();
                     download_reply->deleteLater();
-                    m_has_error = true;
-                    m_error_message = download_reply->errorString();
-                    emit has_error_changed();
-                    emit error_message_changed();
-                    m_download_progress = 1.0f;
-                    emit download_progress_changed();
-                    m_downloading = false;
-                    emit downloading_changed();
+                    fail(download_reply->errorString());
                     return;
                 }
 
                 QFile check(setup_path);
-
                 if (!check.open(QIODevice::ReadOnly)) {
-                    qDebug() << "Can't open setup file";
-                    m_has_error = true;
-                    m_error_message = "Can't open setup file";
-                    emit has_error_changed();
-                    emit error_message_changed();
-                    m_download_progress = 1.0f;
-                    emit download_progress_changed();
-                    m_downloading = false;
-                    emit downloading_changed();
+                    fail("Can't open setup file");
+                    return;
+                }
+                const bool valid = check.size() >= 100;
+                check.close();
+                if (!valid) {
+                    fail("Downloaded file is invalid");
                     return;
                 }
 
-                if (check.size() < 100) {
-                    qDebug() << "Downloaded file is invalid";
-                    m_has_error = true;
-                    m_error_message = "Downloaded file is invalid";
-                    emit has_error_changed();
-                    emit error_message_changed();
-                    check.close();
-                    m_download_progress = 1.0f;
-                    emit download_progress_changed();
-                    m_downloading = false;
-                    emit downloading_changed();
-                    return;
-                }
                 qDebug() << "Download Finish Start Installing...";
                 if (!QProcess::startDetached(setup_path)) {
-                    qDebug() << "Error can't start Installing Program";
-                    m_has_error = true;
-                    m_error_message = "Error can't start Installing Program";
-                    emit has_error_changed();
-                    emit error_message_changed();
-                    m_download_progress = 1.0f;
-                    m_download_finish = true;
-                    m_downloading = false;
-                    emit downloading_changed();
-                    emit download_finish_changed();
-                    emit download_progress_changed();
+                    fail("Error can't start Installing Program");
+                    finish();
                     return;
                 }
                 download_reply->deleteLater();
-                m_download_progress = 1.0f;
-                m_download_finish = true;
-                m_downloading = false;
-                emit downloading_changed();
-                emit download_finish_changed();
-                emit download_progress_changed();
+                finish();
                 QCoreApplication::quit();
             });
 

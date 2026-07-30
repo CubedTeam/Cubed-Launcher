@@ -75,6 +75,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/system_info.hpp
         src/settings.cpp
         src/settings.hpp
+        src/tool/github_release.hpp
+        src/tool/github_release.cpp
         src/tool/launcher_update.hpp
         src/tool/launcher_update.cpp
         src/tool/side_tool.hpp

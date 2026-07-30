@@ -1,4 +1,6 @@
 #pragma once
+#include "tool/github_release.hpp"
+
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QObject>
@@ -63,6 +65,7 @@ signals:
 
 private:
     QNetworkAccessManager m_manager;
+    GithubReleaseFetcher m_fetcher;
 
     QString m_download_url;
     QVersionNumber m_local_version;
