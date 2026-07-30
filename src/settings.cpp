@@ -1,9 +1,15 @@
 #include "settings.hpp"
 
+// AI-generated: singleton instance pointer, set in constructor.
+Settings* Settings::s_instance = nullptr;
+
 Settings::Settings(QObject* parent)
     : QObject(parent), m_settings(QSettings::IniFormat, QSettings::UserScope,
                                   "Cubed", "Launcher") {
     load();
+    if (s_instance == nullptr) {
+        s_instance = this;
+    }
 }
 
 QString Settings::game_path() const { return m_game_path; }
@@ -11,6 +17,9 @@ QString Settings::player_name() const { return m_player_name; }
 
 bool Settings::path_set() const { return !m_game_path.isEmpty(); }
 int Settings::mirror_index() const { return m_mirror_index; }
+QString Settings::language() const { return m_language; }
+
+Settings* Settings::instance() { return s_instance; }
 
 void Settings::set_game_path_url(const QUrl& path) {
     QString local = path.toLocalFile();
@@ -46,6 +55,16 @@ void Settings::set_mirror_index(int index) {
     emit mirror_index_changed();
 }
 
+// AI-generated: persist UI language and notify listeners (e.g. main swaps the
+// translator and retranslates the QML tree).
+void Settings::set_language(const QString& lang) {
+    if (!update_value(m_language, lang, "language")) {
+        return;
+    }
+
+    emit language_changed();
+}
+
 void Settings::load() {
     if (m_settings.contains("game_path")) {
         m_game_path = m_settings.value("game_path").toString();
@@ -57,6 +76,8 @@ void Settings::load() {
 
     // AI-generated: load mirror index, -1 means unset.
     m_mirror_index = m_settings.value("mirror_index", -1).toInt();
+    // AI-generated: load saved UI language, empty means not configured yet.
+    m_language = m_settings.value("language").toString();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

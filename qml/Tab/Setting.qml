@@ -10,14 +10,34 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    Loader {
-        id: pathSetLoader
+    // AI-generated: always-visible language picker near the page top.
+    ColumnLayout {
+        id: languageLayout
 
         anchors.bottom: advancedSetting.top
         anchors.horizontalCenter: advancedSetting.horizontalCenter
         anchors.bottomMargin: 50
+        spacing: 10
 
-        source: "qrc:/qt/qml/CubedLauncher/qml/Tool/GamePathSet.qml"
+        Label {
+            text: qsTr("Language")
+            font.pixelSize: 20
+            Layout.alignment: Qt.AlignCenter
+        }
+
+        ComboBox {
+            id: languageCombo
+            // AI-generated: index 0 -> zh_CN, index 1 -> en. "English" is left
+            // untranslated on purpose per the spec.
+            model: ["简体中文", "English"]
+            currentIndex: Settings.language === "en" ? 1 : 0
+            font.pixelSize: 20
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 300
+            onActivated: {
+                Settings.language = currentIndex === 1 ? "en" : "zh_CN";
+            }
+        }
     }
 
     Switch {

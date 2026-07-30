@@ -255,38 +255,43 @@
 <context>
     <name>Setting</name>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="27"/>
+        <location filename="../qml/Tab/Setting.qml" line="23"/>
+        <source>Language</source>
+        <translation>语言</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="47"/>
         <source>Advanced Setting</source>
         <translation>高级设置</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="44"/>
+        <location filename="../qml/Tab/Setting.qml" line="64"/>
         <source>Wrapper Command</source>
         <translation>包装器命令</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="55"/>
+        <location filename="../qml/Tab/Setting.qml" line="75"/>
         <source>Log</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="68"/>
+        <location filename="../qml/Tab/Setting.qml" line="88"/>
         <source>Host</source>
         <translation>主机</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="68"/>
+        <location filename="../qml/Tab/Setting.qml" line="88"/>
         <source>Client</source>
         <translation>客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="79"/>
-        <location filename="../qml/Tab/Setting.qml" line="100"/>
+        <location filename="../qml/Tab/Setting.qml" line="99"/>
+        <location filename="../qml/Tab/Setting.qml" line="120"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="92"/>
+        <location filename="../qml/Tab/Setting.qml" line="112"/>
         <source>Ip</source>
         <translation>IP 地址</translation>
     </message>
@@ -294,22 +299,22 @@
 <context>
     <name>Sidebar</name>
     <message>
-        <location filename="../qml/Sidebar.qml" line="26"/>
+        <location filename="../qml/Sidebar.qml" line="38"/>
         <source>Launcher</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="27"/>
+        <location filename="../qml/Sidebar.qml" line="39"/>
         <source>Manager</source>
         <translation>管理</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="28"/>
+        <location filename="../qml/Sidebar.qml" line="40"/>
         <source>Setting</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="29"/>
+        <location filename="../qml/Sidebar.qml" line="41"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
