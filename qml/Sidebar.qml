@@ -46,7 +46,8 @@ Rectangle {
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        visible: sideDelegate.index < ListView.view.count - 1
+                        // AI-generated: use navList directly because ListView.view is null here.
+                    visible: sideDelegate.index < navList.count - 1
                         height: 1
                         color: Qt.rgba(0, 0, 0, 0.12)
                     }
