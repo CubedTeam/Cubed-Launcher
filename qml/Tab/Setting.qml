@@ -57,5 +57,50 @@ Item {
                 CubedInstance.logOn = logStatus.checked;
             }
         }
+
+        ComboBox {
+            id: peerMode
+            visible: advancedSetting.checked
+            Layout.alignment: Qt.AlignCenter
+            Layout.fillWidth: true
+            font.pixelSize: 20
+            model: ["Host", "Client"]
+            currentIndex: 0
+            onCurrentIndexChanged: {
+                CubedInstance.set_peer(peerMode.currentIndex);
+            }
+        }
+
+        TextField {
+            id: hostPort
+            visible: advancedSetting.checked && peerMode.currentIndex == 0
+            Layout.fillWidth: true
+            placeholderText: "Port"
+            onEditingFinished: {
+                CubedInstance.set_port(hostPort.text);
+            }
+        }
+
+        RowLayout {
+            visible: advancedSetting.checked && peerMode.currentIndex == 1
+            Layout.fillWidth: true
+            spacing: 10
+            TextField {
+                id: serverIp
+                Layout.fillWidth: true
+                placeholderText: "Ip"
+                onEditingFinished: {
+                    CubedInstance.set_ip(serverIp.text);
+                }
+            }
+            TextField {
+                id: serverPort
+                Layout.fillWidth: true
+                placeholderText: "Port"
+                onEditingFinished: {
+                    CubedInstance.set_port(serverPort.text);
+                }
+            }
+        }
     }
 }

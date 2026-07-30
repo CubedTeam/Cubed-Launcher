@@ -98,25 +98,62 @@ Item {
                 font.pixelSize: 20
             }
 
-            Switch {
-                id: mirrorSwitch
-                text: "Use Mirror"
-                checked: SystemInfo.isInChina
+            // AI-generated: mirror picker button, same as DownloadGame.
+            Button {
+                id: mirrorButton
                 Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 400
+                Layout.preferredHeight: 60
+                Material.roundedScale: Material.MediumScale
+                highlighted: true
                 font.pixelSize: 20
+                text: {
+                    const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                    return "Mirror: " + MirrorSource.names[idx];
+                }
+                onClicked: mirrorPopup.open()
+            }
+
+            // AI-generated: shared mirror picker popup.
+            MirrorSelect {
+                id: mirrorPopup
+                parent: Overlay.overlay
             }
 
             Button {
                 id: downloadUpdateButton
                 text: "Update"
+                enabled: !LauncherUpdate.downloading
                 Layout.alignment: Qt.AlignCenter
                 font.pixelSize: 20
-                highlighted: true
+                Material.roundedScale: Material.MediumScale
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 60
+                highlighted: enabled
                 onClicked: {
                     launcherProgress.visible = true;
+                    cancelLauncherButton.visible = true;
                     downloadUpdateButton.enabled = false;
                     downloadUpdateButton.highlighted = false;
-                    LauncherUpdate.update_launcher(mirrorSwitch.checked);
+                    const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                    LauncherUpdate.update_launcher(idx);
+                }
+            }
+
+            // AI-generated: abort the running launcher update download.
+            Button {
+                id: cancelLauncherButton
+                visible: false
+                enabled: LauncherUpdate.downloading
+                Layout.alignment: Qt.AlignCenter
+                Material.roundedScale: Material.MediumScale
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 60
+                Material.background: Material.color(Material.Red)
+                font.pixelSize: 20
+                text: "Cancel Download"
+                onClicked: {
+                    LauncherUpdate.cancel_download();
                 }
             }
             ProgressBar {
@@ -129,11 +166,24 @@ Item {
                 Layout.preferredWidth: 400
                 value: LauncherUpdate.downloadProgress
                 onValueChanged: {
-                    if (value >= to) {
+                    if (value >= to && !LauncherUpdate.hasError) {
                         console.log("Launcher Download Finish");
-                        downloadUpdateButton.enabled = true;
-                        downloadUpdateButton.highlighted = true;
                         visible = false;
+                    }
+                }
+            }
+
+            // AI-generated: recover the Update button once download ends any way.
+            Connections {
+                target: LauncherUpdate
+                function onDownloadingChanged() {
+                    if (!LauncherUpdate.downloading) {
+                        downloadUpdateButton.enabled = true && !LauncherUpdate.downloading;
+                        downloadUpdateButton.highlighted = downloadUpdateButton.enabled;
+                        cancelLauncherButton.visible = false;
+                        if (!LauncherUpdate.downloadFinish || LauncherUpdate.hasError) {
+                            launcherProgress.visible = false;
+                        }
                     }
                 }
             }

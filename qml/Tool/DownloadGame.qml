@@ -22,19 +22,33 @@ Item {
             font.pixelSize: 20
             Layout.alignment: Qt.AlignCenter
         }
-        Switch {
-            id: useMirror
+        // AI-generated: opens the mirror picker popup. The chosen index is read
+        // back from Settings.mirrorIndex at click time.
+        Button {
+            id: mirrorButton
             visible: !downloadSource.checked
             enabled: !downloadSource.checked
             Layout.alignment: Qt.AlignCenter
-            checked: SystemInfo.isInChina
+            Layout.preferredWidth: 400
+            Layout.preferredHeight: 60
+            Material.roundedScale: Material.MediumScale
+            highlighted: enabled
             font.pixelSize: 20
-            text: "Use Github Mirror"
+            text: {
+                const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                return "Mirror: " + MirrorSource.names[idx];
+            }
+            onClicked: mirrorPopup.open()
+        }
+
+        MirrorSelect {
+            id: mirrorPopup
+            parent: Overlay.overlay
         }
         Button {
             id: downloadGameGithubButton
             visible: !downloadSource.checked
-            enabled: !downloadSource.checked && !GameUpdate.checkingUpdate
+            enabled: !downloadSource.checked && !GameUpdate.checkingUpdate && !GameUpdate.downloading
             Layout.alignment: Qt.AlignCenter
             Material.roundedScale: Material.MediumScale
             Layout.preferredWidth: 250
@@ -50,11 +64,32 @@ Item {
                 }
 
                 downloadProgress.visible = true;
+                cancelButton.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
                 enabled = false;
                 highlighted = false;
-                GameUpdate.download_from_github(useMirror.checked);
+                const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                GameUpdate.download_from_github(idx);
+            }
+        }
+
+        // AI-generated: abort the running download; shown only while downloading.
+        Button {
+            id: cancelButton
+            visible: false
+            enabled: GameUpdate.downloading
+            Layout.alignment: Qt.AlignCenter
+            Material.roundedScale: Material.MediumScale
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 60
+            highlighted: enabled
+            Material.background: Material.color(Material.Red)
+
+            font.pixelSize: 20
+            text: "Cancel Download"
+            onClicked: {
+                GameUpdate.cancel_download();
             }
         }
 
@@ -86,6 +121,7 @@ Item {
                 }
 
                 downloadProgress.visible = true;
+                cancelButton.visible = true;
                 gamePathButton.enabled = false;
                 gamePathButton.highlighted = false;
                 enabled = false;
@@ -141,17 +177,30 @@ Item {
             Layout.preferredWidth: 400
             value: GameUpdate.downloadProgress
             onValueChanged: {
-                if (value >= to) {
+                if (value >= to && !GameUpdate.hasError) {
                     console.log("Download Finish");
-                    downloadProgress.visible = true;
-                    downloadGameGithubButton.enabled = true;
-                    downloadGameGithubButton.highlighted = true;
-                    downloadGameCustomButton.enabled = true;
-                    downloadGameCustomButton.highlighted = true;
-                    gamePathButton.enabled = true;
-                    gamePathButton.highlighted = true;
                     visible = false;
                     CubedInstance.check_version();
+                }
+            }
+        }
+
+        // AI-generated: re-enable controls once any download ends (finish,
+        // error, or cancel) so Install Game never stays disabled.
+        Connections {
+            target: GameUpdate
+            function onDownloadingChanged() {
+                if (!GameUpdate.downloading) {
+                    downloadGameGithubButton.enabled = true && !downloadSource.checked && !GameUpdate.checkingUpdate;
+                    downloadGameGithubButton.highlighted = downloadGameGithubButton.enabled;
+                    downloadGameCustomButton.enabled = true && downloadSource.checked;
+                    downloadGameCustomButton.highlighted = downloadGameCustomButton.enabled;
+                    gamePathButton.enabled = true;
+                    gamePathButton.highlighted = true;
+                    cancelButton.visible = false;
+                    if (!GameUpdate.downloadFinish || GameUpdate.hasError) {
+                        downloadProgress.visible = false;
+                    }
                 }
             }
         }

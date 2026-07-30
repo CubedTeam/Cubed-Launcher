@@ -60,6 +60,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tab/Setting.qml
         qml/Tab/About.qml
         qml/Tool/GamePathSet.qml
+        qml/Tool/MirrorSelect.qml
         qml/Tool/CheckUpdate.qml
         qml/Tab/Manager.qml
         qml/Tool/DownloadGame.qml
@@ -75,6 +76,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/launcher_update.hpp
         src/tool/launcher_update.cpp
         src/tool/side_tool.hpp
+        src/tool/mirror.hpp
+        src/tool/mirror.cpp
         src/tool/game_update.hpp
         src/tool/game_update.cpp
     

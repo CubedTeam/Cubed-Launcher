@@ -10,6 +10,7 @@ QString Settings::game_path() const { return m_game_path; }
 QString Settings::player_name() const { return m_player_name; }
 
 bool Settings::path_set() const { return !m_game_path.isEmpty(); }
+int Settings::mirror_index() const { return m_mirror_index; }
 
 void Settings::set_game_path_url(const QUrl& path) {
     QString local = path.toLocalFile();
@@ -29,12 +30,20 @@ void Settings::set_game_path(const QString& path) {
     emit game_path_changed();
     emit path_set_changed();
 }
-
 void Settings::set_player_name(const QString& name) {
     if (!update_value(m_player_name, name, "player_name")) {
         return;
     }
+
     emit player_name_changed();
+}
+
+void Settings::set_mirror_index(int index) {
+    if (!update_value(m_mirror_index, index, "mirror_index")) {
+        return;
+    }
+
+    emit mirror_index_changed();
 }
 
 void Settings::load() {
@@ -45,6 +54,9 @@ void Settings::load() {
              << m_game_path.isEmpty();
 
     m_player_name = m_settings.value("player_name").toString();
+
+    // AI-generated: load mirror index, -1 means unset.
+    m_mirror_index = m_settings.value("mirror_index", -1).toInt();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

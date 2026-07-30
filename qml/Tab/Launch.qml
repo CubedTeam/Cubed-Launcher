@@ -15,6 +15,7 @@ Item {
     }
     Loader {
         active: LauncherUpdate.hasNewVersion || LauncherUpdate.hasError
+        //active: true
         width: 300
         height: 200
         anchors.right: parent.right
@@ -68,7 +69,7 @@ Item {
         anchors.bottomMargin: 10
         anchors.rightMargin: 25
 
-        width: 300
+        width: 400
         spacing: 10
 
         Button {
@@ -135,73 +136,6 @@ Item {
             Material.roundedScale: Material.MediumScale
             onClicked: {
                 CubedInstance.start_cubed_instance();
-            }
-        }
-
-        ComboBox {
-            id: peerMode
-            Layout.alignment: Qt.AlignCenter
-            model: ["Host", "Client"]
-            currentIndex: 0
-            onCurrentIndexChanged: {
-                CubedInstance.set_peer(peerMode.currentIndex);
-            }
-        }
-        Loader {
-            Layout.fillWidth: true
-            height: 100
-            sourceComponent: {
-                if (peerMode.currentIndex == 0) {
-                    return hostMode;
-                } else if (peerMode.currentIndex == 1) {
-                    return clientMode;
-                }
-            }
-        }
-
-        Component {
-            id: hostMode
-            Item {
-                anchors.fill: parent
-                Row {
-                    spacing: 10
-                    anchors.centerIn: parent
-                    TextField {
-                        id: hostPort
-                        Layout.fillWidth: true
-                        placeholderText: "Port"
-                        onEditingFinished: {
-                            CubedInstance.set_port(hostPort.text);
-                        }
-                    }
-                }
-            }
-        }
-        Component {
-            id: clientMode
-            Item {
-                anchors.fill: parent
-                Row {
-                    anchors.centerIn: parent
-                    spacing: 10
-                    TextField {
-                        id: serverIp
-                        width: 250
-                        Layout.fillWidth: true
-                        placeholderText: "Ip"
-                        onEditingFinished: {
-                            CubedInstance.set_ip(serverIp.text);
-                        }
-                    }
-                    TextField {
-                        id: serverPort
-                        Layout.fillWidth: true
-                        placeholderText: "Port"
-                        onEditingFinished: {
-                            CubedInstance.set_port(serverPort.text);
-                        }
-                    }
-                }
             }
         }
     }
