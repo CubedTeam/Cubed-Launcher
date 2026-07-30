@@ -56,6 +56,30 @@ Avoid:
   * Spelling corrections.
   * Simple variable renames.
 
+### 2.1 Do not write excessive or granular comments
+
+AI must avoid sprinkling small explanatory comments throughout code.
+Specifically:
+
+* **No line-by-line narration.** Do not add a comment above (or beside)
+  every field, signal, slot, branch, or block just to restate what it is.
+  If the name is self-explanatory, no comment is needed.
+* **No multi-part explanations on a single marker.** A line like
+  `// AI-generated: abort the in-flight download; finished handler clears state.`
+  is too much. Either drop it, or shorten to a single short clause
+  (e.g. `// AI-generated: abort in-flight download.`).
+* **Prefer zero or one comment per file/section**, not many. A short
+  header comment explaining the file's purpose is acceptable; dozens of
+  inline labels are not.
+* **Do not comment obvious QML/C++ bindings, layout splits, or default
+  values** (e.g. `// AI-generated: index 0 -> zh_CN, index 1 -> en.`).
+  The code already says that.
+* **When in doubt, omit the comment.** A missing comment is fine; a
+  redundant one is noise that future maintainers must clean up.
+
+Rule of thumb: if removing the comment would not lose useful
+information, remove it.
+
 ---
 
 ## 3. Project Style

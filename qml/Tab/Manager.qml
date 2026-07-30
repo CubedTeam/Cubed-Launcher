@@ -8,8 +8,6 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    // AI-generated: scrollable page so the download cards never get clipped
-    // on small windows, mirroring the Setting tab.
     Flickable {
         id: managerScroll
         anchors.fill: parent

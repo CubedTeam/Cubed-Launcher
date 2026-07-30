@@ -98,7 +98,6 @@ Item {
                 font.pixelSize: 20
             }
 
-            // AI-generated: mirror picker button, same as DownloadGame.
             Button {
                 id: mirrorButton
                 Layout.alignment: Qt.AlignCenter
@@ -114,7 +113,6 @@ Item {
                 onClicked: mirrorPopup.open()
             }
 
-            // AI-generated: shared mirror picker popup.
             MirrorSelect {
                 id: mirrorPopup
                 parent: Overlay.overlay
@@ -140,7 +138,6 @@ Item {
                 }
             }
 
-            // AI-generated: abort the running launcher update download.
             Button {
                 id: cancelLauncherButton
                 visible: false
@@ -173,7 +170,7 @@ Item {
                 }
             }
 
-            // AI-generated: recover the Update button once download ends any way.
+            // AI-generated: re-enable Update button once download ends any way.
             Connections {
                 target: LauncherUpdate
                 function onDownloadingChanged() {

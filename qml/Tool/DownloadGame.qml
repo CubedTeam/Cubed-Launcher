@@ -7,15 +7,13 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 Item {
-    // AI-generated: size to the inner column so the Loader in Manager.qml
-    // reports a real height and the Flickable there can scroll correctly.
+    // AI-generated: size to the inner column so Manager.qml's Flickable
+    // reports a real height and can scroll correctly.
     implicitWidth: managerColumn.implicitWidth
     implicitHeight: managerColumn.implicitHeight
     width: managerColumn.width
     height: managerColumn.implicitHeight
 
-    // AI-generated: download UI split into categorized cards (source/action/
-    // status/advanced) mirroring the style of the About and Setting tabs.
     ColumnLayout {
         id: managerColumn
         anchors.horizontalCenter: parent.horizontalCenter
@@ -25,7 +23,6 @@ Item {
             GameUpdate.gameInstallPath = Settings.gamePath;
         }
 
-            // AI-generated: source selection card.
             Card {
                 Layout.preferredHeight: sourceLayout.implicitHeight + 20
                 Layout.fillWidth: true
@@ -73,7 +70,6 @@ Item {
                 }
             }
 
-            // AI-generated: install action card.
             Card {
                 Layout.preferredHeight: actionLayout.implicitHeight + 20
                 Layout.fillWidth: true
@@ -138,7 +134,6 @@ Item {
                         }
                     }
 
-                    // AI-generated: abort the running download; shown only while downloading.
                     Button {
                         id: cancelButton
                         visible: false
@@ -174,8 +169,7 @@ Item {
                         }
                     }
 
-                    // AI-generated: re-enable controls once any download ends (finish,
-                    // error, or cancel) so Install Game never stays disabled.
+                    // AI-generated: re-enable Install Game after download ends.
                     Connections {
                         target: GameUpdate
                         function onDownloadingChanged() {
@@ -196,7 +190,6 @@ Item {
                 }
             }
 
-            // AI-generated: status card.
             Card {
                 Layout.preferredHeight: statusLayout.implicitHeight + 20
                 Layout.fillWidth: true
@@ -249,7 +242,6 @@ Item {
                 }
             }
 
-            // AI-generated: advanced options card.
             Card {
                 Layout.preferredHeight: advancedLayout.implicitHeight + 20
                 Layout.fillWidth: true

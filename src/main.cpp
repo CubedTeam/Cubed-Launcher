@@ -14,7 +14,6 @@ static QTranslator* g_translator = nullptr;
 static QQmlApplicationEngine* g_engine = nullptr;
 static QString g_current_language;
 
-// AI-generated: swap the installed .qm translator and retranslate the QML tree.
 static void apply_language(const QString& lang) {
     if (lang == g_current_language) {
         return;
@@ -35,8 +34,6 @@ int main(int argc, char** argv) {
 
     QGuiApplication app(argc, argv);
 
-    // AI-generated: pick startup language from config, fall back to territory
-    // detection (China -> zh_CN, otherwise en), and persist the chosen value.
     QSettings cfg(QSettings::IniFormat, QSettings::UserScope, "Cubed",
                   "Launcher");
     QString lang = cfg.value("language").toString();
@@ -69,8 +66,7 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // AI-generated: react to Settings::languageChanged by swapping the
-    // translator live and retranslating every qsTr() binding.
+    // AI-generated: react to Settings::languageChanged by retranslating QML.
     if (Settings* s = Settings::instance()) {
         QObject::connect(s, &Settings::language_changed, s, []() {
             apply_language(Settings::instance()->language());

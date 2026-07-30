@@ -219,8 +219,7 @@ Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
         m_download_progress = 1.0f;
         emit has_error_changed();
         emit error_message_changed();
-        // AI-generated: drive the downloading lifecycle so the UI re-enables
-        // buttons even when we bail out before a real download starts.
+        // AI-generated: pulse downloading so the UI re-enables controls.
         m_downloading = true;
         emit downloading_changed();
         m_downloading = false;
@@ -228,7 +227,6 @@ Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
         return;
     }
     QString download_url = m_download_url;
-    // AI-generated: prepend mirror prefix, 0 = direct.
     if (mirror_index > 0 && mirror_index < mirror_sources.size()) {
         const QString& prefix = mirror_sources.at(mirror_index).prefix;
         if (!prefix.isEmpty()) {
@@ -249,7 +247,6 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
     }
     m_download_finish = false;
     emit download_finish_changed();
-    // AI-generated: reset progress so UI can re-trigger on finish/error.
     m_download_progress = 0.0f;
     emit download_progress_changed();
     m_cancelling = false;
@@ -312,7 +309,6 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
                     m_download_reply = nullptr;
                 }
 
-                // AI-generated: user-cancelled download, finish quietly.
                 if (m_cancelling) {
                     m_cancelling = false;
                     download_reply->deleteLater();
@@ -433,7 +429,7 @@ Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
             });
 }
 
-// AI-generated: abort the in-flight download; finished handler clears state.
+// AI-generated: abort in-flight download; finished handler clears state.
 void GameUpdate::cancel_download() {
     if (!m_downloading || m_cancelling || !m_download_reply) {
         return;

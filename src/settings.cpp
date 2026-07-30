@@ -1,6 +1,5 @@
 #include "settings.hpp"
 
-// AI-generated: singleton instance pointer, set in constructor.
 Settings* Settings::s_instance = nullptr;
 
 Settings::Settings(QObject* parent)
@@ -20,7 +19,6 @@ int Settings::mirror_index() const { return m_mirror_index; }
 QString Settings::language() const { return m_language; }
 
 QColor Settings::accent_color() const { return m_accent_color; }
-// AI-generated: read the colorful card border flag.
 bool Settings::card_colorful_border() const { return m_card_colorful_border; }
 
 Settings* Settings::instance() { return s_instance; }
@@ -59,8 +57,6 @@ void Settings::set_mirror_index(int index) {
     emit mirror_index_changed();
 }
 
-// AI-generated: persist UI language and notify listeners (e.g. main swaps the
-// translator and retranslates the QML tree).
 void Settings::set_language(const QString& lang) {
     if (!update_value(m_language, lang, "language")) {
         return;
@@ -69,8 +65,6 @@ void Settings::set_language(const QString& lang) {
     emit language_changed();
 }
 
-// AI-generated: persist accent as hex string so it round-trips through
-// IniFormat.
 void Settings::set_accent_color(const QColor& color) {
     if (m_accent_color == color) {
         return;
@@ -81,7 +75,6 @@ void Settings::set_accent_color(const QColor& color) {
     emit accent_color_changed();
 }
 
-// AI-generated: persist the colorful card border toggle.
 void Settings::set_card_colorful_border(bool enabled) {
     if (!update_value(m_card_colorful_border, enabled,
                       "card_colorful_border")) {
@@ -100,14 +93,11 @@ void Settings::load() {
 
     m_player_name = m_settings.value("player_name").toString();
 
-    // AI-generated: load mirror index, -1 means unset.
     m_mirror_index = m_settings.value("mirror_index", -1).toInt();
 
     m_language = m_settings.value("language").toString();
-    // AI-generated: default to Material Blue 500 when unset.
     m_accent_color = QColor(
         m_settings.value("accent_color", QColor("#2196F3").name()).toString());
-    // AI-generated: default to colorful borders.
     m_card_colorful_border =
         m_settings.value("card_colorful_border", true).toBool();
 }

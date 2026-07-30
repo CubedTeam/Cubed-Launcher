@@ -1,6 +1,6 @@
-// AI-generated: reusable rounded card container, border color follows the cardColorfulBorder setting.
-// Usage: wrap inner content in a ColumnLayout with id <innerId>, then set
-// Layout.preferredHeight: innerId.implicitHeight + 20 inside the Card.
+// AI-generated: rounded card container; border color follows
+// Settings.cardColorfulBorder. Usage: wrap content in a ColumnLayout, then
+// set Layout.preferredHeight: innerId.implicitHeight + 20.
 import QtQuick
 import QtQuick.Controls.Material
 
@@ -9,7 +9,6 @@ import CubedLauncher
 Rectangle {
     color: "white"
     radius: 16
-    // AI-generated: accent-colored border when enabled, neutral grey otherwise.
     border.color: Settings.cardColorfulBorder
         ? Qt.lighter(Settings.accentColor, 1.4)
         : Material.color(Material.Grey, Material.Shade300)

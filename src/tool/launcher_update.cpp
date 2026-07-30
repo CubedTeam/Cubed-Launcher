@@ -150,7 +150,6 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
 
         return;
     }
-    // AI-generated: reset progress so UI can re-trigger on finish/error.
     m_download_progress = 0.0f;
     emit download_progress_changed();
     m_download_finish = false;
@@ -175,7 +174,6 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
         return;
     }
     QString download_url = m_latest_launcher_link;
-    // AI-generated: prepend mirror prefix, 0 = direct.
     if (mirror_index > 0 && mirror_index < mirror_sources.size()) {
         const QString& prefix = mirror_sources.at(mirror_index).prefix;
         if (!prefix.isEmpty()) {
@@ -219,7 +217,6 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
                 file->close();
                 m_download_reply = nullptr;
 
-                // AI-generated: user-cancelled, finish quietly.
                 if (m_cancelling) {
                     m_cancelling = false;
                     download_reply->deleteLater();
@@ -307,7 +304,7 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
             });
 }
 
-// AI-generated: abort the in-flight update; finished handler clears state.
+// AI-generated: abort in-flight update; finished handler clears state.
 void LauncherUpdate::cancel_download() {
     if (!m_downloading || m_cancelling || !m_download_reply) {
         return;

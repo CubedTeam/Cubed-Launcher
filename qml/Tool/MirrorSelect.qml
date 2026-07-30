@@ -15,8 +15,6 @@ Popup {
     focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
 
-    // AI-generated: hold name + latency for every mirror so the list can
-    // render a stable ms label per row.
     ListModel {
         id: mirrorModel
         Component.onCompleted: {
@@ -28,6 +26,8 @@ Popup {
                     "testing": false
                 });
             }
+        }
+    }
         }
     }
 
@@ -55,8 +55,8 @@ Popup {
             delegate: ItemDelegate {
                 id: row
                 width: mirrorList.width
-                // AI-generated: expose model row via required properties so
-                // ComponentBehavior: Bound does not break the binding.
+                // AI-generated: required properties so ComponentBehavior: Bound
+                // does not break the model binding.
                 required property int index
                 required property string name
                 required property int latency
@@ -76,8 +76,6 @@ Popup {
                         Layout.fillWidth: true
                     }
 
-                    // AI-generated: show measured RTT; while testing shows
-                    // busy spinner; negative means unreachable/timeout.
                     Label {
                         id: latencyLabel
                         Layout.preferredWidth: 120
@@ -123,7 +121,6 @@ Popup {
             }
         }
 
-        // AI-generated: probe every mirror in parallel and report RTT.
         Button {
             id: testButton
             Layout.alignment: Qt.AlignCenter
@@ -145,7 +142,7 @@ Popup {
         }
     }
 
-    // AI-generated: count probes still in flight so the button disables.
+    // AI-generated: probes in flight, gates the Test Latency button.
     property int pendingTests: 0
 
     Connections {

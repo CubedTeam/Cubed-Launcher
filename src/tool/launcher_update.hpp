@@ -30,7 +30,6 @@ class LauncherUpdate : public QObject {
     Q_PROPERTY(bool hasError READ has_error NOTIFY has_error_changed)
     Q_PROPERTY(
         QString errorMessage READ error_message NOTIFY error_message_changed)
-    // AI-generated: whether a download is in progress.
     Q_PROPERTY(bool downloading READ downloading NOTIFY downloading_changed)
 
 public:
@@ -46,10 +45,8 @@ public:
 
     Q_INVOKABLE void check_update(const QString& onwer, const QString& repo);
 
-    // AI-generated: mirror index, 0 = direct.
     Q_INVOKABLE void update_launcher(int mirror_index);
 
-    // AI-generated: abort the in-flight update download, if any.
     Q_INVOKABLE void cancel_download();
 
     bool downloading() const;
@@ -73,7 +70,6 @@ private:
     QVersionNumber m_local_version;
     QVersionNumber m_remote_version;
     QNetworkAccessManager m_manager;
-    // AI-generated: active update reply, used to abort on cancel.
     QPointer<QNetworkReply> m_download_reply;
 
     QString m_latest_launcher_link;

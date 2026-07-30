@@ -72,7 +72,6 @@ Item {
         }
     }
 
-    // AI-generated: launch controls split into Status and Launch cards.
     ColumnLayout {
         id: gameLayout
         anchors.bottom: parent.bottom
