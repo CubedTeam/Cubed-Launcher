@@ -56,6 +56,7 @@ qt_add_qml_module(${PROJECT_NAME}
     QML_FILES 
         qml/Main.qml
         qml/Sidebar.qml
+        qml/Component/Card.qml
         qml/Tab/Launch.qml
         qml/Tab/Setting.qml
         qml/Tab/About.qml

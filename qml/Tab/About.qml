@@ -23,11 +23,7 @@ Item {
         width: 500
         spacing: 24
         anchors.centerIn: parent
-        Rectangle {
-            radius: 16
-            color: "white"
-            border.color: Material.color(Material.Grey, Material.Shade300)
-            border.width: 1
+        Card {
             Layout.fillWidth: true
             Layout.preferredHeight: infoLayout.implicitHeight + 20
 
@@ -84,11 +80,8 @@ Item {
                 }
             }
         }
-        Rectangle {
-            radius: 16
-            color: "white"
-            border.color: Material.color(Material.Grey, Material.Shade300)
-            border.width: 1
+        Card {
+
             Layout.fillWidth: true
             Layout.preferredHeight: checkUpdateButton.implicitHeight + 20
             Button {

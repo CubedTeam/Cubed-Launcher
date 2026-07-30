@@ -26,12 +26,9 @@ Item {
         }
 
             // AI-generated: source selection card.
-            Rectangle {
+            Card {
                 Layout.preferredHeight: sourceLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 ColumnLayout {
                     id: sourceLayout
@@ -77,12 +74,9 @@ Item {
             }
 
             // AI-generated: install action card.
-            Rectangle {
+            Card {
                 Layout.preferredHeight: actionLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 ColumnLayout {
                     id: actionLayout
@@ -203,12 +197,9 @@ Item {
             }
 
             // AI-generated: status card.
-            Rectangle {
+            Card {
                 Layout.preferredHeight: statusLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 ColumnLayout {
                     id: statusLayout
@@ -259,12 +250,9 @@ Item {
             }
 
             // AI-generated: advanced options card.
-            Rectangle {
+            Card {
                 Layout.preferredHeight: advancedLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 ColumnLayout {
                     id: advancedLayout

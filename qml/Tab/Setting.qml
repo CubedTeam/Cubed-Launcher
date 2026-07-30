@@ -31,12 +31,9 @@ Item {
             width: 500
             spacing: 10
 
-            Rectangle {
+            Card {
                 Layout.preferredHeight: languageLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 ColumnLayout {
                     id: languageLayout
@@ -63,12 +60,9 @@ Item {
                 }
             }
 
-            Rectangle {
+            Card {
                 Layout.preferredHeight: colorLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 ColumnLayout {
                     id: colorLayout
@@ -105,12 +99,9 @@ Item {
                     }
                 }
             }
-            Rectangle {
+            Card {
                 Layout.preferredHeight: advancedSetting.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 Switch {
                     id: advancedSetting
@@ -122,12 +113,9 @@ Item {
             }
 
             // AI-generated: advanced settings split into categorized cards.
-            Rectangle {
+            Card {
                 Layout.preferredHeight: wrapperLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 visible: advancedSetting.checked
                 ColumnLayout {
@@ -151,12 +139,9 @@ Item {
                 }
             }
 
-            Rectangle {
+            Card {
                 Layout.preferredHeight: logLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 visible: advancedSetting.checked
                 ColumnLayout {
@@ -181,12 +166,9 @@ Item {
                 }
             }
 
-            Rectangle {
+            Card {
                 Layout.preferredHeight: networkLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                radius: 16
-                border.color: Material.color(Material.Grey, Material.Shade300)
-                border.width: 1
                 Layout.alignment: Qt.AlignCenter
                 visible: advancedSetting.checked
                 ColumnLayout {

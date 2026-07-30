@@ -39,11 +39,7 @@ Item {
         anchors.verticalCenterOffset: 30
         spacing: 10
         width: 400
-        Rectangle {
-            radius: 16
-            color: "white"
-            border.color: Material.color(Material.Grey, Material.Shade300)
-            border.width: 1
+        Card {
             Layout.fillWidth: true
             Layout.preferredHeight: installGameLayout.implicitHeight + 20
             ColumnLayout {
@@ -87,12 +83,9 @@ Item {
         width: 400
         spacing: 10
 
-        Rectangle {
+        Card {
             Layout.preferredHeight: statusLayout.implicitHeight + 20
             Layout.fillWidth: true
-            radius: 16
-            border.color: Material.color(Material.Grey, Material.Shade300)
-            border.width: 1
             Layout.alignment: Qt.AlignCenter
             visible: CubedInstance.running
             ColumnLayout {
@@ -114,12 +107,9 @@ Item {
                 }
             }
         }
-        Rectangle {
+        Card {
             Layout.preferredHeight: versionLayout.implicitHeight + 20
             Layout.fillWidth: true
-            radius: 16
-            border.color: Material.color(Material.Grey, Material.Shade300)
-            border.width: 1
             Layout.alignment: Qt.AlignCenter
             visible: CubedInstance.installed
             ColumnLayout {
@@ -141,12 +131,9 @@ Item {
                 }
             }
         }
-        Rectangle {
+        Card {
             Layout.preferredHeight: launchLayout.implicitHeight + 20
             Layout.fillWidth: true
-            radius: 16
-            border.color: Material.color(Material.Grey, Material.Shade300)
-            border.width: 1
             Layout.alignment: Qt.AlignCenter
             ColumnLayout {
                 id: launchLayout
