@@ -1,3 +1,4 @@
+// @checkPropertyInstance Settings C++
 pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Material
@@ -10,116 +11,234 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    // AI-generated: always-visible language picker near the page top.
-    ColumnLayout {
-        id: languageLayout
+    // AI-generated: scrollable settings page so the advanced section never
+    // gets clipped on small windows.
+    Flickable {
+        id: settingScroll
+        anchors.fill: parent
+        contentWidth: width
+        contentHeight: settingLayout.implicitHeight + 40
+        clip: true
+        boundsMovement: Flickable.StopAtBounds
 
-        anchors.bottom: advancedSetting.top
-        anchors.horizontalCenter: advancedSetting.horizontalCenter
-        anchors.bottomMargin: 50
-        spacing: 10
+        ScrollBar.vertical: ScrollBar {}
 
-        Label {
-            text: qsTr("Language")
-            font.pixelSize: 20
-            Layout.alignment: Qt.AlignCenter
-        }
-
-        ComboBox {
-            id: languageCombo
-            // AI-generated: index 0 -> zh_CN, index 1 -> en. "English" is left
-            // untranslated on purpose per the spec.
-            model: ["简体中文", "English"]
-            currentIndex: Settings.language === "en" ? 1 : 0
-            font.pixelSize: 20
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 300
-            onActivated: {
-                Settings.language = currentIndex === 1 ? "en" : "zh_CN";
-            }
-        }
-    }
-
-    Switch {
-        id: advancedSetting
-        anchors.centerIn: parent
-        font.pixelSize: 20
-        text: qsTr("Advanced Setting")
-        checked: false
-    }
-
-    ColumnLayout {
-
-        anchors.horizontalCenter: advancedSetting.horizontalCenter
-        anchors.top: advancedSetting.bottom
-        anchors.topMargin: 10
-
-        width: 300
-        spacing: 10
-
-        TextField {
-            id: wrapperCommand
-            visible: advancedSetting.checked
-            Layout.fillWidth: true
-            placeholderText: qsTr("Wrapper Command")
-            onEditingFinished: {
-                CubedInstance.set_wrapper_command(wrapperCommand.text);
-            }
-        }
-        Switch {
-            id: logStatus
-            visible: advancedSetting.checked
-            Layout.alignment: Qt.AlignCenter
-            checked: false
-            font.pixelSize: 20
-            text: qsTr("Log")
-            onCheckedChanged: {
-                CubedInstance.logOn = logStatus.checked;
-            }
-        }
-
-        ComboBox {
-            id: peerMode
-            visible: advancedSetting.checked
-            Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
-            font.pixelSize: 20
-            // AI-generated: host/client labels translated for display.
-            model: [qsTr("Host"), qsTr("Client")]
-            currentIndex: 0
-            onCurrentIndexChanged: {
-                CubedInstance.set_peer(peerMode.currentIndex);
-            }
-        }
-
-        TextField {
-            id: hostPort
-            visible: advancedSetting.checked && peerMode.currentIndex == 0
-            Layout.fillWidth: true
-            placeholderText: qsTr("Port")
-            onEditingFinished: {
-                CubedInstance.set_port(hostPort.text);
-            }
-        }
-
-        RowLayout {
-            visible: advancedSetting.checked && peerMode.currentIndex == 1
-            Layout.fillWidth: true
+        ColumnLayout {
+            id: settingLayout
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.top: parent.top
+            anchors.topMargin: 20
+            width: 500
             spacing: 10
-            TextField {
-                id: serverIp
+
+            Card {
+                Layout.preferredHeight: languageLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                placeholderText: qsTr("Ip")
-                onEditingFinished: {
-                    CubedInstance.set_ip(serverIp.text);
+                Layout.alignment: Qt.AlignCenter
+                ColumnLayout {
+                    id: languageLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Language")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    ComboBox {
+                        id: languageCombo
+                        // AI-generated: index 0 -> zh_CN, index 1 -> en. "English" is left
+                        // untranslated on purpose per the spec.
+                        model: ["简体中文", "English"]
+                        currentIndex: Settings.language === "en" ? 1 : 0
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 300
+                        onActivated: {
+                            Settings.language = currentIndex === 1 ? "en" : "zh_CN";
+                        }
+                    }
                 }
             }
-            TextField {
-                id: serverPort
+
+            Card {
+                Layout.preferredHeight: colorLayout.implicitHeight + 20
                 Layout.fillWidth: true
-                placeholderText: qsTr("Port")
-                onEditingFinished: {
-                    CubedInstance.set_port(serverPort.text);
+                Layout.alignment: Qt.AlignCenter
+                ColumnLayout {
+                    id: colorLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Theme Color")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    RowLayout {
+
+                        spacing: 12
+
+                        Repeater {
+                            model: [Material.Red, Material.Pink, Material.Purple, Material.Indigo, Material.Blue, Material.Cyan, Material.Teal, Material.Green, Material.Orange, Material.DeepOrange]
+
+                            delegate: Rectangle {
+                                required property int modelData
+                                width: 32
+                                height: 32
+                                radius: 16
+                                color: Qt.lighter(Material.color(modelData), 1.2)
+                                border.width: Settings.accentColor === Qt.lighter(Material.color(modelData), 1.2) ? 3 : 0
+                                border.color: Material.color(Material.Grey, Material.Shade700)
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: Settings.accentColor = Qt.lighter(Material.color(modelData), 1.2)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            Card {
+                Layout.preferredHeight: colorfulBorder.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                // AI-generated: toggle between accent and neutral grey card borders.
+                Switch {
+                    id: colorfulBorder
+                    anchors.centerIn: parent
+                    font.pixelSize: 20
+                    text: qsTr("Colorful Card Border")
+                    checked: Settings.cardColorfulBorder
+                    onCheckedChanged: Settings.cardColorfulBorder = checked
+                }
+            }
+
+            Card {
+                Layout.preferredHeight: advancedSetting.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                Switch {
+                    id: advancedSetting
+                    anchors.centerIn: parent
+                    font.pixelSize: 20
+                    text: qsTr("Advanced Setting")
+                    checked: false
+                }
+            }
+
+            // AI-generated: advanced settings split into categorized cards.
+            Card {
+                Layout.preferredHeight: wrapperLayout.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                visible: advancedSetting.checked
+                ColumnLayout {
+                    id: wrapperLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Wrapper Command")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    TextField {
+                        id: wrapperCommand
+                        Layout.preferredWidth: 300
+                        Layout.alignment: Qt.AlignCenter
+                        placeholderText: qsTr("Wrapper Command")
+                        onEditingFinished: {
+                            CubedInstance.set_wrapper_command(wrapperCommand.text);
+                        }
+                    }
+                }
+            }
+
+            Card {
+                Layout.preferredHeight: logLayout.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                visible: advancedSetting.checked
+                ColumnLayout {
+                    id: logLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Log")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    Switch {
+                        id: logStatus
+                        checked: false
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                        onCheckedChanged: {
+                            CubedInstance.logOn = logStatus.checked;
+                        }
+                        text: checked ? qsTr("On") : qsTr("Off")
+                    }
+                }
+            }
+
+            Card {
+                Layout.preferredHeight: networkLayout.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                visible: advancedSetting.checked
+                ColumnLayout {
+                    id: networkLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Network")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    ComboBox {
+                        id: peerMode
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 300
+                        font.pixelSize: 20
+                        // AI-generated: host/client labels translated for display.
+                        model: [qsTr("Host"), qsTr("Client")]
+                        currentIndex: 0
+                        onCurrentIndexChanged: {
+                            CubedInstance.set_peer(peerMode.currentIndex);
+                        }
+                    }
+                    TextField {
+                        id: hostPort
+                        visible: peerMode.currentIndex == 0
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 300
+                        placeholderText: qsTr("Port")
+                        onEditingFinished: {
+                            CubedInstance.set_port(hostPort.text);
+                        }
+                    }
+                    RowLayout {
+                        visible: peerMode.currentIndex == 1
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 300
+                        spacing: 10
+                        TextField {
+                            id: serverIp
+                            Layout.fillWidth: true
+                            placeholderText: qsTr("Ip")
+                            onEditingFinished: {
+                                CubedInstance.set_ip(serverIp.text);
+                            }
+                        }
+                        TextField {
+                            id: serverPort
+                            Layout.fillWidth: true
+                            placeholderText: qsTr("Port")
+                            onEditingFinished: {
+                                CubedInstance.set_port(serverPort.text);
+                            }
+                        }
+                    }
                 }
             }
         }
