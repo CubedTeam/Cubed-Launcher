@@ -67,7 +67,6 @@ bool FileDownloader::start(const QString& url, const QString& save_path) {
             });
     connect(reply, &QNetworkReply::finished, this, [this, file, save_path]() {
         file->close();
-        m_reply = nullptr;
         on_reply_finished();
     });
     return true;
@@ -82,6 +81,14 @@ void FileDownloader::cancel() {
 }
 
 void FileDownloader::on_reply_finished() {
+    // AI-generated: snapshot reply, then null m_reply before deleteLater
+    // so reentrant access sees a clean state and the reply is always freed.
+    QPointer<QNetworkReply> reply = m_reply;
+    m_reply = nullptr;
+    if (reply) {
+        reply->deleteLater();
+    }
+
     if (m_cancelling) {
         m_cancelling = false;
         QFile::remove(m_save_path);
@@ -91,12 +98,17 @@ void FileDownloader::on_reply_finished() {
         emit download_cancelled(m_save_path);
         return;
     }
-    m_has_error = true;
-    m_error_message = m_reply ? m_reply->errorString()
-                              : QStringLiteral("Unknown network error");
-    if (m_reply) {
-        m_reply->deleteLater();
+
+    if (reply && reply->error() == QNetworkReply::NoError) {
+        m_progress = 1.0f;
+        emit progress_changed();
+        emit download_complete(m_save_path);
+        return;
     }
+
+    m_has_error = true;
+    m_error_message =
+        reply ? reply->errorString() : QStringLiteral("Unknown network error");
     QFile::remove(m_save_path);
     emit has_error_changed();
     emit error_message_changed();

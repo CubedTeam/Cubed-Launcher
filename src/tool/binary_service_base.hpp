@@ -12,6 +12,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <QString>
 #include <QStringList>
@@ -69,8 +70,10 @@ public:
 
     // Launch the managed process with the given program and arguments.
     // Subclasses expose their own Q_INVOKABLE start() that gathers
-    // arguments and forwards here.
-    void launch_process(const QString& program, const QStringList& arguments);
+    // arguments and forwards here. Optional env is applied to the process
+    // so callers can keep secrets out of /proc/<pid>/cmdline.
+    void launch_process(const QString& program, const QStringList& arguments,
+                        const QProcessEnvironment& env = {});
 
 signals:
     void state_changed();

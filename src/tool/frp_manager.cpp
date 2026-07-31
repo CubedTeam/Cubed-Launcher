@@ -79,7 +79,9 @@ void FrpManager::install_binaries_impl(const QString& inner_dir,
                                        const QString& tmp_root) {
     QDir().mkpath(m_install_path);
 
-    const QString src_binary = inner_dir + "/frpc";
+    // AI-generated: frpc ships as frpc.exe inside the Windows archive.
+    const QString src_binary =
+        inner_dir + "/" + QFileInfo(frpc_binary()).fileName();
     if (!QFile::exists(src_binary)) {
         QDir(tmp_root).removeRecursively();
         set_error(QStringLiteral("frpc binary not found in archive"));

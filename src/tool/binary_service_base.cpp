@@ -302,7 +302,8 @@ void BinaryServiceBase::wire_process(QProcess* p) {
 }
 
 void BinaryServiceBase::launch_process(const QString& program,
-                                       const QStringList& arguments) {
+                                       const QStringList& arguments,
+                                       const QProcessEnvironment& env) {
     if (running()) {
         return;
     }
@@ -321,6 +322,7 @@ void BinaryServiceBase::launch_process(const QString& program,
     m_process->setWorkingDirectory(m_install_path);
     m_process->setProgram(program);
     m_process->setArguments(arguments);
+    m_process->setProcessEnvironment(env);
 
     wire_process(m_process);
 

@@ -10,6 +10,7 @@
 #include <QFileInfo>
 #include <QGuiApplication>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <qmicroz.h>
 
@@ -183,10 +184,14 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
             "Network name, secret and peer address are required"));
         return;
     }
-    launch_process(core_binary(),
-                   QStringList() << "-d" << "--network-name" << network_name
-                                 << "--network-secret" << network_secret << "-p"
-                                 << peer_address << "--no-tun");
+    // AI-generated: pass secrets via env so they stay out of /proc cmdline.
+    QProcessEnvironment env;
+    env.insert(QStringLiteral("ET_NETWORK_NAME"), network_name);
+    env.insert(QStringLiteral("ET_NETWORK_SECRET"), network_secret);
+    env.insert(QStringLiteral("ET_PEERS"), peer_address);
+    env.insert(QStringLiteral("ET_DHCP"), QStringLiteral("true"));
+    env.insert(QStringLiteral("ET_NO_TUN"), QStringLiteral("true"));
+    launch_process(core_binary(), {}, env);
     if (running()) {
         start_ip_polling();
     }
