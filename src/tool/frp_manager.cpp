@@ -181,7 +181,7 @@ void FrpManager::on_release_fetched(int mirror_index,
 
 void FrpManager::start_download(const QString& url) {
 
-    if (busy() || running() || m_download_reply) {
+    if (m_download_reply) {
         return;
     }
     QNetworkRequest req(url);
