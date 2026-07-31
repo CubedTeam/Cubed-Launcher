@@ -50,7 +50,7 @@ Item {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter
                 Layout.preferredHeight: installLayout.implicitHeight + 20
-                visible: !FrpManager.installed || FrpManager.busy || FrpManager.hasError
+                visible: !FrpManager.installed || FrpManager.busy
                 Loader {
                     id: installLayout
                     width: parent.width
