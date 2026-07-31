@@ -12,8 +12,7 @@ Item {
     height: installLayout.implicitHeight
     ColumnLayout {
         id: installLayout
-        anchors.fill: parent
-        anchors.margins: 10
+        width: 520
         spacing: 10
 
         Label {
@@ -108,9 +107,9 @@ Item {
             text: FrpManager.installed ? qsTr("Reinstall") : qsTr("Download && Install")
             onClicked: {
                 if (customDowlaodSwitch.checked) {
-                    FrpManager.check_and_install(Settings.mirrorIndex);
-                } else {
                     FrpManager.install_from_url(customLinkText.text);
+                } else {
+                    FrpManager.check_and_install(Settings.mirrorIndex);
                 }
             }
         }
