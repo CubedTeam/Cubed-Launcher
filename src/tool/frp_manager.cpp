@@ -3,6 +3,7 @@
 #include "tool/mirror.hpp"
 #include "tool/user_agent.hpp"
 
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -35,6 +36,19 @@ QString default_install_path() {
     return QStandardPaths::writableLocation(
                QStandardPaths::AppLocalDataLocation) +
            "/frp";
+}
+
+QString frpc_binary_name() {
+#ifdef _WIN32
+    return QStringLiteral("frpc.exe");
+#else
+    return QStringLiteral("frpc");
+#endif
+}
+
+QString extract_temp_dir() {
+    return QDir::temp().filePath(QStringLiteral("frp_install_%1")
+                                     .arg(QDateTime::currentMSecsSinceEpoch()));
 }
 } // namespace
 
@@ -228,77 +242,93 @@ void FrpManager::on_download_finished(const QString& archive_path) {
 }
 
 void FrpManager::extract_archive(const QString& archive_path) {
-    QDir().mkpath(m_install_path);
+    const QString tmp_dir = extract_temp_dir();
+    if (!QDir().mkpath(tmp_dir)) {
+        QFile::remove(archive_path);
+        set_error(QStringLiteral("Cannot create temp dir: %1").arg(tmp_dir));
+        return;
+    }
 
 #ifdef _WIN32
     QMicroz zip(archive_path);
-    zip.setOutputFolder(m_install_path);
+    zip.setOutputFolder(tmp_dir);
     if (!zip.extractAll()) {
         QFile::remove(archive_path);
+        QDir(tmp_dir).removeRecursively();
         set_error(QStringLiteral("Failed to extract zip archive"));
         return;
     }
     QFile::remove(archive_path);
-    const QString extracted_root = zip.outputFolder();
-    QDir rootDir(extracted_root);
-    const auto entries = rootDir.entryList(QStringList() << "frp_*",
-                                           QDir::Dirs | QDir::NoDotAndDotDot);
-    if (entries.isEmpty()) {
-        set_error(QStringLiteral("Empty extracted archive"));
-        return;
-    }
-    move_extracted(rootDir.filePath(entries.first()));
 #else
     QProcess tar;
     tar.setProgram("tar");
-    tar.setArguments({"xzf", archive_path, "-C", m_install_path});
+    tar.setArguments({"xzf", archive_path, "-C", tmp_dir});
     tar.start();
     if (!tar.waitForStarted() || !tar.waitForFinished(-1)) {
         QFile::remove(archive_path);
+        QDir(tmp_dir).removeRecursively();
         set_error(
             QStringLiteral("Failed to run tar: %1").arg(tar.errorString()));
         return;
     }
     QFile::remove(archive_path);
-    QDir rootDir(m_install_path);
+#endif
+
+    QDir rootDir(tmp_dir);
     const auto entries = rootDir.entryList(QStringList() << "frp_*",
                                            QDir::Dirs | QDir::NoDotAndDotDot);
     if (entries.isEmpty()) {
+        QDir(tmp_dir).removeRecursively();
         set_error(QStringLiteral("No frp_* directory after extraction"));
         return;
     }
-    move_extracted(rootDir.filePath(entries.first()));
-#endif
+    const QString inner_dir = rootDir.filePath(entries.first());
+    install_frpc_binary(inner_dir, tmp_dir);
 }
 
-void FrpManager::move_extracted(const QString& inner_dir) {
-    QDir src(inner_dir);
-    if (!src.exists()) {
-        set_error(QStringLiteral("Extracted dir missing: %1").arg(inner_dir));
+void FrpManager::install_frpc_binary(const QString& inner_dir,
+                                     const QString& tmp_root) {
+    QDir().mkpath(m_install_path);
+
+    const QString src_binary = inner_dir + "/" + frpc_binary_name();
+    if (!QFile::exists(src_binary)) {
+        QDir(tmp_root).removeRecursively();
+        set_error(QStringLiteral("frpc binary not found in archive"));
         return;
     }
-    const auto entries = src.entryList(QDir::AllEntries | QDir::NoDotAndDotDot);
-    for (const auto& name : entries) {
-        const QString from = src.filePath(name);
-        const QString to = m_install_path + "/" + name;
-        QFile::remove(to);
-        if (!QFile::rename(from, to)) {
-            // Fall back to copy then remove.
-            if (!QFile::copy(from, to)) {
-                set_error(QStringLiteral("Failed to move %1").arg(from));
-                return;
-            }
-            QFile::remove(from);
+
+    const QString dst_binary = frpc_binary();
+    if (QFile::exists(dst_binary)) {
+        QFile::remove(dst_binary);
+    }
+    if (!QFile::copy(src_binary, dst_binary)) {
+        QDir(tmp_root).removeRecursively();
+        set_error(QStringLiteral("Failed to copy frpc binary"));
+        return;
+    }
+#ifndef _WIN32
+    QFile::setPermissions(dst_binary, QFile::permissions(dst_binary) |
+                                          QFile::ExeOwner | QFile::ExeGroup |
+                                          QFile::ExeOther);
+#endif
+
+    // Only seed frpc.toml on first install; preserve user config on reinstall.
+    const QString dst_toml = toml_path();
+    if (!QFile::exists(dst_toml)) {
+        const QString src_toml = inner_dir + "/frpc.toml";
+        if (QFile::exists(src_toml)) {
+            QFile::copy(src_toml, dst_toml);
         }
     }
-    QDir().rmdir(inner_dir);
+
+    QDir(tmp_root).removeRecursively();
 
     if (!installed()) {
         set_error(
             QStringLiteral("Install completed but frpc/frpc.toml missing"));
         return;
     }
-    append_log(QStringLiteral("Installed frp to %1").arg(m_install_path));
+    append_log(QStringLiteral("Installed frpc to %1").arg(m_install_path));
     clear_error();
     set_state(Ready);
     emit installed_changed();

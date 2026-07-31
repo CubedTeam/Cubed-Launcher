@@ -84,7 +84,7 @@ private:
     void start_download(const QString& url);
     void on_download_finished(const QString& archive_path);
     void extract_archive(const QString& archive_path);
-    void move_extracted(const QString& tmp_dir);
+    void install_frpc_binary(const QString& inner_dir, const QString& tmp_root);
     void load_toml_into_property();
 
     QString frpc_binary() const;
