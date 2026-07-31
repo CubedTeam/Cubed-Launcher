@@ -146,6 +146,28 @@ void EasyTierManager::install_binaries_impl(const QString& inner_dir,
         return;
     }
 
+#ifdef _WIN32
+    // AI-generated: easytier-core ships with runtime DLLs (vcruntime, wintun,
+    // ...); copy all of them so the installed binary can resolve its imports.
+    QDirIterator dll_it(
+        inner.absolutePath(), QStringList() << QStringLiteral("*.dll"),
+        QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
+    while (dll_it.hasNext()) {
+        const QString src_dll = dll_it.next();
+        const QString dst_dll =
+            m_install_path + "/" + QFileInfo(src_dll).fileName();
+        if (QFile::exists(dst_dll)) {
+            QFile::remove(dst_dll);
+        }
+        if (!QFile::copy(src_dll, dst_dll)) {
+            QDir(tmp_root).removeRecursively();
+            set_error(QStringLiteral("Failed to copy %1")
+                          .arg(QFileInfo(src_dll).fileName()));
+            return;
+        }
+    }
+#endif
+
     QDir(tmp_root).removeRecursively();
 
     if (!installed()) {
