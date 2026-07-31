@@ -68,6 +68,9 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tab/Manager.qml
         qml/Tool/DownloadGame.qml
         qml/Tool/FrpManagement.qml
+        qml/Tool/EasyTierManagement.qml
+        qml/Tool/FrpSection.qml
+        qml/Tool/EasyTierSection.qml
     RESOURCES
         resources/logo.png
 
@@ -88,6 +91,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/game_update.cpp
         src/tool/frp_manager.hpp
         src/tool/frp_manager.cpp
+        src/tool/easytier_manager.hpp
+        src/tool/easytier_manager.cpp
 
 )
 

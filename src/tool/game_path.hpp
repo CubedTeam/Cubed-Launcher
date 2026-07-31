@@ -26,3 +26,9 @@ inline QString get_default_frp_install_dir() {
                QStandardPaths::AppLocalDataLocation) +
            "/frp";
 }
+
+inline QString get_default_easytier_install_dir() {
+    return QStandardPaths::writableLocation(
+               QStandardPaths::AppLocalDataLocation) +
+           "/easytier";
+}

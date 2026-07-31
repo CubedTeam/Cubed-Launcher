@@ -1,3 +1,5 @@
+// AI-generated: easytier download / install card. Mirrors FrpManagement but
+// without startup controls (not implemented yet).
 pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Material
@@ -17,7 +19,7 @@ Item {
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            text: qsTr("Frp Manager")
+            text: qsTr("EasyTier Manager")
             font.pixelSize: 18
             font.bold: true
         }
@@ -25,20 +27,28 @@ Item {
         Label {
             Layout.alignment: Qt.AlignCenter
             text: qsTr("Not Installed")
-            visible: !FrpManager.installed && !FrpManager.busy
+            visible: !EasyTierManager.installed && !EasyTierManager.busy
             font.pixelSize: 18
             color: Material.color(Material.Orange)
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            visible: FrpManager.busy
+            text: qsTr("Installed: %1").arg(EasyTierManager.version)
+            visible: EasyTierManager.installed && !EasyTierManager.busy
+            font.pixelSize: 18
+            color: Material.color(Material.Green)
+        }
+
+        Label {
+            Layout.alignment: Qt.AlignCenter
+            visible: EasyTierManager.busy
             text: {
-                if (FrpManager.state === FrpManager.Checking)
+                if (EasyTierManager.state === EasyTierManager.Checking)
                     return qsTr("Checking for updates...");
-                if (FrpManager.state === FrpManager.Downloading)
+                if (EasyTierManager.state === EasyTierManager.Downloading)
                     return qsTr("Downloading...");
-                if (FrpManager.state === FrpManager.Extracting)
+                if (EasyTierManager.state === EasyTierManager.Extracting)
                     return qsTr("Extracting...");
                 return qsTr("Working...");
             }
@@ -50,14 +60,14 @@ Item {
             Layout.preferredWidth: 400
             from: 0.0
             to: 1.0
-            value: FrpManager.downloadProgress
-            visible: FrpManager.state === FrpManager.Downloading
+            value: EasyTierManager.downloadProgress
+            visible: EasyTierManager.state === EasyTierManager.Downloading
         }
 
         Label {
             Layout.alignment: Qt.AlignCenter
-            visible: FrpManager.hasError
-            text: FrpManager.errorMessage
+            visible: EasyTierManager.hasError
+            text: EasyTierManager.errorMessage
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
@@ -103,13 +113,13 @@ Item {
             font.pixelSize: 18
             Material.roundedScale: Material.MediumScale
             highlighted: true
-            enabled: !FrpManager.busy && !FrpManager.running
-            text: FrpManager.installed ? qsTr("Reinstall") : qsTr("Download && Install")
+            enabled: !EasyTierManager.busy
+            text: EasyTierManager.installed ? qsTr("Reinstall") : qsTr("Download && Install")
             onClicked: {
                 if (customDowlaodSwitch.checked) {
-                    FrpManager.install_from_url(customLinkText.text);
+                    EasyTierManager.install_from_url(customLinkText.text);
                 } else {
-                    FrpManager.check_and_install(Settings.mirrorIndex);
+                    EasyTierManager.check_and_install(Settings.mirrorIndex);
                 }
             }
         }
@@ -120,9 +130,9 @@ Item {
             Layout.preferredHeight: 50
             font.pixelSize: 16
             Material.roundedScale: Material.MediumScale
-            visible: FrpManager.installed && !FrpManager.busy
+            visible: EasyTierManager.installed && !EasyTierManager.busy
             text: qsTr("Uninstall")
-            onClicked: FrpManager.reset_install()
+            onClicked: EasyTierManager.reset_install()
         }
     }
     MirrorSelect {
