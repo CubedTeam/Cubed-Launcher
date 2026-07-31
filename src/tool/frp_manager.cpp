@@ -426,3 +426,7 @@ Q_INVOKABLE QString FrpManager::read_toml() const {
     }
     return QString::fromUtf8(f.readAll());
 }
+
+Q_INVOKABLE void FrpManager::install_from_url(const QString& url) {
+    start_download(url);
+}

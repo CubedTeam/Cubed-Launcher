@@ -65,9 +65,17 @@ Item {
             color: Material.color(Material.Red)
             font.pixelSize: 16
         }
-
+        Switch {
+            id: customDowlaodSwitch
+            checked: false
+            font.pixelSize: 14
+            Layout.alignment: Qt.AlignCenter
+            text: qsTr("Custom Link")
+        }
         Button {
             id: mirrorButton
+            visible: !customDowlaodSwitch.checked
+            enabled: visible
             Layout.alignment: Qt.AlignCenter
             Layout.preferredWidth: 250
             Layout.preferredHeight: 50
@@ -80,7 +88,15 @@ Item {
             }
             onClicked: mirrorPopup.open()
         }
-
+        TextField {
+            id: customLinkText
+            visible: customDowlaodSwitch.checked
+            enabled: visible
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredWidth: 250
+            Layout.preferredHeight: 50
+            placeholderText: qsTr("Download Link")
+        }
         Button {
             Layout.alignment: Qt.AlignCenter
             Layout.preferredWidth: 250
@@ -90,7 +106,13 @@ Item {
             highlighted: true
             enabled: !FrpManager.busy && !FrpManager.running
             text: FrpManager.installed ? qsTr("Reinstall") : qsTr("Download && Install")
-            onClicked: FrpManager.check_and_install(Settings.mirrorIndex)
+            onClicked: {
+                if (customDowlaodSwitch.checked) {
+                    FrpManager.check_and_install(Settings.mirrorIndex);
+                } else {
+                    FrpManager.install_from_url(customLinkText.text);
+                }
+            }
         }
 
         Button {
