@@ -58,12 +58,14 @@ Item {
             Layout.alignment: Qt.AlignCenter
             visible: root.manager.busy
             text: {
-                if (root.manager.state === root.manager.Checking)
-                    return qsTr("Checking for updates...");
-                if (root.manager.state === root.manager.Downloading)
-                    return qsTr("Downloading...");
-                if (root.manager.state === root.manager.Extracting)
-                    return qsTr("Extracting...");
+                // BinaryServiceBase::State values: NotInstalled=0, Checking=1,
+                // Downloading=2, Extracting=3. Compared as integers because
+                // the manager is bound through a `var` property and QML
+                // cannot resolve Q_ENUM values from `var`.
+                const s = root.manager.state;
+                if (s === 1) return qsTr("Checking for updates...");
+                if (s === 2) return qsTr("Downloading...");
+                if (s === 3) return qsTr("Extracting...");
                 return qsTr("Working...");
             }
             font.pixelSize: 18
@@ -75,7 +77,7 @@ Item {
             from: 0.0
             to: 1.0
             value: root.manager.downloadProgress
-            visible: root.manager.state === root.manager.Downloading
+            visible: root.manager.state === 2
         }
 
         Label {
