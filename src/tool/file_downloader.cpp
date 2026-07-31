@@ -4,7 +4,7 @@
 
 #include <QFile>
 #include <QNetworkRequest>
-
+#include <QProcessEnvironment>
 FileDownloader::FileDownloader(QNetworkAccessManager* manager, QObject* parent)
     : QObject(parent), m_manager(manager) {}
 
