@@ -7,6 +7,6 @@ import CubedLauncher
 ServiceInstallCard {
     manager: FrpManager
     title: qsTr("Frp Manager")
-    showInstalledVersion: false
+    showInstalledVersion: true
     blockWhileRunning: true
 }

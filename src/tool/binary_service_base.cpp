@@ -103,6 +103,7 @@ void BinaryServiceBase::on_release_fetched(int mirror_index,
         return;
     }
     m_version = r.version;
+    qDebug() << service_name() << " Version: " << m_version;
     emit version_changed();
 
     QString url = r.downloadUrl;

@@ -13,13 +13,11 @@ Item {
     property var manager
     property string title: ""
     // Some services want to advertise the installed version inside the
-    // install card; frp prefers to keep the version only on the control
-    // card.
+    // install card;
     property bool showInstalledVersion: true
     // When true, the primary action button is also disabled while the
-    // service is running (matches frp). EasyTier historically allowed
-    // reinstall while running, so this defaults to false.
-    property bool blockWhileRunning: false
+    // service is running
+    property bool blockWhileRunning: true
 
     implicitWidth: installLayout.implicitWidth
     implicitHeight: installLayout.implicitHeight
@@ -63,9 +61,12 @@ Item {
                 // the manager is bound through a `var` property and QML
                 // cannot resolve Q_ENUM values from `var`.
                 const s = root.manager.state;
-                if (s === 1) return qsTr("Checking for updates...");
-                if (s === 2) return qsTr("Downloading...");
-                if (s === 3) return qsTr("Extracting...");
+                if (s === 1)
+                    return qsTr("Checking for updates...");
+                if (s === 2)
+                    return qsTr("Downloading...");
+                if (s === 3)
+                    return qsTr("Extracting...");
                 return qsTr("Working...");
             }
             font.pixelSize: 18

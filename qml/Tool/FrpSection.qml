@@ -75,7 +75,7 @@ Item {
 
                 Label {
                     Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Frp Client: %1").arg(FrpManager.version)
+                    text: qsTr("Frp Client")
                     font.pixelSize: 18
                     font.bold: true
                 }

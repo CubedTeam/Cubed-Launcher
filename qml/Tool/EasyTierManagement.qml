@@ -8,5 +8,5 @@ ServiceInstallCard {
     manager: EasyTierManager
     title: qsTr("EasyTier Manager")
     showInstalledVersion: true
-    blockWhileRunning: false
+    blockWhileRunning: true
 }

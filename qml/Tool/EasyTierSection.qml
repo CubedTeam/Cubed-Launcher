@@ -75,7 +75,7 @@ Item {
 
                 Label {
                     Layout.alignment: Qt.AlignCenter
-                    text: qsTr("EasyTier Client: %1").arg(EasyTierManager.version)
+                    text: qsTr("EasyTier Client")
                     font.pixelSize: 18
                     font.bold: true
                 }
