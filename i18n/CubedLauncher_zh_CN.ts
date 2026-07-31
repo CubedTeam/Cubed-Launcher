@@ -179,175 +179,168 @@
 <context>
     <name>EasyTierManagement</name>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="22"/>
+        <location filename="../qml/Tool/EasyTierManagement.qml" line="9"/>
         <source>EasyTier Manager</source>
         <translation>EasyTier 管理</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="29"/>
         <source>Not Installed</source>
-        <translation>未安装</translation>
+        <translation type="vanished">未安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="37"/>
         <source>Installed: %1</source>
-        <translation>已安装：%1</translation>
+        <translation type="vanished">已安装：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="48"/>
         <source>Checking for updates...</source>
-        <translation>正在检查更新...</translation>
+        <translation type="vanished">正在检查更新...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="50"/>
         <source>Downloading...</source>
-        <translation>正在下载...</translation>
+        <translation type="vanished">正在下载...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="52"/>
         <source>Extracting...</source>
-        <translation>正在解压...</translation>
+        <translation type="vanished">正在解压...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="53"/>
         <source>Working...</source>
-        <translation>处理中...</translation>
+        <translation type="vanished">处理中...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="82"/>
         <source>Custom Link</source>
-        <translation>自定义链接</translation>
+        <translation type="vanished">自定义链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="96"/>
         <source>Mirror: </source>
-        <translation>镜像：</translation>
+        <translation type="vanished">镜像：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="107"/>
         <source>Download Link</source>
-        <translation>下载链接</translation>
+        <translation type="vanished">下载链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="117"/>
         <source>Reinstall</source>
-        <translation>重新安装</translation>
+        <translation type="vanished">重新安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="117"/>
         <source>Download &amp;&amp; Install</source>
-        <translation>下载并安装</translation>
+        <translation type="vanished">下载并安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierManagement.qml" line="134"/>
         <source>Uninstall</source>
-        <translation>卸载</translation>
+        <translation type="vanished">卸载</translation>
     </message>
 </context>
 <context>
     <name>EasyTierSection</name>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="79"/>
         <source>EasyTier Client: %1</source>
-        <translation>EasyTier 客户端：%1</translation>
+        <translation type="vanished">EasyTier 客户端：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="86"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="78"/>
+        <source>EasyTier Client</source>
+        <translation>EasyTier 客户端</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="85"/>
         <source>Status: %1</source>
         <translation>状态：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="86"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="85"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="86"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="85"/>
         <source>Stopped</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="100"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="99"/>
         <source>Peer address (e.g. tcp://1.2.3.4:1010)</source>
         <translation>对等节点地址（例如 tcp://1.2.3.4:1010）</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="111"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="110"/>
         <source>Network name</source>
         <translation>网络名称</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="122"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="121"/>
         <source>Network secret</source>
         <translation>网络密钥</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="141"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="140"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="157"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="156"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="177"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="176"/>
         <source>Virtual IP</source>
         <translation>虚拟 IP</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="192"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="191"/>
         <source>--</source>
         <translation>--</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="202"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="201"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="212"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="211"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="220"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="219"/>
         <source>Waiting for easytier to assign IP...</source>
         <translation>等待 easytier 分配 IP...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="241"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="267"/>
+        <source>EasyTier Install Directory</source>
+        <translation>EasyTier 安装目录</translation>
+    </message>
+    <message>
         <source>Logs</source>
-        <translation>日志</translation>
+        <translation type="vanished">日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="252"/>
         <source>ShowLog</source>
-        <translation>显示日志</translation>
+        <translation type="vanished">显示日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="300"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="244"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="328"/>
         <source>EasyTier Install Directory: </source>
-        <translation>EasyTier 安装目录：</translation>
+        <translation type="vanished">EasyTier 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="344"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="268"/>
         <source>Set EasyTier Folder</source>
         <translation>设置 EasyTier 文件夹</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="352"/>
         <source>Reset Path</source>
-        <translation>重置路径</translation>
+        <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="365"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="279"/>
         <source>Select EasyTier Folder</source>
         <translation>选择 EasyTier 文件夹</translation>
     </message>
@@ -388,136 +381,130 @@
 <context>
     <name>FrpManagement</name>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="20"/>
+        <location filename="../qml/Tool/FrpManagement.qml" line="9"/>
         <source>Frp Manager</source>
         <translation>Frp 管理</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="27"/>
         <source>Not Installed</source>
-        <translation>未安装</translation>
+        <translation type="vanished">未安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="38"/>
         <source>Checking for updates...</source>
-        <translation>正在检查更新...</translation>
+        <translation type="vanished">正在检查更新...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="40"/>
         <source>Downloading...</source>
-        <translation>正在下载...</translation>
+        <translation type="vanished">正在下载...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="42"/>
         <source>Extracting...</source>
-        <translation>正在解压...</translation>
+        <translation type="vanished">正在解压...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="43"/>
         <source>Working...</source>
-        <translation>处理中...</translation>
+        <translation type="vanished">处理中...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="72"/>
         <source>Custom Link</source>
-        <translation>自定义链接</translation>
+        <translation type="vanished">自定义链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="86"/>
         <source>Mirror: </source>
-        <translation>镜像：</translation>
+        <translation type="vanished">镜像：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="97"/>
         <source>Download Link</source>
-        <translation>下载链接</translation>
+        <translation type="vanished">下载链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="107"/>
         <source>Reinstall</source>
-        <translation>重新安装</translation>
+        <translation type="vanished">重新安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="107"/>
         <source>Download &amp;&amp; Install</source>
-        <translation>下载并安装</translation>
+        <translation type="vanished">下载并安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpManagement.qml" line="124"/>
         <source>Uninstall</source>
-        <translation>卸载</translation>
+        <translation type="vanished">卸载</translation>
     </message>
 </context>
 <context>
     <name>FrpSection</name>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="79"/>
         <source>Frp Client: %1</source>
-        <translation>Frp 客户端：%1</translation>
+        <translation type="vanished">Frp 客户端：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="86"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="78"/>
+        <source>Frp Client</source>
+        <translation type="unfinished">Frp 客户端</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/FrpSection.qml" line="85"/>
         <source>Status: %1</source>
         <translation>状态：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="86"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="85"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="86"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="85"/>
         <source>Stopped</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="102"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="101"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="113"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="112"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="124"/>
-        <location filename="../qml/Tool/FrpSection.qml" line="271"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="123"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="185"/>
         <source>Edit frpc.toml</source>
         <translation>编辑 frpc.toml</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="144"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="167"/>
+        <source>Frp Install Directory</source>
+        <translation>Frp 安装目录</translation>
+    </message>
+    <message>
         <source>Logs</source>
-        <translation>日志</translation>
+        <translation type="vanished">日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="155"/>
         <source>ShowLog</source>
-        <translation>显示日志</translation>
+        <translation type="vanished">显示日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="202"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="146"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="228"/>
         <source>Frp Install Directory: </source>
-        <translation>Frp 安装目录：</translation>
+        <translation type="vanished">Frp 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="244"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="168"/>
         <source>Set Frp Folder</source>
         <translation>设置 Frp 文件夹</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="252"/>
         <source>Reset Path</source>
-        <translation>重置路径</translation>
+        <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="292"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="206"/>
         <source>Select Frp Folder</source>
         <translation>选择 Frp 文件夹</translation>
     </message>
@@ -538,6 +525,19 @@
         <location filename="../qml/Tool/GamePathSet.qml" line="43"/>
         <source>Select Cubed Game</source>
         <translation>选择 Cubed 游戏</translation>
+    </message>
+</context>
+<context>
+    <name>InstallPathCard</name>
+    <message>
+        <location filename="../qml/Component/InstallPathCard.qml" line="14"/>
+        <source>Set Folder</source>
+        <translation>选择文件夹</translation>
+    </message>
+    <message>
+        <location filename="../qml/Component/InstallPathCard.qml" line="15"/>
+        <source>Reset Path</source>
+        <translation type="unfinished">重置路径</translation>
     </message>
 </context>
 <context>
@@ -576,6 +576,19 @@
         <location filename="../qml/Tab/Launch.qml" line="165"/>
         <source>Start Game</source>
         <translation>开始游戏</translation>
+    </message>
+</context>
+<context>
+    <name>LogCard</name>
+    <message>
+        <location filename="../qml/Component/LogCard.qml" line="13"/>
+        <source>Logs</source>
+        <translation type="unfinished">日志</translation>
+    </message>
+    <message>
+        <location filename="../qml/Component/LogCard.qml" line="38"/>
+        <source>ShowLog</source>
+        <translation type="unfinished">显示日志</translation>
     </message>
 </context>
 <context>
@@ -732,6 +745,69 @@
     </message>
 </context>
 <context>
+    <name>ServiceInstallCard</name>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="41"/>
+        <source>Not Installed</source>
+        <translation type="unfinished">未安装</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="49"/>
+        <source>Installed: %1</source>
+        <translation type="unfinished">已安装：%1</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="65"/>
+        <source>Checking for updates...</source>
+        <translation type="unfinished">正在检查更新...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="67"/>
+        <source>Downloading...</source>
+        <translation type="unfinished">正在下载...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="69"/>
+        <source>Extracting...</source>
+        <translation type="unfinished">正在解压...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="70"/>
+        <source>Working...</source>
+        <translation type="unfinished">处理中...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="99"/>
+        <source>Custom Link</source>
+        <translation type="unfinished">自定义链接</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="113"/>
+        <source>Mirror: </source>
+        <translation type="unfinished">镜像：</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="124"/>
+        <source>Download Link</source>
+        <translation type="unfinished">下载链接</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="134"/>
+        <source>Reinstall</source>
+        <translation type="unfinished">重新安装</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="134"/>
+        <source>Download &amp;&amp; Install</source>
+        <translation type="unfinished">下载并安装</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="151"/>
+        <source>Uninstall</source>
+        <translation type="unfinished">卸载</translation>
+    </message>
+</context>
+<context>
     <name>Setting</name>
     <message>
         <location filename="../qml/Tab/Setting.qml" line="41"/>
@@ -827,6 +903,15 @@
         <location filename="../qml/Sidebar.qml" line="87"/>
         <source>About</source>
         <translation>关于</translation>
+    </message>
+</context>
+<context>
+    <name>SpecialThanks</name>
+    <message>
+        <location filename="../qml/pages/SpecialThanks.qml" line="13"/>
+        <location filename="../qml/pages/SpecialThanks.qml" line="29"/>
+        <source>Special Thanks</source>
+        <translation>特别鸣谢</translation>
     </message>
 </context>
 </TS>
