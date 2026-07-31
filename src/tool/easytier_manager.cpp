@@ -5,13 +5,16 @@
 #include "tool/mirror.hpp"
 #include "tool/user_agent.hpp"
 
+#include <QClipboard>
 #include <QDateTime>
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
+#include <QGuiApplication>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QProcess>
 #include <QRegularExpression>
 #include <QUrl>
 #include <qmicroz.h>
@@ -30,6 +33,14 @@ QString core_binary_name() {
     return QStringLiteral("easytier-core.exe");
 #else
     return QStringLiteral("easytier-core");
+#endif
+}
+
+QString cli_binary_name() {
+#ifdef _WIN32
+    return QStringLiteral("easytier-cli.exe");
+#else
+    return QStringLiteral("easytier-cli");
 #endif
 }
 
@@ -52,10 +63,23 @@ EasyTierManager::EasyTierManager(QObject* parent)
     detect_install();
 }
 
-EasyTierManager::~EasyTierManager() = default;
+EasyTierManager::~EasyTierManager() {
+    if (m_process && m_process->state() != QProcess::NotRunning) {
+        m_process->kill();
+        m_process->waitForFinished(2000);
+    }
+    delete m_process;
+    m_process = nullptr;
+    delete m_ip_poll_timer;
+    m_ip_poll_timer = nullptr;
+}
 
 bool EasyTierManager::installed() const {
     return QFileInfo::exists(core_binary());
+}
+
+bool EasyTierManager::running() const {
+    return m_process && m_process->state() != QProcess::NotRunning;
 }
 
 bool EasyTierManager::busy() const {
@@ -65,6 +89,10 @@ bool EasyTierManager::busy() const {
 
 QString EasyTierManager::core_binary() const {
     return m_install_path + "/" + core_binary_name();
+}
+
+QString EasyTierManager::cli_binary() const {
+    return m_install_path + "/" + cli_binary_name();
 }
 
 void EasyTierManager::set_state(State s) {
@@ -304,12 +332,7 @@ void EasyTierManager::install_binaries(const QString& inner_dir,
         set_error(QStringLiteral("Failed to copy easytier-core"));
         return;
     }
-#ifdef _WIN32
-    const QString cli_binary = m_install_path + "/easytier-cli.exe";
-#else
-    const QString cli_binary = m_install_path + "/easytier-cli";
-#endif
-    if (!copy_binary(src_cli, cli_binary)) {
+    if (!copy_binary(src_cli, cli_binary())) {
         QDir(tmp_root).removeRecursively();
         set_error(QStringLiteral("Failed to copy easytier-cli"));
         return;
@@ -342,6 +365,9 @@ Q_INVOKABLE void EasyTierManager::set_install_path(const QString& path) {
     if (path == m_install_path) {
         return;
     }
+    if (running()) {
+        stop();
+    }
     m_install_path = path;
     emit install_path_changed();
     detect_install();
@@ -352,4 +378,180 @@ Q_INVOKABLE void EasyTierManager::install_from_url(const QString& url) {
         return;
     }
     start_download(url);
+}
+
+Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
+                                        const QString& network_secret,
+                                        const QString& peer_address) {
+    if (running()) {
+        return;
+    }
+    if (!installed()) {
+        set_error(QStringLiteral("easytier-core is not installed"));
+        return;
+    }
+    if (network_name.isEmpty() || network_secret.isEmpty() ||
+        peer_address.isEmpty()) {
+        set_error(QStringLiteral(
+            "Network name, secret and peer address are required"));
+        return;
+    }
+    clear_error();
+
+    if (m_process) {
+        m_process->deleteLater();
+        m_process = nullptr;
+    }
+    m_process = new QProcess(this);
+    m_process->setWorkingDirectory(m_install_path);
+    m_process->setProgram(core_binary());
+    m_process->setArguments(
+        QStringList() << "-d"
+                      << "--network-name" << network_name << "--network-secret"
+                      << network_secret << "-p" << peer_address << "--no-tun");
+
+    connect(m_process, &QProcess::readyReadStandardOutput, this, [this]() {
+        const QByteArray data = m_process->readAllStandardOutput();
+        const auto lines = data.split('\n');
+        for (const auto& line : lines) {
+            if (line.isEmpty()) {
+                continue;
+            }
+            append_log(QString::fromUtf8(line));
+        }
+    });
+    connect(m_process, &QProcess::readyReadStandardError, this, [this]() {
+        const QByteArray data = m_process->readAllStandardError();
+        const auto lines = data.split('\n');
+        for (const auto& line : lines) {
+            if (line.isEmpty()) {
+                continue;
+            }
+            append_log(QString::fromUtf8(line));
+        }
+    });
+    connect(m_process, &QProcess::errorOccurred, this,
+            [this](QProcess::ProcessError) {
+                if (m_process) {
+                    set_error(m_process->errorString());
+                }
+            });
+    connect(m_process,
+            QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this,
+            [this](int exitCode, QProcess::ExitStatus) {
+                append_log(QStringLiteral("easytier-core exited with code %1")
+                               .arg(exitCode));
+                stop_ip_polling();
+                if (!m_virtual_ip.isEmpty()) {
+                    m_virtual_ip.clear();
+                    emit virtual_ip_changed();
+                }
+                if (m_process) {
+                    m_process->deleteLater();
+                    m_process = nullptr;
+                }
+                emit running_changed();
+                if (m_state == Running) {
+                    set_state(Ready);
+                }
+            });
+
+    m_process->start();
+    if (!m_process->waitForStarted(5000)) {
+        const QString err = m_process->errorString();
+        m_process->deleteLater();
+        m_process = nullptr;
+        set_error(QStringLiteral("Failed to start easytier-core: %1").arg(err));
+        return;
+    }
+    append_log(QStringLiteral("easytier-core started (pid %1)")
+                   .arg(m_process->processId()));
+    set_state(Running);
+    emit running_changed();
+    start_ip_polling();
+}
+
+void EasyTierManager::stop() {
+    if (!m_process || m_process->state() == QProcess::NotRunning) {
+        return;
+    }
+    append_log(QStringLiteral("Stopping easytier-core..."));
+    stop_ip_polling();
+    m_process->terminate();
+    if (!m_process->waitForFinished(3000)) {
+        m_process->kill();
+        m_process->waitForFinished(2000);
+    }
+}
+
+void EasyTierManager::start_ip_polling() {
+    if (!m_ip_poll_timer) {
+        m_ip_poll_timer = new QTimer(this);
+        m_ip_poll_timer->setInterval(2000);
+        connect(m_ip_poll_timer, &QTimer::timeout, this,
+                &EasyTierManager::on_ip_poll_timeout);
+    }
+    m_ip_poll_timer->start();
+    QTimer::singleShot(0, this, &EasyTierManager::on_ip_poll_timeout);
+}
+
+void EasyTierManager::stop_ip_polling() {
+    if (m_ip_poll_timer) {
+        m_ip_poll_timer->stop();
+    }
+}
+
+void EasyTierManager::on_ip_poll_timeout() {
+    if (!running()) {
+        stop_ip_polling();
+        return;
+    }
+    refresh_virtual_ip();
+}
+
+void EasyTierManager::refresh_virtual_ip() {
+    if (!running()) {
+        return;
+    }
+    if (!QFileInfo::exists(cli_binary())) {
+        return;
+    }
+    auto* cli = new QProcess(this);
+    cli->setProgram(cli_binary());
+    cli->setArguments(QStringList() << "node");
+    connect(cli, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, [this, cli](int exitCode, QProcess::ExitStatus) {
+                const QByteArray data = cli->readAllStandardOutput();
+                cli->deleteLater();
+                if (exitCode == 0) {
+                    parse_virtual_ip(data);
+                }
+            });
+    cli->start();
+}
+
+void EasyTierManager::parse_virtual_ip(const QByteArray& data) {
+    static const QRegularExpression ip_re(
+        QStringLiteral(R"(\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b)"));
+    const auto lines = QString::fromUtf8(data).split('\n');
+    for (const auto& line : lines) {
+        if (!line.contains(QStringLiteral("Virtual IP"))) {
+            continue;
+        }
+        const auto m = ip_re.match(line);
+        if (m.hasMatch()) {
+            const QString ip = m.captured(1);
+            if (ip != m_virtual_ip) {
+                m_virtual_ip = ip;
+                emit virtual_ip_changed();
+            }
+            return;
+        }
+    }
+}
+
+Q_INVOKABLE void EasyTierManager::copy_to_clipboard(const QString& text) {
+    if (QClipboard* cb = QGuiApplication::clipboard()) {
+        cb->setText(text);
+    }
 }

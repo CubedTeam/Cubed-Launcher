@@ -47,7 +47,7 @@ Item {
 
     ColumnLayout {
         id: frpLayout
-        width: 520
+        width: 560
         spacing: 12
 
         Card {
