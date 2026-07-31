@@ -16,6 +16,7 @@ Item {
             Layout.preferredHeight: 60
             highlighted: true
             Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
             contentItem: ColumnLayout {
                 spacing: 5
                 anchors.top: parent.top
@@ -48,6 +49,7 @@ Item {
             Layout.preferredWidth: 250
             Layout.preferredHeight: 60
             Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
             highlighted: true
             text: qsTr("Click me to Update")
             font.bold: true
@@ -71,21 +73,23 @@ Item {
         }
     }
 
-    Popup {
+    Dialog {
         id: updatePopup
         anchors.centerIn: Overlay.overlay
-        width: 500
-        height: 300
+        width: 520
+        height: 540
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        title: qsTr("Update Launcher")
+        standardButtons: Dialog.NoButton
 
         ColumnLayout {
             anchors.centerIn: parent
             spacing: 10
 
             Label {
-                text: qsTr("Update Launcher(Only Support Windows)")
+                text: qsTr("Only Support Windows")
                 Layout.alignment: Qt.AlignCenter
 
                 font.pixelSize: 20

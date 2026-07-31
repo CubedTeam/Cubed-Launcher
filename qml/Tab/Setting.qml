@@ -77,6 +77,7 @@ Item {
                             model: [Material.Red, Material.Pink, Material.Purple, Material.Indigo, Material.Blue, Material.Cyan, Material.Teal, Material.Green, Material.Orange, Material.DeepOrange]
 
                             delegate: Rectangle {
+                                id: colorRect
                                 required property int modelData
                                 width: 32
                                 height: 32
@@ -88,7 +89,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: Settings.accentColor = Qt.lighter(Material.color(modelData), 1.2)
+                                    onClicked: Settings.accentColor = Qt.lighter(Material.color(colorRect.modelData), 1.2)
                                 }
                             }
                         }

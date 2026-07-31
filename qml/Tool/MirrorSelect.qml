@@ -5,8 +5,8 @@ import QtQuick.Controls
 import CubedLauncher
 import QtQuick.Layouts
 
-// AI-generated: mirror source picker popup with a per-mirror latency tester.
-Popup {
+// AI-generated: mirror source picker dialog with a per-mirror latency tester.
+Dialog {
     id: mirrorPopup
     anchors.centerIn: Overlay.overlay
     width: 520
@@ -14,6 +14,8 @@ Popup {
     modal: true
     focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+    title: qsTr("Select Mirror Source")
+    standardButtons: Dialog.NoButton
 
     ListModel {
         id: mirrorModel
@@ -37,13 +39,6 @@ Popup {
             MirrorSource.test_all_latency();
         }
 
-        Label {
-            text: qsTr("Select Mirror Source")
-            Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 24
-            font.bold: true
-        }
-
         ListView {
             id: mirrorList
             Layout.fillWidth: true
@@ -60,7 +55,10 @@ Popup {
                 required property int latency
                 required property bool testing
 
-                onClicked: Settings.mirrorIndex = row.index
+                onClicked: {
+                    Settings.mirrorIndex = row.index;
+                    mirrorPopup.close();
+                }
 
                 contentItem: RowLayout {
                     width: parent.width
@@ -68,7 +66,10 @@ Popup {
 
                     RadioButton {
                         checked: Settings.mirrorIndex === row.index
-                        onClicked: Settings.mirrorIndex = row.index
+                        onClicked: {
+                            Settings.mirrorIndex = row.index;
+                            mirrorPopup.close();
+                        }
                         text: row.name
                         font.pixelSize: 18
                         Layout.fillWidth: true
