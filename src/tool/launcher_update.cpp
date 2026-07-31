@@ -185,7 +185,6 @@ void LauncherUpdate::update_launcher_internal(const QString& url) {
                 qDebug() << "Download Finish Start Installing...";
                 if (!QProcess::startDetached(setup_path)) {
                     fail("Error can't start Installing Program");
-                    finish();
                     return;
                 }
                 download_reply->deleteLater();

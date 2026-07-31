@@ -66,6 +66,8 @@ FrpManager::~FrpManager() {
         m_process->kill();
         m_process->waitForFinished(2000);
     }
+    delete m_process;
+    m_process = nullptr;
 }
 
 bool FrpManager::installed() const {
@@ -179,10 +181,8 @@ void FrpManager::on_release_fetched(int mirror_index,
 
 void FrpManager::start_download(const QString& url) {
 
-    if (m_download_reply) {
-        m_download_reply->abort();
-        m_download_reply->deleteLater();
-        m_download_reply = nullptr;
+    if (busy() || running() || m_download_reply) {
+        return;
     }
     QNetworkRequest req(url);
     req.setHeader(QNetworkRequest::UserAgentHeader, buildUserAgent().toUtf8());
@@ -192,7 +192,9 @@ void FrpManager::start_download(const QString& url) {
     m_download_reply = reply;
 
     const QString archive_path =
-        QDir::temp().filePath("frp_download" + archive_extension());
+        QDir::temp().filePath(QStringLiteral("frp_download_%1%2")
+                                  .arg(QDateTime::currentMSecsSinceEpoch())
+                                  .arg(archive_extension()));
     auto file = std::make_shared<QFile>(archive_path);
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         reply->abort();
@@ -473,5 +475,8 @@ Q_INVOKABLE QString FrpManager::read_toml() const {
 }
 
 Q_INVOKABLE void FrpManager::install_from_url(const QString& url) {
+    if (busy() || running()) {
+        return;
+    }
     start_download(url);
 }

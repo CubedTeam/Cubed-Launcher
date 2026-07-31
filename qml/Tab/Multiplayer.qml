@@ -158,7 +158,7 @@ Item {
                         Layout.fillWidth: true
                         Layout.preferredHeight: 300
                         color: "#101418"
-                        visible: multiplayerTab.showLog ? true : false
+                        visible: multiplayerTab.showLog
                         radius: 8
                         border.color: Qt.rgba(0, 0, 0, 0.12)
                         border.width: 1
