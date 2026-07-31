@@ -1,5 +1,7 @@
 #include "tool/frp_manager.hpp"
 
+#include "settings.hpp"
+#include "tool/game_path.hpp"
 #include "tool/mirror.hpp"
 #include "tool/user_agent.hpp"
 
@@ -32,12 +34,6 @@ QString archive_extension() {
 #endif
 }
 
-QString default_install_path() {
-    return QStandardPaths::writableLocation(
-               QStandardPaths::AppLocalDataLocation) +
-           "/frp";
-}
-
 QString frpc_binary_name() {
 #ifdef _WIN32
     return QStringLiteral("frpc.exe");
@@ -53,8 +49,15 @@ QString extract_temp_dir() {
 } // namespace
 
 FrpManager::FrpManager(QObject* parent)
-    : QObject(parent), m_fetcher(&m_manager, this),
-      m_install_path(default_install_path()) {
+    : QObject(parent), m_fetcher(&m_manager, this) {
+    QString path = get_default_frp_install_dir();
+    if (Settings* s = Settings::instance()) {
+        const QString persisted = s->frp_install_path();
+        if (!persisted.isEmpty()) {
+            path = persisted;
+        }
+    }
+    m_install_path = path;
     detect_install();
 }
 
@@ -433,6 +436,18 @@ void FrpManager::reset_install() {
     clear_error();
     set_state(NotInstalled);
     emit installed_changed();
+}
+
+Q_INVOKABLE void FrpManager::set_install_path(const QString& path) {
+    if (path == m_install_path) {
+        return;
+    }
+    if (running()) {
+        stop();
+    }
+    m_install_path = path;
+    emit install_path_changed();
+    detect_install();
 }
 
 Q_INVOKABLE void FrpManager::save_toml(const QString& content) {

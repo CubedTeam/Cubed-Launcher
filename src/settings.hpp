@@ -24,6 +24,9 @@ class Settings : public QObject {
             set_card_colorful_border NOTIFY card_colorful_border_changed FINAL)
     Q_PROPERTY(QString wrapperCommand READ wrapper_command WRITE
                    set_wrapper_command NOTIFY wrapper_command_changed FINAL)
+    Q_PROPERTY(
+        QString frpInstallPath READ frp_install_path WRITE
+            set_frp_install_path_url NOTIFY frp_install_path_changed FINAL)
 public:
     explicit Settings(QObject* parent = nullptr);
     QString game_dir() const;
@@ -34,6 +37,7 @@ public:
     QColor accent_color() const;
     bool card_colorful_border() const;
     QString wrapper_command() const;
+    QString frp_install_path() const;
     static Settings* instance();
 public slots:
     void set_game_dir_url(const QUrl& path);
@@ -44,6 +48,8 @@ public slots:
     void set_accent_color(const QColor& color);
     void set_card_colorful_border(bool enabled);
     void set_wrapper_command(const QString& command);
+    void set_frp_install_path_url(const QUrl& path);
+    void set_frp_install_path(const QString& path);
 signals:
     void game_dir_changed();
     void player_name_changed();
@@ -53,6 +59,7 @@ signals:
     void accent_color_changed();
     void card_colorful_border_changed();
     void wrapper_command_changed();
+    void frp_install_path_changed();
 
 private:
     QSettings m_settings;
@@ -61,6 +68,7 @@ private:
     int m_mirror_index{-1};
     QString m_language;
     QString m_wrapper_command;
+    QString m_frp_install_path;
 
     QColor m_accent_color;
     bool m_card_colorful_border{true};

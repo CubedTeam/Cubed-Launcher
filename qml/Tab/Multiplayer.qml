@@ -6,6 +6,7 @@ import QtQuick.Controls.Material
 import QtQuick.Controls
 import CubedLauncher
 import QtQuick.Layouts
+import QtQuick.Dialogs
 
 Item {
     id: multiplayerTab
@@ -14,6 +15,19 @@ Item {
 
     property var logLines: []
     property bool showLog: true
+
+    Component.onCompleted: {
+        if (Settings.frpInstallPath && Settings.frpInstallPath.length > 0) {
+            FrpManager.set_install_path(Settings.frpInstallPath);
+        }
+    }
+
+    Connections {
+        target: Settings
+        function onFrp_install_path_changed() {
+            FrpManager.set_install_path(Settings.frpInstallPath);
+        }
+    }
 
     Flickable {
         anchors.fill: parent
@@ -142,7 +156,7 @@ Item {
 
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 240
+                        Layout.preferredHeight: 300
                         color: "#101418"
                         visible: multiplayerTab.showLog ? true : false
                         radius: 8
@@ -197,6 +211,49 @@ Item {
                     source: "qrc:/qt/qml/CubedLauncher/qml/Tool/FrpManagement.qml"
                 }
             }
+            Card {
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredHeight: frpPathLayout.implicitHeight + 20
+                visible: advancedButton.checked
+                ColumnLayout {
+                    id: frpPathLayout
+                    anchors.centerIn: parent
+                    spacing: mainColumn.spacing
+                    Label {
+                        text: qsTr("Frp Install Directory: ") + FrpManager.installPath
+                        font.pixelSize: 16
+                        Layout.alignment: Qt.AlignCenter
+                        wrapMode: Text.WrapAnywhere
+                        Layout.preferredWidth: 500
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                    RowLayout {
+                        Layout.alignment: Qt.AlignCenter
+                        spacing: 10
+                        Button {
+                            Material.roundedScale: Material.MediumScale
+                            Layout.preferredWidth: 250
+                            Layout.preferredHeight: 50
+                            font.pixelSize: 20
+                            highlighted: true
+                            text: qsTr("Set Frp Folder")
+                            onClicked: frpFolderDialog.open()
+                        }
+                        Button {
+                            Material.roundedScale: Material.MediumScale
+                            Layout.preferredWidth: 250
+                            Layout.preferredHeight: 50
+                            font.pixelSize: 20
+                            text: qsTr("Reset Path")
+                            onClicked: {
+                                Settings.frpInstallPath = SystemInfo.defaultFrpInstallDir;
+                                FrpManager.set_install_path(SystemInfo.defaultFrpInstallDir);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -237,6 +294,15 @@ Item {
                 lines.splice(0, lines.length - 2000);
             }
             multiplayerTab.logLines = lines;
+        }
+    }
+
+    FolderDialog {
+        id: frpFolderDialog
+        title: qsTr("Select Frp Folder")
+        onAccepted: {
+            Settings.set_frp_install_path_url(selectedFolder);
+            FrpManager.set_install_path(Settings.frpInstallPath);
         }
     }
 }

@@ -62,6 +62,7 @@ public:
     Q_INVOKABLE void save_toml(const QString& content);
     Q_INVOKABLE QString read_toml() const;
     Q_INVOKABLE void install_from_url(const QString& url);
+    Q_INVOKABLE void set_install_path(const QString& path);
 signals:
     void state_changed();
     void install_path_changed();

@@ -23,6 +23,7 @@ QString Settings::language() const { return m_language; }
 QColor Settings::accent_color() const { return m_accent_color; }
 bool Settings::card_colorful_border() const { return m_card_colorful_border; }
 QString Settings::wrapper_command() const { return m_wrapper_command; }
+QString Settings::frp_install_path() const { return m_frp_install_path; }
 
 Settings* Settings::instance() { return s_instance; }
 
@@ -96,6 +97,23 @@ void Settings::set_wrapper_command(const QString& command) {
     emit wrapper_command_changed();
 }
 
+void Settings::set_frp_install_path_url(const QUrl& path) {
+    QString local = path.toLocalFile();
+    if (!update_value(m_frp_install_path, local, "frp_path")) {
+        return;
+    }
+
+    emit frp_install_path_changed();
+}
+
+void Settings::set_frp_install_path(const QString& path) {
+    if (!update_value(m_frp_install_path, path, "frp_path")) {
+        return;
+    }
+
+    emit frp_install_path_changed();
+}
+
 void Settings::load() {
     if (m_settings.contains("game_path")) {
         QString raw = m_settings.value("game_path").toString();
@@ -124,6 +142,7 @@ void Settings::load() {
     m_card_colorful_border =
         m_settings.value("card_colorful_border", true).toBool();
     m_wrapper_command = m_settings.value("wrapper_command").toString();
+    m_frp_install_path = m_settings.value("frp_path").toString();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);
