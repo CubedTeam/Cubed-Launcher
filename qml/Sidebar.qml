@@ -23,7 +23,7 @@ Rectangle {
 
                 // AI-generated: plain string keys so retranslate does not rebuild
                 // the model and currentIndex stays stable.
-                model: ["Launcher", "Manager", "Setting", "About"]
+                model: ["Launcher", "Manager", "Multiplayer", "Setting", "About"]
                 currentIndex: SideTool.currentIndex
 
                 delegate: ItemDelegate {
@@ -79,6 +79,8 @@ Rectangle {
                             return qsTr("Launcher");
                         if (modelData === "Manager")
                             return qsTr("Manager");
+                        if (modelData === "Multiplayer")
+                            return qsTr("Multiplayer");
                         if (modelData === "Setting")
                             return qsTr("Setting");
                         if (modelData === "About")
@@ -101,6 +103,7 @@ Rectangle {
 
             Launch {}
             Manager {}
+            Multiplayer {}
             Setting {}
 
             About {}

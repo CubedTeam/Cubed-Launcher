@@ -264,6 +264,100 @@
     </message>
 </context>
 <context>
+    <name>Multiplayer</name>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="49"/>
+        <source>Frp Client</source>
+        <translation>Frp 客户端</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="56"/>
+        <source>Not Installed</source>
+        <translation>未安装</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="67"/>
+        <source>Checking for updates...</source>
+        <translation>正在检查更新...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="69"/>
+        <source>Downloading...</source>
+        <translation>正在下载...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="71"/>
+        <source>Extracting...</source>
+        <translation>正在解压...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="72"/>
+        <source>Working...</source>
+        <translation>处理中...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="112"/>
+        <source>Reinstall</source>
+        <translation>重新安装</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="112"/>
+        <source>Download &amp;&amp; Install</source>
+        <translation>下载并安装</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="123"/>
+        <source>Uninstall</source>
+        <translation>卸载</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="142"/>
+        <source>Frp Client: %1</source>
+        <translation>Frp 客户端：%1</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="149"/>
+        <source>Status: %1</source>
+        <translation>状态：%1</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="150"/>
+        <source>Running</source>
+        <translation>运行中</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="150"/>
+        <source>Stopped</source>
+        <translation>已停止</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="168"/>
+        <source>Start</source>
+        <translation>启动</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="179"/>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="190"/>
+        <location filename="../qml/Tab/Multiplayer.qml" line="267"/>
+        <source>Edit frpc.toml</source>
+        <translation>编辑 frpc.toml</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="210"/>
+        <source>Logs</source>
+        <translation>日志</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Multiplayer.qml" line="219"/>
+        <source>Detailed</source>
+        <translation>详细</translation>
+    </message>
+</context>
+<context>
     <name>Manager</name>
     <message>
         <location filename="../qml/Tab/Manager.qml" line="30"/>
@@ -383,11 +477,16 @@
     </message>
     <message>
         <location filename="../qml/Sidebar.qml" line="83"/>
+        <source>Multiplayer</source>
+        <translation>联机</translation>
+    </message>
+    <message>
+        <location filename="../qml/Sidebar.qml" line="85"/>
         <source>Setting</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="85"/>
+        <location filename="../qml/Sidebar.qml" line="87"/>
         <source>About</source>
         <translation>关于</translation>
     </message>

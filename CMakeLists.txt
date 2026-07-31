@@ -61,11 +61,13 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tab/Launch.qml
         qml/Tab/Setting.qml
         qml/Tab/About.qml
+        qml/Tab/Multiplayer.qml
         qml/Tool/GamePathSet.qml
         qml/Tool/MirrorSelect.qml
         qml/Tool/CheckUpdate.qml
         qml/Tab/Manager.qml
         qml/Tool/DownloadGame.qml
+        qml/Tool/FrpManagement.qml
     RESOURCES
         resources/logo.png
 
@@ -84,7 +86,9 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/mirror.cpp
         src/tool/game_update.hpp
         src/tool/game_update.cpp
-    
+        src/tool/frp_manager.hpp
+        src/tool/frp_manager.cpp
+
 )
 
 qt_add_translations(${PROJECT_NAME}
