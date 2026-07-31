@@ -54,6 +54,7 @@ protected:
         return QStringLiteral("easytier-core");
     }
     void on_process_finished(int exit_code) override;
+    void reset_install_extra() override;
 
 private:
     QString core_binary() const;

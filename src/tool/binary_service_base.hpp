@@ -73,7 +73,7 @@ public:
     // arguments and forwards here. Optional env is applied to the process
     // so callers can keep secrets out of /proc/<pid>/cmdline.
     void launch_process(const QString& program, const QStringList& arguments,
-                        const QProcessEnvironment& env = {});
+                        const QProcessEnvironment& env);
 
 signals:
     void state_changed();

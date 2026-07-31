@@ -146,7 +146,8 @@ void FrpManager::load_toml_into_property() {
 }
 
 Q_INVOKABLE void FrpManager::start() {
-    launch_process(frpc_binary(), QStringList() << "-c" << "frpc.toml");
+    launch_process(frpc_binary(), QStringList() << "-c" << "frpc.toml",
+                   QProcessEnvironment::systemEnvironment());
 }
 
 Q_INVOKABLE void FrpManager::stop() { stop_process(); }

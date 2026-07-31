@@ -54,7 +54,7 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
             Layout.preferredHeight: easytierInstall.implicitHeight + 20
-            visible: !EasyTierManager.installed
+            visible: !EasyTierManager.installed || EasyTierManager.busy
             EasyTierManagement {
                 id: easytierInstall
                 width: parent.width

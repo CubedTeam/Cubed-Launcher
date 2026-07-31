@@ -167,7 +167,10 @@ void EasyTierManager::on_process_finished(int exit_code) {
         emit virtual_ip_changed();
     }
 }
-
+void EasyTierManager::reset_install_extra() {
+    m_virtual_ip.clear();
+    emit virtual_ip_changed();
+}
 Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
                                         const QString& network_secret,
                                         const QString& peer_address) {
@@ -185,7 +188,7 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
         return;
     }
     // AI-generated: pass secrets via env so they stay out of /proc cmdline.
-    QProcessEnvironment env;
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert(QStringLiteral("ET_NETWORK_NAME"), network_name);
     env.insert(QStringLiteral("ET_NETWORK_SECRET"), network_secret);
     env.insert(QStringLiteral("ET_PEERS"), peer_address);
