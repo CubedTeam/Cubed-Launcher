@@ -61,7 +61,28 @@ Q_INVOKABLE void LauncherUpdate::check_update(const QString& owner,
         });
 }
 
+Q_INVOKABLE void LauncherUpdate::update_launcher_from_url(const QString& url) {
+    update_launcher_internal(url);
+}
+
 Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
+
+    if (m_latest_launcher_link.isEmpty()) {
+        qDebug() << "Download Url is Null";
+        return;
+    }
+    QString download_url = m_latest_launcher_link;
+    if (mirror_index > 0 && mirror_index < mirror_sources.size()) {
+        const QString& prefix = mirror_sources.at(mirror_index).prefix;
+        if (!prefix.isEmpty()) {
+            download_url = prefix + download_url;
+        }
+    }
+    update_launcher_internal(download_url);
+}
+
+void LauncherUpdate::update_launcher_internal(const QString& url) {
+
     if (std::exchange(m_downloading, true)) {
 
         return;
@@ -103,21 +124,11 @@ Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
         emit download_finish_changed();
         emit download_progress_changed();
     };
-
-    if (m_latest_launcher_link.isEmpty()) {
-        qDebug() << "Download Url is Null";
-        fail("Download Url is Null.");
+    if (url.isEmpty()) {
+        fail("Download Url is Empty!");
         return;
     }
-    QString download_url = m_latest_launcher_link;
-    if (mirror_index > 0 && mirror_index < mirror_sources.size()) {
-        const QString& prefix = mirror_sources.at(mirror_index).prefix;
-        if (!prefix.isEmpty()) {
-            download_url = prefix + download_url;
-        }
-    }
-
-    QNetworkRequest download_request(download_url);
+    QNetworkRequest download_request(url);
     download_request.setHeader(QNetworkRequest::UserAgentHeader,
                                buildUserAgent().toUtf8());
     download_request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,

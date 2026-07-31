@@ -65,6 +65,7 @@ Item {
                     enabled: downloadSource.checked
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: 400
+                    Layout.preferredHeight: 60
                     placeholderText: qsTr("Download Link")
                 }
             }

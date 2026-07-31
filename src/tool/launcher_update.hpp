@@ -46,6 +46,7 @@ public:
 
     Q_INVOKABLE void update_launcher(int mirror_index);
 
+    Q_INVOKABLE void update_launcher_from_url(const QString& url);
     Q_INVOKABLE void cancel_download();
 
     bool downloading() const;
@@ -76,4 +77,6 @@ private:
 
     bool m_has_error{false};
     QString m_error_message;
+
+    void update_launcher_internal(const QString& url);
 };

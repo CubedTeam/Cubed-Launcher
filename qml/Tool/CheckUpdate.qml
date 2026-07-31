@@ -101,13 +101,21 @@ Item {
 
                 font.pixelSize: 20
             }
-
+            Switch {
+                id: customDowlaodSwitch
+                checked: false
+                font.pixelSize: 20
+                Layout.alignment: Qt.AlignCenter
+                text: qsTr("Custom Link")
+            }
             Button {
                 id: mirrorButton
                 Layout.alignment: Qt.AlignCenter
                 Layout.preferredWidth: 400
                 Layout.preferredHeight: 60
                 Material.roundedScale: Material.MediumScale
+                visible: !customDowlaodSwitch.checked
+                enabled: visible
                 highlighted: true
                 font.pixelSize: 20
                 text: {
@@ -116,7 +124,15 @@ Item {
                 }
                 onClicked: mirrorPopup.open()
             }
-
+            TextField {
+                id: customLinkText
+                visible: customDowlaodSwitch.checked
+                enabled: visible
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 400
+                Layout.preferredHeight: 60
+                placeholderText: qsTr("Download Link")
+            }
             MirrorSelect {
                 id: mirrorPopup
                 parent: Overlay.overlay
@@ -137,8 +153,12 @@ Item {
                     cancelLauncherButton.visible = true;
                     downloadUpdateButton.enabled = false;
                     downloadUpdateButton.highlighted = false;
-                    const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                    LauncherUpdate.update_launcher(idx);
+                    if (customDowlaodSwitch.checked) {
+                        LauncherUpdate.update_launcher_from_url(customLinkText.text);
+                    } else {
+                        const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                        LauncherUpdate.update_launcher(idx);
+                    }
                 }
             }
 
