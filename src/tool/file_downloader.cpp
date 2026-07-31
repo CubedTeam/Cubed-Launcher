@@ -65,12 +65,11 @@ bool FileDownloader::start(const QString& url, const QString& save_path) {
                     emit progress_changed();
                 }
             });
-    connect(reply, &QNetworkReply::finished, this,
-            [this, reply, file, save_path]() {
-                file->close();
-                m_reply = nullptr;
-                on_reply_finished();
-            });
+    connect(reply, &QNetworkReply::finished, this, [this, file, save_path]() {
+        file->close();
+        m_reply = nullptr;
+        on_reply_finished();
+    });
     return true;
 }
 
