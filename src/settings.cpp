@@ -24,6 +24,18 @@ QColor Settings::accent_color() const { return m_accent_color; }
 bool Settings::card_colorful_border() const { return m_card_colorful_border; }
 QString Settings::wrapper_command() const { return m_wrapper_command; }
 QString Settings::frp_install_path() const { return m_frp_install_path; }
+QString Settings::easytier_install_path() const {
+    return m_easytier_install_path;
+}
+QString Settings::easytier_network_name() const {
+    return m_easytier_network_name;
+}
+QString Settings::easytier_network_secret() const {
+    return m_easytier_network_secret;
+}
+QString Settings::easytier_peer_address() const {
+    return m_easytier_peer_address;
+}
 
 Settings* Settings::instance() { return s_instance; }
 
@@ -114,6 +126,49 @@ void Settings::set_frp_install_path(const QString& path) {
     emit frp_install_path_changed();
 }
 
+void Settings::set_easytier_install_path_url(const QUrl& path) {
+    QString local = path.toLocalFile();
+    if (!update_value(m_easytier_install_path, local, "easytier_path")) {
+        return;
+    }
+
+    emit easytier_install_path_changed();
+}
+
+void Settings::set_easytier_install_path(const QString& path) {
+    if (!update_value(m_easytier_install_path, path, "easytier_path")) {
+        return;
+    }
+
+    emit easytier_install_path_changed();
+}
+
+void Settings::set_easytier_network_name(const QString& name) {
+    if (!update_value(m_easytier_network_name, name, "easytier_network_name")) {
+        return;
+    }
+
+    emit easytier_network_name_changed();
+}
+
+void Settings::set_easytier_network_secret(const QString& secret) {
+    if (!update_value(m_easytier_network_secret, secret,
+                      "easytier_network_secret")) {
+        return;
+    }
+
+    emit easytier_network_secret_changed();
+}
+
+void Settings::set_easytier_peer_address(const QString& address) {
+    if (!update_value(m_easytier_peer_address, address,
+                      "easytier_peer_address")) {
+        return;
+    }
+
+    emit easytier_peer_address_changed();
+}
+
 void Settings::load() {
     if (m_settings.contains("game_path")) {
         QString raw = m_settings.value("game_path").toString();
@@ -143,6 +198,13 @@ void Settings::load() {
         m_settings.value("card_colorful_border", true).toBool();
     m_wrapper_command = m_settings.value("wrapper_command").toString();
     m_frp_install_path = m_settings.value("frp_path").toString();
+    m_easytier_install_path = m_settings.value("easytier_path").toString();
+    m_easytier_network_name =
+        m_settings.value("easytier_network_name").toString();
+    m_easytier_network_secret =
+        m_settings.value("easytier_network_secret").toString();
+    m_easytier_peer_address =
+        m_settings.value("easytier_peer_address").toString();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

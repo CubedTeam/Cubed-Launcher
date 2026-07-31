@@ -96,5 +96,8 @@ Item {
                 }
             }
         }
+        SpecialThanks {
+            Layout.fillWidth: true
+        }
     }
 }

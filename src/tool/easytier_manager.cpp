@@ -1,0 +1,297 @@
+#include "tool/easytier_manager.hpp"
+
+#include "settings.hpp"
+#include "tool/game_path.hpp"
+
+#include <QClipboard>
+#include <QDir>
+#include <QDirIterator>
+#include <QFile>
+#include <QFileInfo>
+#include <QGuiApplication>
+#include <QProcess>
+#include <QProcessEnvironment>
+#include <QRegularExpression>
+#include <qmicroz.h>
+
+EasyTierManager::EasyTierManager(QObject* parent) : BinaryServiceBase(parent) {
+    QString path = default_install_dir();
+    if (Settings* s = Settings::instance()) {
+        const QString persisted = s->easytier_install_path();
+        if (!persisted.isEmpty()) {
+            path = persisted;
+        }
+    }
+    m_install_path = path;
+    detect_install();
+}
+
+EasyTierManager::~EasyTierManager() {
+    stop_ip_polling();
+    delete m_ip_poll_timer;
+    m_ip_poll_timer = nullptr;
+}
+
+QString EasyTierManager::default_install_dir() const {
+    return get_default_easytier_install_dir();
+}
+
+QRegularExpression EasyTierManager::platform_asset_pattern() const {
+#ifdef _WIN32
+    return QRegularExpression(R"(^easytier-windows-x86_64-v[\d.]+\.zip$)");
+#else
+    return QRegularExpression(R"(^easytier-linux-x86_64-v[\d.]+\.zip$)");
+#endif
+}
+
+QString EasyTierManager::core_binary() const {
+#ifdef _WIN32
+    return m_install_path + "/easytier-core.exe";
+#else
+    return m_install_path + "/easytier-core";
+#endif
+}
+
+QString EasyTierManager::cli_binary() const {
+#ifdef _WIN32
+    return m_install_path + "/easytier-cli.exe";
+#else
+    return m_install_path + "/easytier-cli";
+#endif
+}
+
+bool EasyTierManager::is_installed_impl() const {
+    return QFileInfo::exists(core_binary());
+}
+
+QString EasyTierManager::extract_archive_impl(const QString& archive_path,
+                                              const QString& tmp_dir) {
+    QMicroz zip(archive_path);
+    zip.setOutputFolder(tmp_dir);
+    if (!zip.extractAll()) {
+        return QStringLiteral("Failed to extract zip archive");
+    }
+    return {};
+}
+
+void EasyTierManager::install_binaries_impl(const QString& inner_dir,
+                                            const QString& tmp_root) {
+    QDir().mkpath(m_install_path);
+
+    QDir inner(inner_dir);
+    if (!inner.exists()) {
+        QDir(tmp_root).removeRecursively();
+        set_error(
+            QStringLiteral("Inner directory not found: %1").arg(inner_dir));
+        return;
+    }
+
+    // AI-generated: archive may nest the binaries under an extra directory
+    // layer. Recursively walk the extraction root and only pick out the two
+    // binaries we need.
+    auto find_binary = [](const QDir& root,
+                          const QString& baseName) -> QString {
+        const QString suffix =
+#ifdef _WIN32
+            QStringLiteral(".exe");
+#else
+            QString();
+#endif
+        QDirIterator it(root.absolutePath(),
+                        QStringList() << (baseName + suffix) << baseName,
+                        QDir::Files | QDir::NoSymLinks,
+                        QDirIterator::Subdirectories);
+        while (it.hasNext()) {
+            return it.next();
+        }
+        return {};
+    };
+
+    const QString src_core =
+        find_binary(inner, QStringLiteral("easytier-core"));
+    const QString src_cli = find_binary(inner, QStringLiteral("easytier-cli"));
+    if (src_core.isEmpty() || src_cli.isEmpty()) {
+        QDir(tmp_root).removeRecursively();
+        const QString missing =
+            src_core.isEmpty() && src_cli.isEmpty()
+                ? QStringLiteral("easytier-core and easytier-cli")
+            : src_core.isEmpty() ? QStringLiteral("easytier-core")
+                                 : QStringLiteral("easytier-cli");
+        set_error(QStringLiteral("%1 not found in archive").arg(missing));
+        return;
+    }
+
+    auto copy_binary = [&](const QString& src, const QString& dst) -> bool {
+        if (QFile::exists(dst)) {
+            QFile::remove(dst);
+        }
+        if (!QFile::copy(src, dst)) {
+            return false;
+        }
+#ifndef _WIN32
+        QFile::setPermissions(dst, QFile::permissions(dst) | QFile::ExeOwner |
+                                       QFile::ExeGroup | QFile::ExeOther);
+#endif
+        return true;
+    };
+
+    if (!copy_binary(src_core, core_binary())) {
+        QDir(tmp_root).removeRecursively();
+        set_error(QStringLiteral("Failed to copy easytier-core"));
+        return;
+    }
+    if (!copy_binary(src_cli, cli_binary())) {
+        QDir(tmp_root).removeRecursively();
+        set_error(QStringLiteral("Failed to copy easytier-cli"));
+        return;
+    }
+
+#ifdef _WIN32
+    // AI-generated: easytier-core ships with runtime DLLs (vcruntime, wintun,
+    // ...); copy all of them so the installed binary can resolve its imports.
+    QDirIterator dll_it(
+        inner.absolutePath(), QStringList() << QStringLiteral("*.dll"),
+        QDir::Files | QDir::NoSymLinks, QDirIterator::Subdirectories);
+    while (dll_it.hasNext()) {
+        const QString src_dll = dll_it.next();
+        const QString dst_dll =
+            m_install_path + "/" + QFileInfo(src_dll).fileName();
+        if (QFile::exists(dst_dll)) {
+            QFile::remove(dst_dll);
+        }
+        if (!QFile::copy(src_dll, dst_dll)) {
+            QDir(tmp_root).removeRecursively();
+            set_error(QStringLiteral("Failed to copy %1")
+                          .arg(QFileInfo(src_dll).fileName()));
+            return;
+        }
+    }
+#endif
+
+    QDir(tmp_root).removeRecursively();
+
+    if (!installed()) {
+        set_error(QStringLiteral(
+            "Install completed but easytier-core binary missing"));
+        return;
+    }
+    append_log(QStringLiteral("Installed easytier to %1").arg(m_install_path));
+    clear_error();
+    set_state(Ready);
+    emit installed_changed();
+}
+
+void EasyTierManager::on_process_finished(int exit_code) {
+    Q_UNUSED(exit_code);
+    stop_ip_polling();
+    if (!m_virtual_ip.isEmpty()) {
+        m_virtual_ip.clear();
+        emit virtual_ip_changed();
+    }
+}
+void EasyTierManager::reset_install_extra() {
+    m_virtual_ip.clear();
+    emit virtual_ip_changed();
+}
+Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
+                                        const QString& network_secret,
+                                        const QString& peer_address) {
+    if (running()) {
+        return;
+    }
+    if (!installed()) {
+        set_error(QStringLiteral("easytier-core is not installed"));
+        return;
+    }
+    if (network_name.isEmpty() || network_secret.isEmpty() ||
+        peer_address.isEmpty()) {
+        set_error(QStringLiteral(
+            "Network name, secret and peer address are required"));
+        return;
+    }
+    // AI-generated: pass secrets via env so they stay out of /proc cmdline.
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert(QStringLiteral("ET_NETWORK_NAME"), network_name);
+    env.insert(QStringLiteral("ET_NETWORK_SECRET"), network_secret);
+    env.insert(QStringLiteral("ET_PEERS"), peer_address);
+    env.insert(QStringLiteral("ET_DHCP"), QStringLiteral("true"));
+    env.insert(QStringLiteral("ET_NO_TUN"), QStringLiteral("true"));
+    launch_process(core_binary(), {}, env);
+    if (running()) {
+        start_ip_polling();
+    }
+}
+
+Q_INVOKABLE void EasyTierManager::stop() { stop_process(); }
+
+void EasyTierManager::start_ip_polling() {
+    if (!m_ip_poll_timer) {
+        m_ip_poll_timer = new QTimer(this);
+        m_ip_poll_timer->setInterval(2000);
+        connect(m_ip_poll_timer, &QTimer::timeout, this,
+                &EasyTierManager::on_ip_poll_timeout);
+    }
+    m_ip_poll_timer->start();
+    QTimer::singleShot(0, this, &EasyTierManager::on_ip_poll_timeout);
+}
+
+void EasyTierManager::stop_ip_polling() {
+    if (m_ip_poll_timer) {
+        m_ip_poll_timer->stop();
+    }
+}
+
+void EasyTierManager::on_ip_poll_timeout() {
+    if (!running()) {
+        stop_ip_polling();
+        return;
+    }
+    refresh_virtual_ip();
+}
+
+void EasyTierManager::refresh_virtual_ip() {
+    if (!running()) {
+        return;
+    }
+    if (!QFileInfo::exists(cli_binary())) {
+        return;
+    }
+    auto* cli = new QProcess(this);
+    cli->setProgram(cli_binary());
+    cli->setArguments(QStringList() << "node");
+    connect(cli, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, [this, cli](int exitCode, QProcess::ExitStatus) {
+                const QByteArray data = cli->readAllStandardOutput();
+                cli->deleteLater();
+                if (exitCode == 0) {
+                    parse_virtual_ip(data);
+                }
+            });
+    cli->start();
+}
+
+void EasyTierManager::parse_virtual_ip(const QByteArray& data) {
+    static const QRegularExpression ip_re(
+        QStringLiteral(R"(\b(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\b)"));
+    const auto lines = QString::fromUtf8(data).split('\n');
+    for (const auto& line : lines) {
+        if (!line.contains(QStringLiteral("Virtual IP"))) {
+            continue;
+        }
+        const auto m = ip_re.match(line);
+        if (m.hasMatch()) {
+            const QString ip = m.captured(1);
+            if (ip != m_virtual_ip) {
+                m_virtual_ip = ip;
+                emit virtual_ip_changed();
+            }
+            return;
+        }
+    }
+}
+
+Q_INVOKABLE void EasyTierManager::copy_to_clipboard(const QString& text) {
+    if (QClipboard* cb = QGuiApplication::clipboard()) {
+        cb->setText(text);
+    }
+}
