@@ -55,11 +55,10 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.preferredHeight: installLayout.implicitHeight + 20
             visible: !FrpManager.installed || FrpManager.busy
-            Loader {
+            FrpManagement {
                 id: installLayout
                 width: parent.width
                 anchors.centerIn: parent
-                source: "qrc:/qt/qml/CubedLauncher/qml/Tool/FrpManagement.qml"
             }
         }
         // frp control
@@ -127,68 +126,13 @@ Item {
             }
         }
         // log card
-        Card {
+        LogCard {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: logLayout.implicitHeight + 20
+            Layout.preferredHeight: implicitHeight
             visible: FrpManager.installed
-            ColumnLayout {
-                id: logLayout
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    Label {
-                        text: qsTr("Logs")
-                        font.pixelSize: 18
-                        font.bold: true
-                        Layout.alignment: Qt.AlignLeft
-                    }
-                    Item {
-                        Layout.fillWidth: true
-                    }
-                    Switch {
-                        id: logToggle
-                        font.pixelSize: 14
-                        text: qsTr("ShowLog")
-                        checked: frpSection.showLog
-                        onCheckedChanged: frpSection.showLog = checked
-                    }
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 300
-                    color: "#101418"
-                    visible: frpSection.showLog
-                    radius: 8
-                    border.color: Qt.rgba(0, 0, 0, 0.12)
-                    border.width: 1
-                    clip: true
-
-                    ScrollView {
-                        id: logScroll
-                        anchors.fill: parent
-                        anchors.margins: 8
-                        clip: true
-
-                        TextArea {
-                            id: logArea
-                            readOnly: true
-                            wrapMode: TextArea.NoWrap
-                            color: "#9CDCFE"
-                            background: null
-                            font.family: frpSection.showLog ? "Monospace" : "Sans"
-                            font.pixelSize: frpSection.showLog ? 13 : 14
-                            selectByMouse: true
-                            text: frpSection.logLines.join("\n")
-                            onTextChanged: cursorPosition = length
-                        }
-                    }
-                }
-            }
+            logLines: frpSection.logLines
+            showLog: frpSection.showLog
         }
         Card {
             Layout.fillWidth: true
@@ -208,54 +152,24 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.preferredHeight: advancedSetting.implicitHeight + 20
             visible: advancedButton.checked && FrpManager.installed
-            Loader {
+            FrpManagement {
                 id: advancedSetting
                 width: parent.width
                 anchors.centerIn: parent
-                source: "qrc:/qt/qml/CubedLauncher/qml/Tool/FrpManagement.qml"
             }
         }
-        Card {
+        InstallPathCard {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: frpPathLayout.implicitHeight + 20
+            Layout.preferredHeight: implicitHeight
             visible: advancedButton.checked
-            ColumnLayout {
-                id: frpPathLayout
-                anchors.centerIn: parent
-                spacing: 12
-                Label {
-                    text: qsTr("Frp Install Directory: ") + FrpManager.installPath
-                    font.pixelSize: 16
-                    Layout.alignment: Qt.AlignCenter
-                    wrapMode: Text.WrapAnywhere
-                    Layout.preferredWidth: 500
-                    horizontalAlignment: Text.AlignHCenter
-                }
-                RowLayout {
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 10
-                    Button {
-                        Material.roundedScale: Material.MediumScale
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 20
-                        highlighted: true
-                        text: qsTr("Set Frp Folder")
-                        onClicked: frpFolderDialog.open()
-                    }
-                    Button {
-                        Material.roundedScale: Material.MediumScale
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 20
-                        text: qsTr("Reset Path")
-                        onClicked: {
-                            Settings.frpInstallPath = SystemInfo.defaultFrpInstallDir;
-                            FrpManager.set_install_path(SystemInfo.defaultFrpInstallDir);
-                        }
-                    }
-                }
+            manager: FrpManager
+            pathTitle: qsTr("Frp Install Directory")
+            setButtonText: qsTr("Set Frp Folder")
+            onSetClicked: frpFolderDialog.open()
+            onResetClicked: {
+                Settings.frpInstallPath = SystemInfo.defaultFrpInstallDir;
+                FrpManager.set_install_path(SystemInfo.defaultFrpInstallDir);
             }
         }
     }

@@ -58,6 +58,8 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Sidebar.qml
         qml/Component/Card.qml
         qml/Component/FirstLaunchDialog.qml
+        qml/Component/LogCard.qml
+        qml/Component/InstallPathCard.qml
         qml/Tab/Launch.qml
         qml/Tab/Setting.qml
         qml/Tab/About.qml
@@ -69,6 +71,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tool/DownloadGame.qml
         qml/Tool/FrpManagement.qml
         qml/Tool/EasyTierManagement.qml
+        qml/Tool/ServiceInstallCard.qml
         qml/Tool/FrpSection.qml
         qml/Tool/EasyTierSection.qml
     RESOURCES
@@ -82,6 +85,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/settings.hpp
         src/tool/github_release.hpp
         src/tool/github_release.cpp
+        src/tool/file_downloader.hpp
+        src/tool/file_downloader.cpp
         src/tool/launcher_update.hpp
         src/tool/launcher_update.cpp
         src/tool/side_tool.hpp
@@ -89,6 +94,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/mirror.cpp
         src/tool/game_update.hpp
         src/tool/game_update.cpp
+        src/tool/binary_service_base.hpp
+        src/tool/binary_service_base.cpp
         src/tool/frp_manager.hpp
         src/tool/frp_manager.cpp
         src/tool/easytier_manager.hpp

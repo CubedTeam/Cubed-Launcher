@@ -55,11 +55,10 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.preferredHeight: easytierInstall.implicitHeight + 20
             visible: !EasyTierManager.installed
-            Loader {
+            EasyTierManagement {
                 id: easytierInstall
                 width: parent.width
                 anchors.centerIn: parent
-                source: "qrc:/qt/qml/CubedLauncher/qml/Tool/EasyTierManagement.qml"
             }
         }
 
@@ -224,68 +223,13 @@ Item {
             }
         }
 
-        Card {
+        LogCard {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: logLayout.implicitHeight + 20
+            Layout.preferredHeight: implicitHeight
             visible: EasyTierManager.installed
-            ColumnLayout {
-                id: logLayout
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    Label {
-                        text: qsTr("Logs")
-                        font.pixelSize: 18
-                        font.bold: true
-                        Layout.alignment: Qt.AlignLeft
-                    }
-                    Item {
-                        Layout.fillWidth: true
-                    }
-                    Switch {
-                        id: logToggle
-                        font.pixelSize: 14
-                        text: qsTr("ShowLog")
-                        checked: easytierSection.showLog
-                        onCheckedChanged: easytierSection.showLog = checked
-                    }
-                }
-
-                Rectangle {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 300
-                    color: "#101418"
-                    visible: easytierSection.showLog
-                    radius: 8
-                    border.color: Qt.rgba(0, 0, 0, 0.12)
-                    border.width: 1
-                    clip: true
-
-                    ScrollView {
-                        id: logScroll
-                        anchors.fill: parent
-                        anchors.margins: 8
-                        clip: true
-
-                        TextArea {
-                            id: logArea
-                            readOnly: true
-                            wrapMode: TextArea.NoWrap
-                            color: "#9CDCFE"
-                            background: null
-                            font.family: easytierSection.showLog ? "Monospace" : "Sans"
-                            font.pixelSize: easytierSection.showLog ? 13 : 14
-                            selectByMouse: true
-                            text: easytierSection.logLines.join("\n")
-                            onTextChanged: cursorPosition = length
-                        }
-                    }
-                }
-            }
+            logLines: easytierSection.logLines
+            showLog: easytierSection.showLog
         }
 
         Card {
@@ -307,55 +251,25 @@ Item {
             Layout.alignment: Qt.AlignCenter
             Layout.preferredHeight: advancedSetting.implicitHeight + 20
             visible: advancedButton.checked && EasyTierManager.installed
-            Loader {
+            EasyTierManagement {
                 id: advancedSetting
                 width: parent.width
                 anchors.centerIn: parent
-                source: "qrc:/qt/qml/CubedLauncher/qml/Tool/EasyTierManagement.qml"
             }
         }
 
-        Card {
+        InstallPathCard {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: easytierPath.implicitHeight + 20
+            Layout.preferredHeight: implicitHeight
             visible: advancedButton.checked
-            ColumnLayout {
-                id: easytierPath
-                anchors.centerIn: parent
-                spacing: 12
-                Label {
-                    text: qsTr("EasyTier Install Directory: ") + EasyTierManager.installPath
-                    font.pixelSize: 16
-                    Layout.alignment: Qt.AlignCenter
-                    wrapMode: Text.WrapAnywhere
-                    Layout.preferredWidth: 500
-                    horizontalAlignment: Text.AlignHCenter
-                }
-                RowLayout {
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 10
-                    Button {
-                        Material.roundedScale: Material.MediumScale
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 20
-                        highlighted: true
-                        text: qsTr("Set EasyTier Folder")
-                        onClicked: easytierFolderDialog.open()
-                    }
-                    Button {
-                        Material.roundedScale: Material.MediumScale
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 20
-                        text: qsTr("Reset Path")
-                        onClicked: {
-                            Settings.easytierInstallPath = SystemInfo.defaultEasyTierInstallDir;
-                            EasyTierManager.set_install_path(SystemInfo.defaultEasyTierInstallDir);
-                        }
-                    }
-                }
+            manager: EasyTierManager
+            pathTitle: qsTr("EasyTier Install Directory")
+            setButtonText: qsTr("Set EasyTier Folder")
+            onSetClicked: easytierFolderDialog.open()
+            onResetClicked: {
+                Settings.easytierInstallPath = SystemInfo.defaultEasyTierInstallDir;
+                EasyTierManager.set_install_path(SystemInfo.defaultEasyTierInstallDir);
             }
         }
     }

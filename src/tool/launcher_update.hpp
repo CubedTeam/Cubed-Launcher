@@ -1,17 +1,13 @@
 #pragma once
 
+#include "tool/file_downloader.hpp"
 #include "tool/github_release.hpp"
 
 #include <QCoreApplication>
-#include <QDir>
-#include <QFileInfo>
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QObject>
-#include <QPointer>
 #include <QQmlEngine>
-#include <qmicroz.h>
+#include <QVersionNumber>
 class LauncherUpdate : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -60,23 +56,18 @@ signals:
     void has_error_changed();
     void downloading_changed();
 
-private:
-    bool m_new_version{false};
-    float m_download_progress = 0.0f;
-    bool m_downloading{false};
-    bool m_download_finish{false};
-    bool m_cancelling{false};
+private slots:
+    void on_download_complete(const QString& save_path);
 
-    QVersionNumber m_local_version;
-    QVersionNumber m_remote_version;
+private:
     QNetworkAccessManager m_manager;
     GithubReleaseFetcher m_fetcher;
-    QPointer<QNetworkReply> m_download_reply;
+    FileDownloader m_downloader;
 
+    bool m_new_version{false};
+    QVersionNumber m_local_version;
+    QVersionNumber m_remote_version;
     QString m_latest_launcher_link;
-
-    bool m_has_error{false};
-    QString m_error_message;
 
     void update_launcher_internal(const QString& url);
 };

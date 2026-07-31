@@ -1,10 +1,11 @@
 #pragma once
+#include "tool/file_downloader.hpp"
 #include "tool/github_release.hpp"
 
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QObject>
 #include <QQmlEngine>
+#include <QVersionNumber>
 #include <qtmetamacros.h>
 class GameUpdate : public QObject {
     Q_OBJECT
@@ -19,16 +20,17 @@ class GameUpdate : public QObject {
         QString localVersion READ local_version NOTIFY local_version_changed)
     Q_PROPERTY(
         QString remoteVersion READ remote_version NOTIFY remote_version_changed)
-    Q_PROPERTY(float downloadProgress READ download_progress NOTIFY
-                   download_progress_changed)
-    Q_PROPERTY(
-        bool downloadFinish READ download_finish NOTIFY download_finish_changed)
     Q_PROPERTY(bool hasError READ has_error NOTIFY has_error_changed)
     Q_PROPERTY(
         QString errorMessage READ error_message NOTIFY error_message_changed)
     Q_PROPERTY(
         bool checkingUpdate READ checking_update NOTIFY checking_update_changed)
     Q_PROPERTY(bool downloading READ downloading NOTIFY downloading_changed)
+    Q_PROPERTY(float downloadProgress READ download_progress NOTIFY
+                   download_progress_changed)
+    Q_PROPERTY(
+        bool downloadFinish READ download_finish NOTIFY download_finish_changed)
+
 public:
     GameUpdate();
 
@@ -63,23 +65,19 @@ signals:
     void checking_update_changed();
     void downloading_changed();
 
+private slots:
+    void on_download_complete(const QString& save_path);
+
 private:
     QNetworkAccessManager m_manager;
     GithubReleaseFetcher m_fetcher;
+    FileDownloader m_downloader;
 
     QString m_download_url;
     QVersionNumber m_local_version;
     QVersionNumber m_remote_version;
 
     bool m_new_version{false};
-    float m_download_progress = 0.0f;
-    bool m_downloading{false};
-    bool m_download_finish{false};
     bool m_checking_update = false;
-    bool m_cancelling{false};
     QString m_game_install_path;
-    QNetworkReply* m_download_reply{nullptr};
-
-    bool m_has_error{false};
-    QString m_error_message;
 };
