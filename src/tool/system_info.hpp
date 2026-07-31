@@ -15,7 +15,9 @@ class SystemInfo : public QObject {
     Q_PROPERTY(QString kernelVersion READ kernelVersion CONSTANT)
     Q_PROPERTY(QString machineUniqueId READ machineUniqueId CONSTANT)
     Q_PROPERTY(QString qtVersion READ qtVersion CONSTANT)
-    Q_PROPERTY(QString defaultGameFilePath READ defaultGameFilePath CONSTANT)
+    Q_PROPERTY(
+        QString defaultGameInstallDir READ defaultGameInstallDir CONSTANT)
+    Q_PROPERTY(QString defaultFrpInstallDir READ defaultFrpInstallDir CONSTANT)
     Q_PROPERTY(bool isInChina READ isInChina CONSTANT)
 public:
     QString productType() const { return QSysInfo::productType(); }
@@ -24,7 +26,12 @@ public:
     QString kernelVersion() const { return QSysInfo::kernelVersion(); }
     QString machineUniqueId() const { return QSysInfo::machineUniqueId(); }
     QString qtVersion() const { return QString::fromLatin1(QT_VERSION_STR); }
-    QString defaultGameFilePath() const { return get_default_game_file_path(); }
+    QString defaultGameInstallDir() const {
+        return get_default_game_install_dir();
+    }
+    QString defaultFrpInstallDir() const {
+        return get_default_frp_install_dir();
+    }
 
     bool isInChina() const {
         QLocale::Country current = QLocale::system().territory();

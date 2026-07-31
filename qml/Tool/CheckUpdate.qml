@@ -16,6 +16,7 @@ Item {
             Layout.preferredHeight: 60
             highlighted: true
             Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
             contentItem: ColumnLayout {
                 spacing: 5
                 anchors.top: parent.top
@@ -48,6 +49,7 @@ Item {
             Layout.preferredWidth: 250
             Layout.preferredHeight: 60
             Material.roundedScale: Material.MediumScale
+            Layout.alignment: Qt.AlignCenter
             highlighted: true
             text: qsTr("Click me to Update")
             font.bold: true
@@ -71,21 +73,23 @@ Item {
         }
     }
 
-    Popup {
+    Dialog {
         id: updatePopup
         anchors.centerIn: Overlay.overlay
-        width: 500
-        height: 300
+        width: 520
+        height: 540
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        title: qsTr("Update Launcher")
+        standardButtons: Dialog.NoButton
 
         ColumnLayout {
             anchors.centerIn: parent
             spacing: 10
 
             Label {
-                text: qsTr("Update Launcher(Only Support Windows)")
+                text: qsTr("Only Support Windows")
                 Layout.alignment: Qt.AlignCenter
 
                 font.pixelSize: 20
@@ -97,14 +101,21 @@ Item {
 
                 font.pixelSize: 20
             }
-
-            // AI-generated: mirror picker button, same as DownloadGame.
+            Switch {
+                id: customDowlaodSwitch
+                checked: false
+                font.pixelSize: 20
+                Layout.alignment: Qt.AlignCenter
+                text: qsTr("Custom Link")
+            }
             Button {
                 id: mirrorButton
                 Layout.alignment: Qt.AlignCenter
                 Layout.preferredWidth: 400
                 Layout.preferredHeight: 60
                 Material.roundedScale: Material.MediumScale
+                visible: !customDowlaodSwitch.checked
+                enabled: visible
                 highlighted: true
                 font.pixelSize: 20
                 text: {
@@ -113,8 +124,15 @@ Item {
                 }
                 onClicked: mirrorPopup.open()
             }
-
-            // AI-generated: shared mirror picker popup.
+            TextField {
+                id: customLinkText
+                visible: customDowlaodSwitch.checked
+                enabled: visible
+                Layout.alignment: Qt.AlignCenter
+                Layout.preferredWidth: 400
+                Layout.preferredHeight: 60
+                placeholderText: qsTr("Download Link")
+            }
             MirrorSelect {
                 id: mirrorPopup
                 parent: Overlay.overlay
@@ -135,12 +153,15 @@ Item {
                     cancelLauncherButton.visible = true;
                     downloadUpdateButton.enabled = false;
                     downloadUpdateButton.highlighted = false;
-                    const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                    LauncherUpdate.update_launcher(idx);
+                    if (customDowlaodSwitch.checked) {
+                        LauncherUpdate.update_launcher_from_url(customLinkText.text);
+                    } else {
+                        const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                        LauncherUpdate.update_launcher(idx);
+                    }
                 }
             }
 
-            // AI-generated: abort the running launcher update download.
             Button {
                 id: cancelLauncherButton
                 visible: false
@@ -173,7 +194,7 @@ Item {
                 }
             }
 
-            // AI-generated: recover the Update button once download ends any way.
+            // AI-generated: re-enable Update button once download ends any way.
             Connections {
                 target: LauncherUpdate
                 function onDownloadingChanged() {

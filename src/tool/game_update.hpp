@@ -1,4 +1,6 @@
 #pragma once
+#include "tool/github_release.hpp"
+
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QObject>
@@ -26,16 +28,13 @@ class GameUpdate : public QObject {
         QString errorMessage READ error_message NOTIFY error_message_changed)
     Q_PROPERTY(
         bool checkingUpdate READ checking_update NOTIFY checking_update_changed)
-    // AI-generated: whether a download is in progress.
     Q_PROPERTY(bool downloading READ downloading NOTIFY downloading_changed)
 public:
     GameUpdate();
 
     Q_INVOKABLE void check_update(const QString& local_version);
-    // AI-generated: mirror index, 0 = direct.
     Q_INVOKABLE void download_from_github(int mirror_index);
     Q_INVOKABLE void download_game(const QString& url);
-    // AI-generated: abort the in-flight download, if any.
     Q_INVOKABLE void cancel_download();
     QString game_install_path() const;
 
@@ -66,6 +65,7 @@ signals:
 
 private:
     QNetworkAccessManager m_manager;
+    GithubReleaseFetcher m_fetcher;
 
     QString m_download_url;
     QVersionNumber m_local_version;
@@ -78,7 +78,6 @@ private:
     bool m_checking_update = false;
     bool m_cancelling{false};
     QString m_game_install_path;
-    // AI-generated: active download reply, used to abort on cancel.
     QNetworkReply* m_download_reply{nullptr};
 
     bool m_has_error{false};

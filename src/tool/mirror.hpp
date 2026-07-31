@@ -6,15 +6,13 @@
 #include <QVector>
 #include <qtmetamacros.h>
 
-// AI-generated: one mirror source. name is the UI label, prefix is prepended
-// to the GitHub URL (empty for direct).
+// AI-generated: index 0 is always direct GitHub. Order is part of the
+// persisted Settings contract, so don't reorder existing entries.
 struct MirrorEntry {
     QString name;
     QString prefix;
 };
 
-// AI-generated: built-in mirrors. Index 0 is always direct GitHub. Order is
-// part of the persisted Settings contract, so don't reorder existing entries.
 inline const QVector<MirrorEntry> mirror_sources{
     {QStringLiteral("Direct (GitHub)"), QStringLiteral("")},
     {QStringLiteral("gh-proxy.org"), QStringLiteral("https://gh-proxy.org/")},
@@ -48,18 +46,14 @@ class MirrorSource : public QObject {
 public:
     explicit MirrorSource(QObject* parent = nullptr);
     QStringList names() const;
-    // AI-generated: prepend mirror prefix at index; 0 or out-of-range ==
-    // direct.
     Q_INVOKABLE QString apply(const QString& url, int index) const;
-    // AI-generated: probe every mirror and report round-trip ms per index.
-    // Emits latencyReady(index, ms) for each; ms < 0 means timeout/failure.
+    // Emits latencyReady(index, ms) for each probe; ms < 0 means
+    // timeout/failure.
     Q_INVOKABLE void test_all_latency();
 signals:
-    // AI-generated: fired once per mirror probe. ms<0 = unreachable.
     void latencyReady(int index, int ms);
 
 private:
-    // AI-generated: holds the probe request until it completes.
     QNetworkAccessManager m_manager;
     void probe(int index, const QString& url);
 };

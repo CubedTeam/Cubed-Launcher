@@ -44,12 +44,16 @@ Item {
             Layout.preferredHeight: installGameLayout.implicitHeight + 20
             ColumnLayout {
                 id: installGameLayout
-                anchors.centerIn: parent
+                anchors.fill: parent
+                anchors.margins: 2
                 spacing: installTip.spacing
                 Label {
                     id: installGameTip
                     Layout.alignment: Qt.AlignCenter
                     text: qsTr("You need to install the game in the manager tab next to it.")
+                    wrapMode: Text.WordWrap
+                    Layout.fillWidth: true
+                    horizontalAlignment: Text.AlignHCenter
 
                     font.bold: true
                     font.pixelSize: 20
@@ -72,7 +76,6 @@ Item {
         }
     }
 
-    // AI-generated: launch controls split into Status and Launch cards.
     ColumnLayout {
         id: gameLayout
         anchors.bottom: parent.bottom
@@ -164,8 +167,8 @@ Item {
                     highlighted: enabled
                     Component.onCompleted: {
                         if (Settings.pathSetted) {
-                            console.log("Set Cubed Instance game path sucessful");
-                            CubedInstance.set_game_path(Settings.gamePath);
+                            console.log("Set Cubed Instance game dir sucessful");
+                            CubedInstance.set_game_dir(Settings.gameDir);
                         }
                     }
                     Material.roundedScale: Material.MediumScale

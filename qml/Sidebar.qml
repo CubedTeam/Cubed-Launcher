@@ -21,9 +21,9 @@ Rectangle {
                 id: navList
                 anchors.fill: parent
 
-                // AI-generated: plain string keys only, so model never rebuilds
-                // on retranslate and currentIndex stays stable.
-                model: ["Launcher", "Manager", "Setting", "About"]
+                // AI-generated: plain string keys so retranslate does not rebuild
+                // the model and currentIndex stays stable.
+                model: ["Launcher", "Manager", "Multiplayer", "Setting", "About"]
                 currentIndex: SideTool.currentIndex
 
                 delegate: ItemDelegate {
@@ -41,13 +41,11 @@ Rectangle {
                         elide: Text.ElideRight
                     }
 
-                    // AI-generated: separator below each item except the last.
                     Rectangle {
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        // AI-generated: use navList directly because ListView.view is null here.
-                    visible: sideDelegate.index < navList.count - 1
+                        visible: sideDelegate.index < navList.count - 1
                         height: 1
                         color: Qt.rgba(0, 0, 0, 0.12)
                     }
@@ -76,13 +74,13 @@ Rectangle {
                         }
                     }
 
-                    // AI-generated: literal qsTr lookups so retranslate refreshes
-                    // the text without touching the stable string-key model.
                     text: {
                         if (modelData === "Launcher")
                             return qsTr("Launcher");
                         if (modelData === "Manager")
                             return qsTr("Manager");
+                        if (modelData === "Multiplayer")
+                            return qsTr("Multiplayer");
                         if (modelData === "Setting")
                             return qsTr("Setting");
                         if (modelData === "About")
@@ -101,11 +99,11 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            // AI-generated: bind to the C++ singleton so the active page stays put.
             currentIndex: SideTool.currentIndex
 
             Launch {}
             Manager {}
+            Multiplayer {}
             Setting {}
 
             About {}

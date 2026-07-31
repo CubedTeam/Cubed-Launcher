@@ -1,6 +1,7 @@
 #include "settings.hpp"
 
-// AI-generated: singleton instance pointer, set in constructor.
+#include <QFileInfo>
+
 Settings* Settings::s_instance = nullptr;
 
 Settings::Settings(QObject* parent)
@@ -12,37 +13,39 @@ Settings::Settings(QObject* parent)
     }
 }
 
-QString Settings::game_path() const { return m_game_path; }
+QString Settings::game_dir() const { return m_game_dir; }
 QString Settings::player_name() const { return m_player_name; }
 
-bool Settings::path_set() const { return !m_game_path.isEmpty(); }
+bool Settings::path_set() const { return !m_game_dir.isEmpty(); }
 int Settings::mirror_index() const { return m_mirror_index; }
 QString Settings::language() const { return m_language; }
 
 QColor Settings::accent_color() const { return m_accent_color; }
-// AI-generated: read the colorful card border flag.
 bool Settings::card_colorful_border() const { return m_card_colorful_border; }
+QString Settings::wrapper_command() const { return m_wrapper_command; }
+QString Settings::frp_install_path() const { return m_frp_install_path; }
 
 Settings* Settings::instance() { return s_instance; }
 
-void Settings::set_game_path_url(const QUrl& path) {
+void Settings::set_game_dir_url(const QUrl& path) {
     QString local = path.toLocalFile();
-    if (!update_value(m_game_path, local, "game_path")) {
+    if (!update_value(m_game_dir, local, "game_path")) {
         return;
     }
 
-    emit game_path_changed();
+    emit game_dir_changed();
     emit path_set_changed();
 }
 
-void Settings::set_game_path(const QString& path) {
-    if (!update_value(m_game_path, path, "game_path")) {
+void Settings::set_game_dir(const QString& path) {
+    if (!update_value(m_game_dir, path, "game_path")) {
         return;
     }
 
-    emit game_path_changed();
+    emit game_dir_changed();
     emit path_set_changed();
 }
+
 void Settings::set_player_name(const QString& name) {
     if (!update_value(m_player_name, name, "player_name")) {
         return;
@@ -59,8 +62,6 @@ void Settings::set_mirror_index(int index) {
     emit mirror_index_changed();
 }
 
-// AI-generated: persist UI language and notify listeners (e.g. main swaps the
-// translator and retranslates the QML tree).
 void Settings::set_language(const QString& lang) {
     if (!update_value(m_language, lang, "language")) {
         return;
@@ -69,8 +70,6 @@ void Settings::set_language(const QString& lang) {
     emit language_changed();
 }
 
-// AI-generated: persist accent as hex string so it round-trips through
-// IniFormat.
 void Settings::set_accent_color(const QColor& color) {
     if (m_accent_color == color) {
         return;
@@ -81,7 +80,6 @@ void Settings::set_accent_color(const QColor& color) {
     emit accent_color_changed();
 }
 
-// AI-generated: persist the colorful card border toggle.
 void Settings::set_card_colorful_border(bool enabled) {
     if (!update_value(m_card_colorful_border, enabled,
                       "card_colorful_border")) {
@@ -91,25 +89,60 @@ void Settings::set_card_colorful_border(bool enabled) {
     emit card_colorful_border_changed();
 }
 
+void Settings::set_wrapper_command(const QString& command) {
+    if (!update_value(m_wrapper_command, command, "wrapper_command")) {
+        return;
+    }
+
+    emit wrapper_command_changed();
+}
+
+void Settings::set_frp_install_path_url(const QUrl& path) {
+    QString local = path.toLocalFile();
+    if (!update_value(m_frp_install_path, local, "frp_path")) {
+        return;
+    }
+
+    emit frp_install_path_changed();
+}
+
+void Settings::set_frp_install_path(const QString& path) {
+    if (!update_value(m_frp_install_path, path, "frp_path")) {
+        return;
+    }
+
+    emit frp_install_path_changed();
+}
+
 void Settings::load() {
     if (m_settings.contains("game_path")) {
-        m_game_path = m_settings.value("game_path").toString();
+        QString raw = m_settings.value("game_path").toString();
+        // Migration: older versions stored the full file path. If the
+        // basename matches the platform executable, strip it so the stored
+        // value is the install directory.
+        if (!raw.isEmpty()) {
+            QFileInfo info(raw);
+            if (info.isFile()) {
+                raw = info.absolutePath();
+                save("game_path", raw);
+            }
+        }
+        m_game_dir = raw;
     }
-    qDebug() << "Settings Game Path {" << m_game_path << "}" << " empty "
-             << m_game_path.isEmpty();
+    qDebug() << "Settings Game Dir {" << m_game_dir << "}" << " empty "
+             << m_game_dir.isEmpty();
 
     m_player_name = m_settings.value("player_name").toString();
 
-    // AI-generated: load mirror index, -1 means unset.
     m_mirror_index = m_settings.value("mirror_index", -1).toInt();
 
     m_language = m_settings.value("language").toString();
-    // AI-generated: default to Material Blue 500 when unset.
     m_accent_color = QColor(
         m_settings.value("accent_color", QColor("#2196F3").name()).toString());
-    // AI-generated: default to colorful borders.
     m_card_colorful_border =
         m_settings.value("card_colorful_border", true).toBool();
+    m_wrapper_command = m_settings.value("wrapper_command").toString();
+    m_frp_install_path = m_settings.value("frp_path").toString();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

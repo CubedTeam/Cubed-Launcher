@@ -5,8 +5,8 @@ import QtQuick.Controls
 import CubedLauncher
 import QtQuick.Layouts
 
-// AI-generated: mirror source picker popup with a per-mirror latency tester.
-Popup {
+// AI-generated: mirror source picker dialog with a per-mirror latency tester.
+Dialog {
     id: mirrorPopup
     anchors.centerIn: Overlay.overlay
     width: 520
@@ -14,9 +14,9 @@ Popup {
     modal: true
     focus: true
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+    title: qsTr("Select Mirror Source")
+    standardButtons: Dialog.NoButton
 
-    // AI-generated: hold name + latency for every mirror so the list can
-    // render a stable ms label per row.
     ListModel {
         id: mirrorModel
         Component.onCompleted: {
@@ -39,13 +39,6 @@ Popup {
             MirrorSource.test_all_latency();
         }
 
-        Label {
-            text: qsTr("Select Mirror Source")
-            Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 24
-            font.bold: true
-        }
-
         ListView {
             id: mirrorList
             Layout.fillWidth: true
@@ -55,14 +48,17 @@ Popup {
             delegate: ItemDelegate {
                 id: row
                 width: mirrorList.width
-                // AI-generated: expose model row via required properties so
-                // ComponentBehavior: Bound does not break the binding.
+                // AI-generated: required properties so ComponentBehavior: Bound
+                // does not break the model binding.
                 required property int index
                 required property string name
                 required property int latency
                 required property bool testing
 
-                onClicked: Settings.mirrorIndex = row.index
+                onClicked: {
+                    Settings.mirrorIndex = row.index;
+                    mirrorPopup.close();
+                }
 
                 contentItem: RowLayout {
                     width: parent.width
@@ -70,14 +66,15 @@ Popup {
 
                     RadioButton {
                         checked: Settings.mirrorIndex === row.index
-                        onClicked: Settings.mirrorIndex = row.index
+                        onClicked: {
+                            Settings.mirrorIndex = row.index;
+                            mirrorPopup.close();
+                        }
                         text: row.name
                         font.pixelSize: 18
                         Layout.fillWidth: true
                     }
 
-                    // AI-generated: show measured RTT; while testing shows
-                    // busy spinner; negative means unreachable/timeout.
                     Label {
                         id: latencyLabel
                         Layout.preferredWidth: 120
@@ -123,7 +120,6 @@ Popup {
             }
         }
 
-        // AI-generated: probe every mirror in parallel and report RTT.
         Button {
             id: testButton
             Layout.alignment: Qt.AlignCenter
@@ -145,7 +141,7 @@ Popup {
         }
     }
 
-    // AI-generated: count probes still in flight so the button disables.
+    // AI-generated: probes in flight, gates the Test Latency button.
     property int pendingTests: 0
 
     Connections {

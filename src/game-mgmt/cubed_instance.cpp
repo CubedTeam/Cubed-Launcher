@@ -1,5 +1,6 @@
 #include "game-mgmt/cubed_instance.hpp"
 
+#include "settings.hpp"
 #include "tool/game_path.hpp"
 
 #include <QDebug>
@@ -8,26 +9,31 @@
 CubedInstance::CubedInstance() {}
 
 Q_INVOKABLE void CubedInstance::start_cubed_instance() {
-    if (m_game_file_path.isEmpty()) {
-        m_game_file_path = get_default_game_file_path();
+    if (m_game_install_dir.isEmpty()) {
+        m_game_install_dir = get_default_game_install_dir();
     }
-    qDebug() << "Game Start, path " << m_game_file_path;
+    const QString program_path =
+        m_game_install_dir + "/" + get_default_game_executable_name();
+    qDebug() << "Game Start, dir " << m_game_install_dir << " exec "
+             << program_path;
 
     QProcess* process = new QProcess(this);
 
     QStringList argument;
     QString program;
-    if (m_wrapper_command.isEmpty()) {
-        program = m_game_file_path;
+    const QString wrapper = Settings::instance()
+                                ? Settings::instance()->wrapper_command()
+                                : QString();
+    if (wrapper.isEmpty()) {
+        program = program_path;
     } else {
-        program = m_wrapper_command;
-        argument.append(m_game_file_path);
+        program = wrapper;
+        argument.append(program_path);
     }
     argument.append(
         {"--player", m_name, m_peer_mode, "--ip", m_ip, "-p", m_port});
-    QFileInfo info(m_game_file_path);
 
-    process->setWorkingDirectory(info.absolutePath());
+    process->setWorkingDirectory(m_game_install_dir);
     process->setProgram(program);
     process->setArguments(argument);
     connect(process, &QProcess::finished, this,
@@ -65,16 +71,16 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     }
 }
 
-Q_INVOKABLE void CubedInstance::set_game_path_url(const QUrl& game_path_url) {
-    m_game_file_path = game_path_url.toLocalFile();
-    qDebug() << "Url Change Game File Path " << m_game_file_path;
+Q_INVOKABLE void CubedInstance::set_game_dir_url(const QUrl& game_dir_url) {
+    m_game_install_dir = game_dir_url.toLocalFile();
+    qDebug() << "Url Change Game Install Dir " << m_game_install_dir;
     check_version();
     emit path_change();
 }
 
-Q_INVOKABLE void CubedInstance::set_game_path(const QString& game_path) {
-    m_game_file_path = game_path;
-    qDebug() << "Path: Change Game File Path " << m_game_file_path;
+Q_INVOKABLE void CubedInstance::set_game_dir(const QString& game_dir) {
+    m_game_install_dir = game_dir;
+    qDebug() << "Path: Change Game Install Dir " << m_game_install_dir;
     check_version();
     emit path_change();
 }
@@ -98,18 +104,22 @@ Q_INVOKABLE void CubedInstance::kill_all() {
 }
 
 Q_INVOKABLE void CubedInstance::check_version() {
-    if (m_game_file_path.isEmpty()) {
-        m_game_file_path = get_default_game_file_path();
+    if (m_game_install_dir.isEmpty()) {
+        m_game_install_dir = get_default_game_install_dir();
     }
-    auto info = QFileInfo(m_game_file_path);
+    const QString program_path =
+        m_game_install_dir + "/" + get_default_game_executable_name();
+
+    auto info = QFileInfo(program_path);
     if (!info.isFile()) {
         m_installed = false;
         emit installed_changed();
         emit version_changed();
+        qDebug() << program_path << " is not a file";
         return;
     }
     QProcess* process = new QProcess(this);
-    process->setProgram(m_game_file_path);
+    process->setProgram(program_path);
     process->setArguments(QStringList("-V"));
 
     connect(process, &QProcess::finished, this,
@@ -122,7 +132,10 @@ Q_INVOKABLE void CubedInstance::check_version() {
             });
 
     connect(process, &QProcess::errorOccurred, this,
-            [](QProcess::ProcessError error) { qDebug() << error; });
+            [](QProcess::ProcessError error) {
+                qDebug() << "check_version fail";
+                qDebug() << error;
+            });
 
     connect(process, &QProcess::readyReadStandardOutput, this,
             [process, this]() {
@@ -145,13 +158,9 @@ Q_INVOKABLE void CubedInstance::check_version() {
     process->start();
 }
 
-Q_INVOKABLE void CubedInstance::set_wrapper_command(const QString& wrapper) {
-    m_wrapper_command = wrapper;
-}
-
 bool CubedInstance::running() const { return !m_processes.isEmpty(); }
 bool CubedInstance::game_path_select() const {
-    return !m_game_file_path.isEmpty();
+    return !m_game_install_dir.isEmpty();
 }
 bool CubedInstance::installed() const { return m_installed; }
 void CubedInstance::set_log_statue(bool status) { m_log_on = status; }

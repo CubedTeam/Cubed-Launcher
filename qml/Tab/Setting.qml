@@ -11,8 +11,6 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    // AI-generated: scrollable settings page so the advanced section never
-    // gets clipped on small windows.
     Flickable {
         id: settingScroll
         anchors.fill: parent
@@ -46,8 +44,6 @@ Item {
                     }
                     ComboBox {
                         id: languageCombo
-                        // AI-generated: index 0 -> zh_CN, index 1 -> en. "English" is left
-                        // untranslated on purpose per the spec.
                         model: ["简体中文", "English"]
                         currentIndex: Settings.language === "en" ? 1 : 0
                         font.pixelSize: 20
@@ -81,6 +77,7 @@ Item {
                             model: [Material.Red, Material.Pink, Material.Purple, Material.Indigo, Material.Blue, Material.Cyan, Material.Teal, Material.Green, Material.Orange, Material.DeepOrange]
 
                             delegate: Rectangle {
+                                id: colorRect
                                 required property int modelData
                                 width: 32
                                 height: 32
@@ -92,7 +89,7 @@ Item {
                                 MouseArea {
                                     anchors.fill: parent
                                     cursorShape: Qt.PointingHandCursor
-                                    onClicked: Settings.accentColor = Qt.lighter(Material.color(modelData), 1.2)
+                                    onClicked: Settings.accentColor = Qt.lighter(Material.color(colorRect.modelData), 1.2)
                                 }
                             }
                         }
@@ -103,7 +100,6 @@ Item {
                 Layout.preferredHeight: colorfulBorder.implicitHeight + 20
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter
-                // AI-generated: toggle between accent and neutral grey card borders.
                 Switch {
                     id: colorfulBorder
                     anchors.centerIn: parent
@@ -127,7 +123,6 @@ Item {
                 }
             }
 
-            // AI-generated: advanced settings split into categorized cards.
             Card {
                 Layout.preferredHeight: wrapperLayout.implicitHeight + 20
                 Layout.fillWidth: true
@@ -147,8 +142,9 @@ Item {
                         Layout.preferredWidth: 300
                         Layout.alignment: Qt.AlignCenter
                         placeholderText: qsTr("Wrapper Command")
+                        text: Settings.wrapperCommand
                         onEditingFinished: {
-                            CubedInstance.set_wrapper_command(wrapperCommand.text);
+                            Settings.wrapperCommand = wrapperCommand.text;
                         }
                     }
                 }
@@ -200,7 +196,6 @@ Item {
                         Layout.alignment: Qt.AlignCenter
                         Layout.preferredWidth: 300
                         font.pixelSize: 20
-                        // AI-generated: host/client labels translated for display.
                         model: [qsTr("Host"), qsTr("Client")]
                         currentIndex: 0
                         onCurrentIndexChanged: {
