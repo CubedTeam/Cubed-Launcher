@@ -225,14 +225,15 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
             "Network name, secret and peer address are required"));
         return;
     }
-    // AI-generated: pass secrets via env so they stay out of /proc cmdline.
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert(QStringLiteral("ET_NETWORK_NAME"), network_name);
-    env.insert(QStringLiteral("ET_NETWORK_SECRET"), network_secret);
-    env.insert(QStringLiteral("ET_PEERS"), peer_address);
-    env.insert(QStringLiteral("ET_DHCP"), QStringLiteral("true"));
-    env.insert(QStringLiteral("ET_NO_TUN"), QStringLiteral("true"));
-    launch_process(core_binary(), {}, env);
+    const QStringList args{
+        QStringLiteral("--network-name"),   network_name,
+        QStringLiteral("--network-secret"), network_secret,
+        QStringLiteral("--peers"),          peer_address,
+        QStringLiteral("--dhcp"),           QStringLiteral("true"),
+        QStringLiteral("--no-tun"),         QStringLiteral("true"),
+    };
+    launch_process(core_binary(), args,
+                   QProcessEnvironment::systemEnvironment());
     if (running()) {
         start_ip_polling();
     }
