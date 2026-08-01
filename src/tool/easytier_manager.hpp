@@ -4,7 +4,25 @@
 
 #include <QQmlEngine>
 #include <QString>
+#include <QStringList>
 #include <QTimer>
+#include <QVector>
+
+// AI-generated: hardcoded public EasyTier community servers. Mirrors the
+// mirror_sources pattern in mirror.hpp: only the index is persisted in
+// Settings, the actual addresses are baked in here.
+struct PublicServerEntry {
+    QString name;
+    QString address;
+};
+
+inline const QVector<PublicServerEntry> easytier_public_servers{
+    {QStringLiteral("225284.xyz"), QStringLiteral("tcp://225284.xyz:11010")},
+    {QStringLiteral("183.230.36.171"),
+     QStringLiteral("tcp://183.230.36.171:11010")},
+    {QStringLiteral("easytier.weiai.org.cn"),
+     QStringLiteral("tcp://easytier.weiai.org.cn:11010")},
+};
 
 class EasyTierManager : public BinaryServiceBase {
     Q_OBJECT
@@ -12,12 +30,15 @@ class EasyTierManager : public BinaryServiceBase {
     QML_SINGLETON
 
     Q_PROPERTY(QString virtualIp READ virtual_ip NOTIFY virtual_ip_changed)
+    Q_PROPERTY(QStringList publicServerNames READ public_server_names CONSTANT)
 
 public:
     explicit EasyTierManager(QObject* parent = nullptr);
     ~EasyTierManager() override;
 
     QString virtual_ip() const { return m_virtual_ip; }
+    QStringList public_server_names() const;
+    Q_INVOKABLE QString public_server_address(int index) const;
 
     Q_INVOKABLE void start(const QString& network_name,
                            const QString& network_secret,

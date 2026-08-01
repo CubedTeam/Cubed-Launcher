@@ -1,7 +1,9 @@
 // AI-generated: easytier multiplayer section. Self-contained: install card,
-// control card with peer address / network name / network secret inputs and
-// start/stop, virtual IP card with copy-to-clipboard, log card, advanced
-// toggle, install path card and folder dialog.
+// control card with public/custom server mode (Dialog picker or free-form
+// input) plus network name / network secret inputs, start/stop, virtual IP
+// card with copy-to-clipboard, log card, advanced toggle, install path
+// card and folder dialog. Network identity (name/secret) and the custom
+// peer address are intentionally NOT persisted.
 pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Material
@@ -19,6 +21,10 @@ Item {
 
     property var logLines: []
     property bool showLog: true
+    // 0 = public server (chosen from hardcoded list), 1 = custom address.
+    // Local state only, not persisted: the persisted signal is the public
+    // server index alone.
+    property int serverMode: 0
 
     Component.onCompleted: {
         if (Settings.easytierInstallPath && Settings.easytierInstallPath.length > 0) {
@@ -43,6 +49,29 @@ Item {
             }
             easytierSection.logLines = lines;
         }
+    }
+
+    // AI-generated: resolve the peer address that Start will use, based on
+    // the current mode and the persisted public server index.
+    function resolvedPeerAddress() {
+        if (easytierSection.serverMode === 0) {
+            const idx = Settings.easytierPublicServerIndex >= 0
+                            ? Settings.easytierPublicServerIndex
+                            : 0;
+            return EasyTierManager.public_server_address(idx);
+        }
+        return customPeerField.text;
+    }
+
+    function publicServerLabel() {
+        const names = EasyTierManager.publicServerNames;
+        const idx = Settings.easytierPublicServerIndex >= 0
+                        ? Settings.easytierPublicServerIndex
+                        : 0;
+        if (idx < 0 || idx >= names.length) {
+            return qsTr("Select...");
+        }
+        return names[idx];
     }
 
     ColumnLayout {
@@ -87,18 +116,55 @@ Item {
                     color: EasyTierManager.running ? Material.color(Material.Green) : Material.color(Material.Grey)
                 }
 
+                RowLayout {
+                    Layout.alignment: Qt.AlignCenter
+                    spacing: 0
+
+                    TabBar {
+                        id: modeBar
+                        Layout.preferredHeight: 36
+                        currentIndex: easytierSection.serverMode
+                        onCurrentIndexChanged: easytierSection.serverMode = currentIndex
+                        Material.elevation: 0
+                        Material.background: "white"
+
+                        TabButton {
+                            text: qsTr("Public")
+                            font.pixelSize: 14
+                            width: implicitWidth
+                        }
+                        TabButton {
+                            text: qsTr("Custom")
+                            font.pixelSize: 14
+                            width: implicitWidth
+                        }
+                    }
+                }
+
                 ColumnLayout {
                     Layout.alignment: Qt.AlignCenter
                     spacing: 8
 
+                    Button {
+                        id: publicServerButton
+                        visible: easytierSection.serverMode === 0
+                        Layout.preferredWidth: 400
+                        Layout.preferredHeight: 44
+                        font.pixelSize: 14
+                        Material.roundedScale: Material.MediumScale
+                        highlighted: true
+                        enabled: !EasyTierManager.running
+                        text: qsTr("Public Server: ") + easytierSection.publicServerLabel()
+                        onClicked: publicServerPopup.open()
+                    }
+
                     TextField {
-                        id: peerAddressField
+                        id: customPeerField
+                        visible: easytierSection.serverMode === 1
                         Layout.preferredWidth: 400
                         Layout.preferredHeight: 44
                         font.pixelSize: 14
                         placeholderText: qsTr("Peer address (e.g. tcp://1.2.3.4:1010)")
-                        text: Settings.easytierPeerAddress
-                        onEditingFinished: Settings.easytierPeerAddress = text
                         enabled: !EasyTierManager.running
                     }
 
@@ -108,8 +174,6 @@ Item {
                         Layout.preferredHeight: 44
                         font.pixelSize: 14
                         placeholderText: qsTr("Network name")
-                        text: Settings.easytierNetworkName
-                        onEditingFinished: Settings.easytierNetworkName = text
                         enabled: !EasyTierManager.running
                     }
 
@@ -119,8 +183,6 @@ Item {
                         Layout.preferredHeight: 44
                         font.pixelSize: 14
                         placeholderText: qsTr("Network secret")
-                        text: Settings.easytierNetworkSecret
-                        onEditingFinished: Settings.easytierNetworkSecret = text
                         enabled: !EasyTierManager.running
                         echoMode: TextInput.Password
                     }
@@ -136,13 +198,15 @@ Item {
                         font.pixelSize: 18
                         Material.roundedScale: Material.MediumScale
                         highlighted: true
-                        enabled: EasyTierManager.installed && !EasyTierManager.running && peerAddressField.text.length > 0 && networkNameField.text.length > 0 && networkSecretField.text.length > 0
+                        enabled: EasyTierManager.installed && !EasyTierManager.running
+                                 && networkNameField.text.length > 0
+                                 && networkSecretField.text.length > 0
+                                 && easytierSection.resolvedPeerAddress().length > 0
                         text: qsTr("Start")
                         onClicked: {
-                            Settings.easytierPeerAddress = peerAddressField.text;
-                            Settings.easytierNetworkName = networkNameField.text;
-                            Settings.easytierNetworkSecret = networkSecretField.text;
-                            EasyTierManager.start(networkNameField.text, networkSecretField.text, peerAddressField.text);
+                            EasyTierManager.start(networkNameField.text,
+                                                  networkSecretField.text,
+                                                  easytierSection.resolvedPeerAddress());
                         }
                     }
                     Button {
@@ -272,6 +336,11 @@ Item {
                 EasyTierManager.set_install_path(SystemInfo.defaultEasyTierInstallDir);
             }
         }
+    }
+
+    PublicServerSelect {
+        id: publicServerPopup
+        parent: Overlay.overlay
     }
 
     FolderDialog {

@@ -32,6 +32,22 @@ EasyTierManager::~EasyTierManager() {
     m_ip_poll_timer = nullptr;
 }
 
+QStringList EasyTierManager::public_server_names() const {
+    QStringList list;
+    list.reserve(easytier_public_servers.size());
+    for (const auto& entry : easytier_public_servers) {
+        list.append(entry.name);
+    }
+    return list;
+}
+
+QString EasyTierManager::public_server_address(int index) const {
+    if (index < 0 || index >= easytier_public_servers.size()) {
+        return {};
+    }
+    return easytier_public_servers.at(index).address;
+}
+
 QString EasyTierManager::default_install_dir() const {
     return get_default_easytier_install_dir();
 }
