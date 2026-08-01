@@ -74,6 +74,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Tool/ServiceInstallCard.qml
         qml/Tool/FrpSection.qml
         qml/Tool/EasyTierSection.qml
+        qml/Tool/PublicServerSelect.qml
         qml/pages/SpecialThanks.qml
     RESOURCES
         resources/logo.png

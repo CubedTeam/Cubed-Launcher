@@ -239,77 +239,97 @@
         <translation type="vanished">EasyTier 客户端：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="78"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="72"/>
+        <source>Select...</source>
+        <translation>选择...</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="107"/>
         <source>EasyTier Client</source>
         <translation>EasyTier 客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="85"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="114"/>
         <source>Status: %1</source>
         <translation>状态：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="85"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="114"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="85"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="114"/>
         <source>Stopped</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="99"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="132"/>
+        <source>Public</source>
+        <translation>公共</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="137"/>
+        <source>Custom</source>
+        <translation>自定义</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="157"/>
+        <source>Public Server: </source>
+        <translation>公共服务器：</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="167"/>
         <source>Peer address (e.g. tcp://1.2.3.4:1010)</source>
         <translation>对等节点地址（例如 tcp://1.2.3.4:1010）</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="110"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="176"/>
         <source>Network name</source>
         <translation>网络名称</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="121"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="185"/>
         <source>Network secret</source>
         <translation>网络密钥</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="140"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="205"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="156"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="220"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="176"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="240"/>
         <source>Virtual IP</source>
         <translation>虚拟 IP</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="191"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="255"/>
         <source>--</source>
         <translation>--</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="201"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="265"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="211"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="275"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="219"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="283"/>
         <source>Waiting for easytier to assign IP...</source>
         <translation>等待 easytier 分配 IP...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="267"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="331"/>
         <source>EasyTier Install Directory</source>
         <translation>EasyTier 安装目录</translation>
     </message>
@@ -322,7 +342,7 @@
         <translation type="vanished">显示日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="244"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="308"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
@@ -331,7 +351,7 @@
         <translation type="vanished">EasyTier 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="268"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="332"/>
         <source>Set EasyTier Folder</source>
         <translation>设置 EasyTier 文件夹</translation>
     </message>
@@ -340,7 +360,7 @@
         <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="279"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="348"/>
         <source>Select EasyTier Folder</source>
         <translation>选择 EasyTier 文件夹</translation>
     </message>
@@ -439,7 +459,7 @@
     <message>
         <location filename="../qml/Tool/FrpSection.qml" line="78"/>
         <source>Frp Client</source>
-        <translation type="unfinished">Frp 客户端</translation>
+        <translation>Frp 客户端</translation>
     </message>
     <message>
         <location filename="../qml/Tool/FrpSection.qml" line="85"/>
@@ -537,7 +557,7 @@
     <message>
         <location filename="../qml/Component/InstallPathCard.qml" line="15"/>
         <source>Reset Path</source>
-        <translation type="unfinished">重置路径</translation>
+        <translation>重置路径</translation>
     </message>
 </context>
 <context>
@@ -583,12 +603,12 @@
     <message>
         <location filename="../qml/Component/LogCard.qml" line="13"/>
         <source>Logs</source>
-        <translation type="unfinished">日志</translation>
+        <translation>日志</translation>
     </message>
     <message>
         <location filename="../qml/Component/LogCard.qml" line="38"/>
         <source>ShowLog</source>
-        <translation type="unfinished">显示日志</translation>
+        <translation>显示日志</translation>
     </message>
 </context>
 <context>
@@ -745,66 +765,78 @@
     </message>
 </context>
 <context>
+    <name>PublicServerSelect</name>
+    <message>
+        <location filename="../qml/Tool/PublicServerSelect.qml" line="19"/>
+        <source>Select Public Server</source>
+        <translation>选择公共服务器</translation>
+    </message>
+    <message>
+        <source>Tap a server to select it. Only the index is saved.</source>
+        <translation type="vanished">点选一个服务器即可，仅保存索引。</translation>
+    </message>
+</context>
+<context>
     <name>ServiceInstallCard</name>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="41"/>
         <source>Not Installed</source>
-        <translation type="unfinished">未安装</translation>
+        <translation>未安装</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="49"/>
         <source>Installed: %1</source>
-        <translation type="unfinished">已安装：%1</translation>
+        <translation>已安装：%1</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="65"/>
         <source>Checking for updates...</source>
-        <translation type="unfinished">正在检查更新...</translation>
+        <translation>正在检查更新...</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="67"/>
         <source>Downloading...</source>
-        <translation type="unfinished">正在下载...</translation>
+        <translation>正在下载...</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="69"/>
         <source>Extracting...</source>
-        <translation type="unfinished">正在解压...</translation>
+        <translation>正在解压...</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="70"/>
         <source>Working...</source>
-        <translation type="unfinished">处理中...</translation>
+        <translation>处理中...</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="99"/>
         <source>Custom Link</source>
-        <translation type="unfinished">自定义链接</translation>
+        <translation>自定义链接</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="113"/>
         <source>Mirror: </source>
-        <translation type="unfinished">镜像：</translation>
+        <translation>镜像：</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="124"/>
         <source>Download Link</source>
-        <translation type="unfinished">下载链接</translation>
+        <translation>下载链接</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="134"/>
         <source>Reinstall</source>
-        <translation type="unfinished">重新安装</translation>
+        <translation>重新安装</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="134"/>
         <source>Download &amp;&amp; Install</source>
-        <translation type="unfinished">下载并安装</translation>
+        <translation>下载并安装</translation>
     </message>
     <message>
         <location filename="../qml/Tool/ServiceInstallCard.qml" line="151"/>
         <source>Uninstall</source>
-        <translation type="unfinished">卸载</translation>
+        <translation>卸载</translation>
     </message>
 </context>
 <context>
