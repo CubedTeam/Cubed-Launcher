@@ -36,16 +36,6 @@ Dialog {
         anchors.fill: parent
         spacing: 8
 
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("Tap a server to select it. Only the index is saved.")
-            font.pixelSize: 12
-            color: Material.color(Material.Grey)
-            wrapMode: Text.WordWrap
-            Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-        }
-
         ListView {
             id: serverList
             Layout.fillWidth: true
