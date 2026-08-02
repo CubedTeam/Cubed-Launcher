@@ -17,7 +17,7 @@ Cubed Launcher is the official client-side application for managing, updating, a
 
 ### Development Environment
 
-- Operating System: Windows 10/11, macOS 12+, or Linux (glibc 2.35+)
+- Operating System: Windows 10/11 or Linux (glibc 2.35+)
 - Git (for source cloning)
 - Qt toolchain (qmake, moc, rcc, uic) available in PATH
 

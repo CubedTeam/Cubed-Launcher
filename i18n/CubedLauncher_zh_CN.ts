@@ -567,24 +567,6 @@
     </message>
 </context>
 <context>
-    <name>GamePathSet</name>
-    <message>
-        <location filename="../qml/Tool/GamePathSet.qml" line="22"/>
-        <source>You must select or intstall game program</source>
-        <translation>必须选择或安装游戏程序</translation>
-    </message>
-    <message>
-        <location filename="../qml/Tool/GamePathSet.qml" line="35"/>
-        <source>Select Game</source>
-        <translation>选择游戏</translation>
-    </message>
-    <message>
-        <location filename="../qml/Tool/GamePathSet.qml" line="43"/>
-        <source>Select Cubed Game</source>
-        <translation>选择 Cubed 游戏</translation>
-    </message>
-</context>
-<context>
     <name>InstallPathCard</name>
     <message>
         <location filename="../qml/Component/InstallPathCard.qml" line="14"/>
