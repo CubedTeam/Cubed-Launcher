@@ -230,6 +230,7 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
         QStringLiteral("--network-secret"), network_secret,
         QStringLiteral("--peers"),          peer_address,
         QStringLiteral("--dhcp"),           QStringLiteral("true"),
+        QStringLiteral("--no-tun"),
     };
     launch_process(core_binary(), args,
                    QProcessEnvironment::systemEnvironment());
