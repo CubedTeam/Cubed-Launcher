@@ -1,0 +1,15 @@
+#pragma once
+
+#include <QJsonObject>
+#include <optional>
+
+class JsonCache {
+public:
+    static std::optional<QJsonObject> read(const QString& key,
+                                           qint64 ttl_seconds);
+
+    static bool write(const QString& key, const QJsonObject& object);
+    static bool remove(const QString& key);
+
+    static QString cache_dir();
+};

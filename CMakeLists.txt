@@ -97,6 +97,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/game_update.cpp
         src/tool/binary_service_base.hpp
         src/tool/binary_service_base.cpp
+        src/tool/json_cache.hpp
+        src/tool/json_cache.cpp
         src/tool/frp_manager.hpp
         src/tool/frp_manager.cpp
         src/tool/easytier_manager.hpp
