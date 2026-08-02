@@ -230,13 +230,47 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
         QStringLiteral("--network-secret"), network_secret,
         QStringLiteral("--peers"),          peer_address,
         QStringLiteral("--dhcp"),           QStringLiteral("true"),
-        QStringLiteral("--no-tun"),         QStringLiteral("true"),
     };
     launch_process(core_binary(), args,
                    QProcessEnvironment::systemEnvironment());
     if (running()) {
         start_ip_polling();
     }
+}
+
+Q_INVOKABLE void EasyTierManager::start_join(const QString& network_name,
+                                             const QString& network_secret,
+                                             const QString& peer_address,
+                                             const QString& host_virtual_ip,
+                                             int host_port, int local_port) {
+    if (running()) {
+        return;
+    }
+    if (!installed()) {
+        set_error(QStringLiteral("easytier-core is not installed"));
+        return;
+    }
+    if (network_name.isEmpty() || network_secret.isEmpty() ||
+        peer_address.isEmpty() || host_virtual_ip.isEmpty() || host_port <= 0 ||
+        host_port > 65535 || local_port <= 0 || local_port > 65535) {
+        set_error(QStringLiteral(
+            "Network name, secret, peer address, host virtual IP and "
+            "valid ports are required"));
+        return;
+    }
+    const QString port_forward = QStringLiteral("tcp://0.0.0.0:%1/%2:%3")
+                                     .arg(local_port)
+                                     .arg(host_virtual_ip)
+                                     .arg(host_port);
+    const QStringList args{
+        QStringLiteral("--network-name"),   network_name,
+        QStringLiteral("--network-secret"), network_secret,
+        QStringLiteral("--peers"),          peer_address,
+        QStringLiteral("--no-tun"),         QStringLiteral("true"),
+        QStringLiteral("--port-forward"),   port_forward,
+    };
+    launch_process(core_binary(), args,
+                   QProcessEnvironment::systemEnvironment());
 }
 
 Q_INVOKABLE void EasyTierManager::stop() { stop_process(); }
