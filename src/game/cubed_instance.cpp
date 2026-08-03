@@ -1,7 +1,7 @@
 #include "game/cubed_instance.hpp"
 
-#include "game/game_path.hpp"
 #include "settings.hpp"
+#include "tool/path_tools.hpp"
 
 #include <QDebug>
 #include <QFileInfo>

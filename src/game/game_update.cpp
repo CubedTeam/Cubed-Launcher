@@ -1,7 +1,7 @@
 #include "game/game_update.hpp"
 
-#include "game/game_path.hpp"
 #include "tool/mirror.hpp"
+#include "tool/path_tools.hpp"
 
 #include <QDir>
 #include <QFile>

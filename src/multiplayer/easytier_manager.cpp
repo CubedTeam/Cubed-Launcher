@@ -1,7 +1,7 @@
 #include "multiplayer/easytier_manager.hpp"
 
-#include "game/game_path.hpp"
 #include "settings.hpp"
+#include "tool/path_tools.hpp"
 
 #include <QClipboard>
 #include <QDir>
