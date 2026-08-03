@@ -1,11 +1,18 @@
 #include "tool/mirror.hpp"
 
+#include "tool/json_cache.hpp"
+
 #include <QElapsedTimer>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QTimer>
 
 MirrorSource::MirrorSource(QObject* parent) : QObject(parent) {}
+
+namespace {
+constexpr auto kLatencyCacheName = "MirrorLatency";
+constexpr qint64 kLatencyCacheTtlSeconds = 3600;
+} // namespace
 
 QStringList MirrorSource::names() const {
     QStringList list;
@@ -48,6 +55,8 @@ void MirrorSource::probe(int index, const QString& url) {
             reply->disconnect();
             reply->deleteLater();
         }
+        m_latency_cache.insert(QString::number(index), ms);
+        JsonCache::write(kLatencyCacheName, m_latency_cache);
         Q_EMIT latencyReady(index, ms);
     };
 
@@ -70,7 +79,23 @@ void MirrorSource::probe(int index, const QString& url) {
             [start, finish]() { finish(int(start->elapsed())); });
 }
 
-void MirrorSource::test_all_latency() {
+void MirrorSource::test_all_latency(bool force) {
+    if (!force) {
+        auto cached =
+            JsonCache::read(kLatencyCacheName, kLatencyCacheTtlSeconds);
+        if (cached && cached->size() >= mirror_sources.size()) {
+            for (auto it = cached->begin(); it != cached->end(); ++it) {
+                bool ok = false;
+                const int idx = it.key().toInt(&ok);
+                if (!ok || idx < 0 || idx >= mirror_sources.size()) {
+                    continue;
+                }
+                Q_EMIT latencyReady(idx, it.value().toVariant().toInt());
+            }
+            return;
+        }
+    }
+    m_latency_cache = {};
     for (int i = 0; i < mirror_sources.size(); ++i) {
         QString url = mirror_sources.at(i).prefix;
         if (url.isEmpty()) {

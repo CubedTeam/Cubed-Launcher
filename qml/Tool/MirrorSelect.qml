@@ -36,7 +36,7 @@ Dialog {
         spacing: 10
 
         Component.onCompleted: {
-            MirrorSource.test_all_latency();
+            MirrorSource.test_all_latency(false);
         }
 
         ListView {
@@ -136,7 +136,7 @@ Dialog {
                     mirrorModel.setProperty(i, "testing", true);
                     mirrorModel.setProperty(i, "latency", -1);
                 }
-                MirrorSource.test_all_latency();
+                MirrorSource.test_all_latency(true);
             }
         }
     }

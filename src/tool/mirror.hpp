@@ -1,4 +1,5 @@
 #pragma once
+#include <QJsonObject>
 #include <QNetworkAccessManager>
 #include <QQmlEngine>
 #include <QString>
@@ -48,12 +49,14 @@ public:
     QStringList names() const;
     Q_INVOKABLE QString apply(const QString& url, int index) const;
     // Emits latencyReady(index, ms) for each probe; ms < 0 means
-    // timeout/failure.
-    Q_INVOKABLE void test_all_latency();
+    // timeout/failure. When force is false, re-emits cached results
+    // from a previous round if still within TTL.
+    Q_INVOKABLE void test_all_latency(bool force);
 Q_SIGNALS:
     void latencyReady(int index, int ms);
 
 private:
     QNetworkAccessManager m_manager;
+    QJsonObject m_latency_cache;
     void probe(int index, const QString& url);
 };
