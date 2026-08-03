@@ -32,22 +32,27 @@ std::optional<QJsonObject> JsonCache::read(const QString& cache_name,
                                            qint64 ttl_seconds) {
     QFile f(cache_file_path(cache_name));
     if (!f.exists() || !f.open(QIODevice::ReadOnly)) {
-
         return std::nullopt;
     }
 
     const QJsonDocument doc = QJsonDocument::fromJson(f.readAll());
     if (!doc.isObject()) {
+        f.close();
+        f.remove();
         return std::nullopt;
     }
     const QJsonObject wrap = doc.object();
     const qint64 ts = wrap.value(kTs).toVariant().toLongLong();
     const qint64 age_ms = QDateTime::currentDateTime().toMSecsSinceEpoch() - ts;
-    if (age_ms < 0 || age_ms > ttl_seconds * qint64(1000)) {
+    if (age_ms < 0 || age_ms / qint64(1000) > ttl_seconds) {
+        f.close();
+        f.remove();
         return std::nullopt;
     }
     const QJsonValue data = wrap.value(kData);
     if (!data.isObject()) {
+        f.close();
+        f.remove();
         return std::nullopt;
     }
     return data.toObject();

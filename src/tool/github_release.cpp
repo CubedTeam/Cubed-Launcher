@@ -1,5 +1,6 @@
 #include "tool/github_release.hpp"
 
+#include "tool/json_cache.hpp"
 #include "tool/user_agent.hpp"
 
 #include <QJsonArray>
@@ -30,6 +31,18 @@ bool GithubReleaseFetcher::fetch(const QString& owner, const QString& repo,
     }
     m_callback = std::move(callback);
 
+    qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
+    auto j = JsonCache::read(m_name, now);
+    if (j) {
+        Result result;
+        result.ok = true;
+        if (j->contains("download_url") && j->contains("version")) {
+            result.downloadUrl = (*j)["download_url"].toString();
+            result.version = (*j)["version"].toString();
+            m_callback(result);
+            return true;
+        }
+    }
     const QUrl url(QString("https://api.github.com/repos/%1/%2/releases/latest")
                        .arg(owner, repo));
     QNetworkRequest request(url);
@@ -90,6 +103,11 @@ bool GithubReleaseFetcher::fetch(const QString& owner, const QString& repo,
                 result.ok = true;
                 result.version = tag;
                 result.downloadUrl = asset["browser_download_url"].toString();
+                QJsonObject j;
+                j.insert("download_url", result.downloadUrl);
+                j.insert("version", result.version);
+                JsonCache::write(m_name, j);
+
                 cb(result);
                 return;
             }
