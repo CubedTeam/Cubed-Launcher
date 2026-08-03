@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QQmlEngine>
-class CubedInstance : public QObject {
+class CubedGame : public QObject {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
@@ -14,8 +14,8 @@ class CubedInstance : public QObject {
     Q_PROPERTY(bool installed READ installed NOTIFY installed_changed)
     Q_PROPERTY(QString version READ version NOTIFY version_changed)
 public:
-    CubedInstance();
-    Q_INVOKABLE void start_cubed_instance();
+    CubedGame();
+    Q_INVOKABLE void start_cubed_game();
     Q_INVOKABLE void set_game_dir_url(const QUrl& game_dir);
     Q_INVOKABLE void set_game_dir(const QString& game_dir);
     Q_INVOKABLE void set_peer(int index);

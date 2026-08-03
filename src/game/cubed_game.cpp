@@ -1,4 +1,4 @@
-#include "game/cubed_instance.hpp"
+#include "game/cubed_game.hpp"
 
 #include "settings.hpp"
 #include "tool/log.hpp"
@@ -6,9 +6,9 @@
 
 #include <QFileInfo>
 
-CubedInstance::CubedInstance() {}
+CubedGame::CubedGame() {}
 
-Q_INVOKABLE void CubedInstance::start_cubed_instance() {
+Q_INVOKABLE void CubedGame::start_cubed_game() {
     if (m_game_install_dir.isEmpty()) {
         m_game_install_dir = DefaultDir::get_default_game_install_dir();
     }
@@ -73,7 +73,7 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     }
 }
 
-Q_INVOKABLE void CubedInstance::set_game_dir_url(const QUrl& game_dir_url) {
+Q_INVOKABLE void CubedGame::set_game_dir_url(const QUrl& game_dir_url) {
     m_game_install_dir = game_dir_url.toLocalFile();
     Logger::info("Url Change Game Install Dir {}",
                  m_game_install_dir.toStdString());
@@ -81,7 +81,7 @@ Q_INVOKABLE void CubedInstance::set_game_dir_url(const QUrl& game_dir_url) {
     Q_EMIT path_change();
 }
 
-Q_INVOKABLE void CubedInstance::set_game_dir(const QString& game_dir) {
+Q_INVOKABLE void CubedGame::set_game_dir(const QString& game_dir) {
     m_game_install_dir = game_dir;
     Logger::info("Path: Change Game Install Dir {}",
                  m_game_install_dir.toStdString());
@@ -89,7 +89,7 @@ Q_INVOKABLE void CubedInstance::set_game_dir(const QString& game_dir) {
     Q_EMIT path_change();
 }
 
-Q_INVOKABLE void CubedInstance::set_peer(int index) {
+Q_INVOKABLE void CubedGame::set_peer(int index) {
     if (index == 0) {
         m_peer_mode = "--host";
     } else if (index == 1) {
@@ -97,17 +97,17 @@ Q_INVOKABLE void CubedInstance::set_peer(int index) {
     }
 }
 
-Q_INVOKABLE void CubedInstance::set_port(const QString& port) { m_port = port; }
-Q_INVOKABLE void CubedInstance::set_ip(const QString& ip) { m_ip = ip; }
-Q_INVOKABLE void CubedInstance::set_name(const QString& name) { m_name = name; }
-Q_INVOKABLE void CubedInstance::kill_all() {
+Q_INVOKABLE void CubedGame::set_port(const QString& port) { m_port = port; }
+Q_INVOKABLE void CubedGame::set_ip(const QString& ip) { m_ip = ip; }
+Q_INVOKABLE void CubedGame::set_name(const QString& name) { m_name = name; }
+Q_INVOKABLE void CubedGame::kill_all() {
     for (auto* proc : std::as_const(m_processes)) {
         if (proc->state() != QProcess::NotRunning)
             proc->kill();
     }
 }
 
-Q_INVOKABLE void CubedInstance::check_version() {
+Q_INVOKABLE void CubedGame::check_version() {
     if (m_game_install_dir.isEmpty()) {
         m_game_install_dir = DefaultDir::get_default_game_install_dir();
     }
@@ -162,10 +162,10 @@ Q_INVOKABLE void CubedInstance::check_version() {
     process->start();
 }
 
-bool CubedInstance::running() const { return !m_processes.isEmpty(); }
-bool CubedInstance::game_path_select() const {
+bool CubedGame::running() const { return !m_processes.isEmpty(); }
+bool CubedGame::game_path_select() const {
     return !m_game_install_dir.isEmpty();
 }
-bool CubedInstance::installed() const { return m_installed; }
-void CubedInstance::set_log_statue(bool status) { m_log_on = status; }
-QString CubedInstance::version() const { return m_version; }
+bool CubedGame::installed() const { return m_installed; }
+void CubedGame::set_log_statue(bool status) { m_log_on = status; }
+QString CubedGame::version() const { return m_version; }

@@ -170,7 +170,7 @@ Item {
                         font.pixelSize: 20
                         Layout.alignment: Qt.AlignCenter
                         onCheckedChanged: {
-                            CubedInstance.logOn = logStatus.checked;
+                            CubedGame.logOn = logStatus.checked;
                         }
                         text: checked ? qsTr("On") : qsTr("Off")
                     }
@@ -199,7 +199,7 @@ Item {
                         model: [qsTr("Host"), qsTr("Client")]
                         currentIndex: 0
                         onCurrentIndexChanged: {
-                            CubedInstance.set_peer(peerMode.currentIndex);
+                            CubedGame.set_peer(peerMode.currentIndex);
                         }
                     }
                     TextField {
@@ -209,7 +209,7 @@ Item {
                         Layout.preferredWidth: 300
                         placeholderText: qsTr("Port")
                         onEditingFinished: {
-                            CubedInstance.set_port(hostPort.text);
+                            CubedGame.set_port(hostPort.text);
                         }
                     }
                     RowLayout {
@@ -222,7 +222,7 @@ Item {
                             Layout.fillWidth: true
                             placeholderText: qsTr("Ip")
                             onEditingFinished: {
-                                CubedInstance.set_ip(serverIp.text);
+                                CubedGame.set_ip(serverIp.text);
                             }
                         }
                         TextField {
@@ -230,7 +230,7 @@ Item {
                             Layout.fillWidth: true
                             placeholderText: qsTr("Port")
                             onEditingFinished: {
-                                CubedInstance.set_port(serverPort.text);
+                                CubedGame.set_port(serverPort.text);
                             }
                         }
                     }

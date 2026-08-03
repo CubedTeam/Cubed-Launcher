@@ -79,8 +79,8 @@ qt_add_qml_module(${PROJECT_NAME}
         resources/logo.png
 
     SOURCES
-        src/game/cubed_instance.cpp
-        src/game/cubed_instance.hpp
+        src/game/cubed_game.cpp
+        src/game/cubed_game.hpp
         src/tool/system_info.hpp
         src/settings.cpp
         src/settings.hpp
