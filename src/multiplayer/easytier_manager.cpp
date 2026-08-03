@@ -1,7 +1,7 @@
-#include "tool/easytier_manager.hpp"
+#include "multiplayer/easytier_manager.hpp"
 
+#include "game/game_path.hpp"
 #include "settings.hpp"
-#include "tool/game_path.hpp"
 
 #include <QClipboard>
 #include <QDir>
@@ -14,7 +14,8 @@
 #include <QRegularExpression>
 #include <qmicroz.h>
 
-EasyTierManager::EasyTierManager(QObject* parent) : BinaryServiceBase(parent) {
+EasyTierManager::EasyTierManager(QObject* parent)
+    : BinaryServiceBase(QStringLiteral("Easytier"), parent) {
     QString path = default_install_dir();
     if (Settings* s = Settings::instance()) {
         const QString persisted = s->easytier_install_path();

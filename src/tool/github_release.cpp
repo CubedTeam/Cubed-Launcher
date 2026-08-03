@@ -11,8 +11,8 @@
 #include <QUrl>
 
 GithubReleaseFetcher::GithubReleaseFetcher(QNetworkAccessManager* manager,
-                                           QObject* parent)
-    : QObject(parent), m_manager(manager) {}
+                                           QStringView name, QObject* parent)
+    : QObject(parent), m_manager(manager), m_name(name) {}
 
 GithubReleaseFetcher::~GithubReleaseFetcher() {
     if (m_reply) {

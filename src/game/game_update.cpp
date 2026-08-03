@@ -1,6 +1,6 @@
-#include "tool/game_update.hpp"
+#include "game/game_update.hpp"
 
-#include "tool/game_path.hpp"
+#include "game/game_path.hpp"
 #include "tool/mirror.hpp"
 
 #include <QDir>
@@ -11,7 +11,8 @@
 #include <utility>
 
 GameUpdate::GameUpdate()
-    : m_fetcher(&m_manager, this), m_downloader(&m_manager, this) {
+    : m_fetcher(&m_manager, QStringLiteral("Cubed"), this),
+      m_downloader(&m_manager, this) {
     m_game_install_path = get_default_game_install_dir();
     connect(&m_downloader, &FileDownloader::progress_changed, this,
             &GameUpdate::download_progress_changed);

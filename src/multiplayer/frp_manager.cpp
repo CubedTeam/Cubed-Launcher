@@ -1,14 +1,15 @@
-#include "tool/frp_manager.hpp"
+#include "multiplayer/frp_manager.hpp"
 
+#include "game/game_path.hpp"
 #include "settings.hpp"
-#include "tool/game_path.hpp"
 
 #include <QFile>
 #include <QProcess>
 #include <QStandardPaths>
 #include <qmicroz.h>
 
-FrpManager::FrpManager(QObject* parent) : BinaryServiceBase(parent) {
+FrpManager::FrpManager(QObject* parent)
+    : BinaryServiceBase(QStringLiteral("frp"), parent) {
     QString path = default_install_dir();
     if (Settings* s = Settings::instance()) {
         const QString persisted = s->frp_install_path();

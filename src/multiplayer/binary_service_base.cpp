@@ -1,12 +1,12 @@
-#include "tool/binary_service_base.hpp"
+#include "multiplayer/binary_service_base.hpp"
 
 #include "tool/mirror.hpp"
 #include "tool/user_agent.hpp"
 
 #include <QStandardPaths>
 
-BinaryServiceBase::BinaryServiceBase(QObject* parent)
-    : QObject(parent), m_fetcher(&m_manager, this) {}
+BinaryServiceBase::BinaryServiceBase(QStringView name, QObject* parent)
+    : QObject(parent), m_fetcher(&m_manager, name, this) {}
 
 BinaryServiceBase::~BinaryServiceBase() {
     if (m_process && m_process->state() != QProcess::NotRunning) {

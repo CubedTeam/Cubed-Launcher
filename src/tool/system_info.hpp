@@ -1,5 +1,5 @@
 #pragma once
-#include "tool/game_path.hpp"
+#include "game/game_path.hpp"
 
 #include <QCoreApplication>
 #include <QObject>

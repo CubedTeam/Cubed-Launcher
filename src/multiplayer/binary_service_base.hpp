@@ -49,7 +49,7 @@ public:
     };
     Q_ENUM(State)
 
-    explicit BinaryServiceBase(QObject* parent = nullptr);
+    explicit BinaryServiceBase(QStringView name, QObject* parent = nullptr);
     ~BinaryServiceBase() override;
 
     State state() const { return m_state; }

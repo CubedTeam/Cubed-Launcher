@@ -1,4 +1,4 @@
-#include "tool/launcher_update.hpp"
+#include "launcher_update.hpp"
 
 #include "tool/mirror.hpp"
 #include "version.hpp"
@@ -8,7 +8,8 @@
 #include <QProcess>
 
 LauncherUpdate::LauncherUpdate()
-    : m_fetcher(&m_manager, this), m_downloader(&m_manager, this) {
+    : m_fetcher(&m_manager, QStringLiteral("CubedLauncher"), this),
+      m_downloader(&m_manager, this) {
 
     if (QString(APP_VERSION) == "dev") {
         m_local_version = QVersionNumber::fromString("0.0.1");

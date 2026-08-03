@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tool/binary_service_base.hpp"
+#include "multiplayer/binary_service_base.hpp"
 
 #include <QQmlEngine>
 #include <QString>
