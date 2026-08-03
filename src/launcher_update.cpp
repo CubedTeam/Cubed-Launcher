@@ -115,7 +115,7 @@ void LauncherUpdate::on_download_complete(const QString& setup_path) {
         return;
     }
 
-    qDebug() << "Download Finish Start Installing...";
+    Logger::info("Download Finish Start Installing...");
     if (!QProcess::startDetached(setup_path)) {
         m_downloader.report_error(
             QStringLiteral("Error can't start Installing Program"));

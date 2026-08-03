@@ -1,5 +1,6 @@
 #include "multiplayer/binary_service_base.hpp"
 
+#include "tool/log.hpp"
 #include "tool/mirror.hpp"
 #include "tool/user_agent.hpp"
 
@@ -105,7 +106,8 @@ void BinaryServiceBase::on_release_fetched(int mirror_index,
         return;
     }
     m_version = r.version;
-    qDebug() << service_name() << " Version: " << m_version;
+    Logger::info("{} Version: {}", service_name().toStdString(),
+                 m_version.toStdString());
     Q_EMIT version_changed();
 
     QString url = r.downloadUrl;

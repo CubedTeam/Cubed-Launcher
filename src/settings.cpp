@@ -1,5 +1,7 @@
 #include "settings.hpp"
 
+#include "tool/log.hpp"
+
 #include <QFileInfo>
 
 Settings* Settings::s_instance = nullptr;
@@ -161,8 +163,8 @@ void Settings::load() {
         }
         m_game_dir = raw;
     }
-    qDebug() << "Settings Game Dir {" << m_game_dir << "}" << " empty "
-             << m_game_dir.isEmpty();
+    Logger::info("Settings Game Dir {{{}}} empty {}", m_game_dir.toStdString(),
+                 m_game_dir.isEmpty());
 
     m_player_name = m_settings.value("player_name").toString();
 

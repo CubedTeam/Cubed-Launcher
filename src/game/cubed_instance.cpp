@@ -1,9 +1,9 @@
 #include "game/cubed_instance.hpp"
 
 #include "settings.hpp"
+#include "tool/log.hpp"
 #include "tool/path_tools.hpp"
 
-#include <QDebug>
 #include <QFileInfo>
 
 CubedInstance::CubedInstance() {}
@@ -14,8 +14,8 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     }
     const QString program_path = m_game_install_dir + "/" +
                                  DefaultDir::get_default_game_executable_name();
-    qDebug() << "Game Start, dir " << m_game_install_dir << " exec "
-             << program_path;
+    Logger::info("Game Start, dir {} exec {}", m_game_install_dir.toStdString(),
+                 program_path.toStdString());
 
     QProcess* process = new QProcess(this);
 
@@ -38,14 +38,16 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     process->setArguments(argument);
     connect(process, &QProcess::finished, this,
             [process, this](int exitCode, QProcess::ExitStatus status) {
-                qDebug() << "Process exit, exit code: " << exitCode;
+                Logger::info("Process exit, exit code: {}", exitCode);
                 m_processes.removeAll(process);
                 Q_EMIT running_changed();
                 process->deleteLater();
             });
 
     connect(process, &QProcess::errorOccurred, this,
-            [](QProcess::ProcessError error) { qDebug() << error; });
+            [](QProcess::ProcessError error) {
+                Logger::error("Process error: {}", static_cast<int>(error));
+            });
 
     if (m_log_on) {
         connect(process, &QProcess::readyReadStandardOutput, this, [process]() {
@@ -73,14 +75,16 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
 
 Q_INVOKABLE void CubedInstance::set_game_dir_url(const QUrl& game_dir_url) {
     m_game_install_dir = game_dir_url.toLocalFile();
-    qDebug() << "Url Change Game Install Dir " << m_game_install_dir;
+    Logger::info("Url Change Game Install Dir {}",
+                 m_game_install_dir.toStdString());
     check_version();
     Q_EMIT path_change();
 }
 
 Q_INVOKABLE void CubedInstance::set_game_dir(const QString& game_dir) {
     m_game_install_dir = game_dir;
-    qDebug() << "Path: Change Game Install Dir " << m_game_install_dir;
+    Logger::info("Path: Change Game Install Dir {}",
+                 m_game_install_dir.toStdString());
     check_version();
     Q_EMIT path_change();
 }
@@ -115,7 +119,7 @@ Q_INVOKABLE void CubedInstance::check_version() {
         m_installed = false;
         Q_EMIT installed_changed();
         Q_EMIT version_changed();
-        qDebug() << program_path << " is not a file";
+        Logger::warn("{} is not a file", program_path.toStdString());
         return;
     }
     QProcess* process = new QProcess(this);
@@ -125,7 +129,7 @@ Q_INVOKABLE void CubedInstance::check_version() {
     connect(process, &QProcess::finished, this,
             [process](int exitCode, QProcess::ExitStatus status) {
                 if (exitCode != 0) {
-                    qDebug() << "Cubed Game error ,can't get version";
+                    Logger::error("Cubed Game error, can't get version");
                 }
 
                 process->deleteLater();
@@ -133,8 +137,8 @@ Q_INVOKABLE void CubedInstance::check_version() {
 
     connect(process, &QProcess::errorOccurred, this,
             [](QProcess::ProcessError error) {
-                qDebug() << "check_version fail";
-                qDebug() << error;
+                Logger::error("check_version fail");
+                Logger::error("Process error: {}", static_cast<int>(error));
             });
 
     connect(process, &QProcess::readyReadStandardOutput, this,
@@ -145,7 +149,7 @@ Q_INVOKABLE void CubedInstance::check_version() {
                 if (!str.isEmpty()) {
                     m_version = str;
                     m_installed = true;
-                    qDebug() << "Cubed Version: " << m_version;
+                    Logger::info("Cubed Version: {}", m_version.toStdString());
                     Q_EMIT version_changed();
                     Q_EMIT installed_changed();
                 } else {
