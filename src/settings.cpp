@@ -39,8 +39,8 @@ void Settings::set_game_dir_url(const QUrl& path) {
         return;
     }
 
-    emit game_dir_changed();
-    emit path_set_changed();
+    Q_EMIT game_dir_changed();
+    Q_EMIT path_set_changed();
 }
 
 void Settings::set_game_dir(const QString& path) {
@@ -48,8 +48,8 @@ void Settings::set_game_dir(const QString& path) {
         return;
     }
 
-    emit game_dir_changed();
-    emit path_set_changed();
+    Q_EMIT game_dir_changed();
+    Q_EMIT path_set_changed();
 }
 
 void Settings::set_player_name(const QString& name) {
@@ -57,7 +57,7 @@ void Settings::set_player_name(const QString& name) {
         return;
     }
 
-    emit player_name_changed();
+    Q_EMIT player_name_changed();
 }
 
 void Settings::set_mirror_index(int index) {
@@ -65,7 +65,7 @@ void Settings::set_mirror_index(int index) {
         return;
     }
 
-    emit mirror_index_changed();
+    Q_EMIT mirror_index_changed();
 }
 
 void Settings::set_language(const QString& lang) {
@@ -73,7 +73,7 @@ void Settings::set_language(const QString& lang) {
         return;
     }
 
-    emit language_changed();
+    Q_EMIT language_changed();
 }
 
 void Settings::set_accent_color(const QColor& color) {
@@ -83,7 +83,7 @@ void Settings::set_accent_color(const QColor& color) {
 
     m_accent_color = color;
     m_settings.setValue("accent_color", color.name());
-    emit accent_color_changed();
+    Q_EMIT accent_color_changed();
 }
 
 void Settings::set_card_colorful_border(bool enabled) {
@@ -92,7 +92,7 @@ void Settings::set_card_colorful_border(bool enabled) {
         return;
     }
 
-    emit card_colorful_border_changed();
+    Q_EMIT card_colorful_border_changed();
 }
 
 void Settings::set_wrapper_command(const QString& command) {
@@ -100,7 +100,7 @@ void Settings::set_wrapper_command(const QString& command) {
         return;
     }
 
-    emit wrapper_command_changed();
+    Q_EMIT wrapper_command_changed();
 }
 
 void Settings::set_frp_install_path_url(const QUrl& path) {
@@ -109,7 +109,7 @@ void Settings::set_frp_install_path_url(const QUrl& path) {
         return;
     }
 
-    emit frp_install_path_changed();
+    Q_EMIT frp_install_path_changed();
 }
 
 void Settings::set_frp_install_path(const QString& path) {
@@ -117,7 +117,7 @@ void Settings::set_frp_install_path(const QString& path) {
         return;
     }
 
-    emit frp_install_path_changed();
+    Q_EMIT frp_install_path_changed();
 }
 
 void Settings::set_easytier_install_path_url(const QUrl& path) {
@@ -126,7 +126,7 @@ void Settings::set_easytier_install_path_url(const QUrl& path) {
         return;
     }
 
-    emit easytier_install_path_changed();
+    Q_EMIT easytier_install_path_changed();
 }
 
 void Settings::set_easytier_install_path(const QString& path) {
@@ -134,7 +134,7 @@ void Settings::set_easytier_install_path(const QString& path) {
         return;
     }
 
-    emit easytier_install_path_changed();
+    Q_EMIT easytier_install_path_changed();
 }
 
 void Settings::set_easytier_public_server_index(int index) {
@@ -143,7 +143,7 @@ void Settings::set_easytier_public_server_index(int index) {
         return;
     }
 
-    emit easytier_public_server_index_changed();
+    Q_EMIT easytier_public_server_index_changed();
 }
 
 void Settings::load() {

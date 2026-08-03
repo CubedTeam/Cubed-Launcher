@@ -46,7 +46,7 @@ public:
     Q_INVOKABLE void cancel_download();
 
     bool downloading() const;
-signals:
+Q_SIGNALS:
     void new_version_changed();
     void remote_version_changed();
     void download_progress_changed();
@@ -56,7 +56,7 @@ signals:
     void has_error_changed();
     void downloading_changed();
 
-private slots:
+private Q_SLOTS:
     void on_download_complete(const QString& save_path);
 
 private:

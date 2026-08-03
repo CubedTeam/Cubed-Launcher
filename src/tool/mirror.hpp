@@ -50,7 +50,7 @@ public:
     // Emits latencyReady(index, ms) for each probe; ms < 0 means
     // timeout/failure.
     Q_INVOKABLE void test_all_latency();
-signals:
+Q_SIGNALS:
     void latencyReady(int index, int ms);
 
 private:

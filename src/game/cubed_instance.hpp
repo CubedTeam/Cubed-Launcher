@@ -29,7 +29,7 @@ public:
     bool installed() const;
     void set_log_statue(bool status);
     QString version() const;
-signals:
+Q_SIGNALS:
     void running_changed();
     void path_change();
     void installed_changed();

@@ -48,7 +48,7 @@ void MirrorSource::probe(int index, const QString& url) {
             reply->disconnect();
             reply->deleteLater();
         }
-        emit latencyReady(index, ms);
+        Q_EMIT latencyReady(index, ms);
     };
 
     auto* watchdog = new QTimer(reply);

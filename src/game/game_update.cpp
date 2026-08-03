@@ -30,7 +30,7 @@ GameUpdate::GameUpdate()
 
 Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
     if (std::exchange(m_checking_update, true)) {
-        emit checking_update_changed();
+        Q_EMIT checking_update_changed();
         return;
     }
     qDebug() << "Loacl Version: " << local_version;
@@ -44,12 +44,12 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
 
     auto finish_check = [this]() {
         m_checking_update = false;
-        emit checking_update_changed();
+        Q_EMIT checking_update_changed();
     };
     auto report_failure = [this, finish_check](const QString& message) {
         m_downloader.set_error_state(message);
         m_new_version = false;
-        emit new_version_changed();
+        Q_EMIT new_version_changed();
         finish_check();
     };
 
@@ -73,9 +73,9 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 m_new_version = true;
             }
             m_download_url = r.downloadUrl;
-            emit new_version_changed();
-            emit remote_version_changed();
-            emit local_version_changed();
+            Q_EMIT new_version_changed();
+            Q_EMIT remote_version_changed();
+            Q_EMIT local_version_changed();
             finish_check();
         });
 }
@@ -125,8 +125,8 @@ void GameUpdate::on_download_complete(const QString& zip_path) {
     m_downloader.mark_succeeded();
     m_new_version = false;
     m_local_version = m_remote_version;
-    emit new_version_changed();
-    emit local_version_changed();
+    Q_EMIT new_version_changed();
+    Q_EMIT local_version_changed();
 }
 
 Q_INVOKABLE void GameUpdate::cancel_download() { m_downloader.cancel(); }
@@ -138,7 +138,7 @@ void GameUpdate::set_game_install_path(const QString& game_dir) {
         m_game_install_path = game_dir;
     }
     qDebug() << "VersionUpdate: Change game dir" << m_game_install_path;
-    emit game_install_path_changed();
+    Q_EMIT game_install_path_changed();
 }
 QString GameUpdate::game_install_path() const { return m_game_install_path; }
 

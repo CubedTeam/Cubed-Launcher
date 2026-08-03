@@ -42,7 +42,7 @@ public:
     bool has_error() const { return m_has_error; }
     QString error_message() const { return m_error_message; }
 
-signals:
+Q_SIGNALS:
     void downloading_changed();
     void progress_changed();
     void download_finished_changed();
@@ -55,7 +55,7 @@ signals:
     // The save path has been removed and state has been cleared.
     void download_cancelled(const QString& save_path);
 
-public slots:
+public Q_SLOTS:
     // Clear busy state after a successful post-processing step.
     void mark_succeeded();
     // Report a post-processing failure; clears busy state and sets error.

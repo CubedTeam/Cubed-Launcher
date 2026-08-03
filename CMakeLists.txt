@@ -132,6 +132,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     qmicroz
 )
 
+target_compile_definitions(${PROJECT_NAME} PRIVATE QT_NO_KEYWORDS)
+
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 include(GNUInstallDirs)

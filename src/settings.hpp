@@ -47,7 +47,7 @@ public:
     QString easytier_install_path() const;
     int easytier_public_server_index() const;
     static Settings* instance();
-public slots:
+public Q_SLOTS:
     void set_game_dir_url(const QUrl& path);
     void set_game_dir(const QString& path);
     void set_player_name(const QString& name);
@@ -61,7 +61,7 @@ public slots:
     void set_easytier_install_path_url(const QUrl& path);
     void set_easytier_install_path(const QString& path);
     void set_easytier_public_server_index(int index);
-signals:
+Q_SIGNALS:
     void game_dir_changed();
     void player_name_changed();
     void path_set_changed();

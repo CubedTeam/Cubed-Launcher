@@ -74,7 +74,7 @@ public:
     void launch_process(const QString& program, const QStringList& arguments,
                         const QProcessEnvironment& env);
 
-signals:
+Q_SIGNALS:
     void state_changed();
     void install_path_changed();
     void installed_changed();

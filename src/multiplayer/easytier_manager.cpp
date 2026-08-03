@@ -195,7 +195,7 @@ void EasyTierManager::install_binaries_impl(const QString& inner_dir,
     append_log(QStringLiteral("Installed easytier to %1").arg(m_install_path));
     clear_error();
     set_state(Ready);
-    emit installed_changed();
+    Q_EMIT installed_changed();
 }
 
 void EasyTierManager::on_process_finished(int exit_code) {
@@ -203,12 +203,12 @@ void EasyTierManager::on_process_finished(int exit_code) {
     stop_ip_polling();
     if (!m_virtual_ip.isEmpty()) {
         m_virtual_ip.clear();
-        emit virtual_ip_changed();
+        Q_EMIT virtual_ip_changed();
     }
 }
 void EasyTierManager::reset_install_extra() {
     m_virtual_ip.clear();
-    emit virtual_ip_changed();
+    Q_EMIT virtual_ip_changed();
 }
 Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
                                         const QString& network_secret,
@@ -336,7 +336,7 @@ void EasyTierManager::parse_virtual_ip(const QByteArray& data) {
             const QString ip = m.captured(1);
             if (ip != m_virtual_ip) {
                 m_virtual_ip = ip;
-                emit virtual_ip_changed();
+                Q_EMIT virtual_ip_changed();
             }
             return;
         }

@@ -123,13 +123,13 @@ void FrpManager::install_binaries_impl(const QString& inner_dir,
     append_log(QStringLiteral("Installed frpc to %1").arg(m_install_path));
     clear_error();
     set_state(Ready);
-    emit installed_changed();
+    Q_EMIT installed_changed();
     load_toml_into_property();
 }
 
 void FrpManager::reset_install_extra() {
     m_frpc_toml.clear();
-    emit frpc_toml_changed();
+    Q_EMIT frpc_toml_changed();
 }
 
 void FrpManager::on_detect_install() { load_toml_into_property(); }
@@ -138,12 +138,12 @@ void FrpManager::load_toml_into_property() {
     QFile f(toml_path());
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         m_frpc_toml.clear();
-        emit frpc_toml_changed();
+        Q_EMIT frpc_toml_changed();
         return;
     }
     m_frpc_toml = QString::fromUtf8(f.readAll());
     f.close();
-    emit frpc_toml_changed();
+    Q_EMIT frpc_toml_changed();
 }
 
 Q_INVOKABLE void FrpManager::start() {
@@ -163,7 +163,7 @@ Q_INVOKABLE void FrpManager::save_toml(const QString& content) {
     f.write(content.toUtf8());
     f.close();
     m_frpc_toml = content;
-    emit frpc_toml_changed();
+    Q_EMIT frpc_toml_changed();
     append_log(QStringLiteral("frpc.toml saved"));
 }
 

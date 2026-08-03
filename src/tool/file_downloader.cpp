@@ -26,10 +26,10 @@ bool FileDownloader::start(const QString& url, const QString& save_path) {
     if (url.isEmpty()) {
         m_has_error = true;
         m_error_message = QStringLiteral("Download Url is Empty!");
-        emit has_error_changed();
-        emit error_message_changed();
+        Q_EMIT has_error_changed();
+        Q_EMIT error_message_changed();
         m_progress = 1.0f;
-        emit progress_changed();
+        Q_EMIT progress_changed();
         end_run();
         return false;
     }
@@ -48,10 +48,10 @@ bool FileDownloader::start(const QString& url, const QString& save_path) {
         reply->deleteLater();
         m_has_error = true;
         m_error_message = QStringLiteral("Can't open file");
-        emit has_error_changed();
-        emit error_message_changed();
+        Q_EMIT has_error_changed();
+        Q_EMIT error_message_changed();
         m_progress = 1.0f;
-        emit progress_changed();
+        Q_EMIT progress_changed();
         end_run();
         return false;
     }
@@ -62,7 +62,7 @@ bool FileDownloader::start(const QString& url, const QString& save_path) {
             [this](qint64 received, qint64 total) {
                 if (total > 0) {
                     m_progress = float(received) / float(total);
-                    emit progress_changed();
+                    Q_EMIT progress_changed();
                 }
             });
     connect(reply, &QNetworkReply::finished, this, [this, file, save_path]() {
@@ -93,16 +93,16 @@ void FileDownloader::on_reply_finished() {
         m_cancelling = false;
         QFile::remove(m_save_path);
         m_progress = 0.0f;
-        emit progress_changed();
+        Q_EMIT progress_changed();
         end_run();
-        emit download_cancelled(m_save_path);
+        Q_EMIT download_cancelled(m_save_path);
         return;
     }
 
     if (reply && reply->error() == QNetworkReply::NoError) {
         m_progress = 1.0f;
-        emit progress_changed();
-        emit download_complete(m_save_path);
+        Q_EMIT progress_changed();
+        Q_EMIT download_complete(m_save_path);
         return;
     }
 
@@ -110,10 +110,10 @@ void FileDownloader::on_reply_finished() {
     m_error_message =
         reply ? reply->errorString() : QStringLiteral("Unknown network error");
     QFile::remove(m_save_path);
-    emit has_error_changed();
-    emit error_message_changed();
+    Q_EMIT has_error_changed();
+    Q_EMIT error_message_changed();
     m_progress = 1.0f;
-    emit progress_changed();
+    Q_EMIT progress_changed();
     end_run();
 }
 
@@ -122,9 +122,9 @@ void FileDownloader::mark_succeeded() {
         return;
     }
     m_progress = 1.0f;
-    emit progress_changed();
+    Q_EMIT progress_changed();
     m_finished = true;
-    emit download_finished_changed();
+    Q_EMIT download_finished_changed();
     end_run();
 }
 
@@ -134,18 +134,18 @@ void FileDownloader::report_error(const QString& message) {
     }
     m_has_error = true;
     m_error_message = message;
-    emit has_error_changed();
-    emit error_message_changed();
+    Q_EMIT has_error_changed();
+    Q_EMIT error_message_changed();
     m_progress = 1.0f;
-    emit progress_changed();
+    Q_EMIT progress_changed();
     end_run();
 }
 
 void FileDownloader::set_error_state(const QString& message) {
     m_has_error = true;
     m_error_message = message;
-    emit has_error_changed();
-    emit error_message_changed();
+    Q_EMIT has_error_changed();
+    Q_EMIT error_message_changed();
 }
 
 void FileDownloader::clear_error_state() {
@@ -154,8 +154,8 @@ void FileDownloader::clear_error_state() {
     }
     m_has_error = false;
     m_error_message.clear();
-    emit has_error_changed();
-    emit error_message_changed();
+    Q_EMIT has_error_changed();
+    Q_EMIT error_message_changed();
 }
 
 void FileDownloader::begin_run() {
@@ -165,14 +165,14 @@ void FileDownloader::begin_run() {
     m_has_error = false;
     m_error_message.clear();
     m_progress = 0.0f;
-    emit downloading_changed();
-    emit download_finished_changed();
-    emit has_error_changed();
-    emit error_message_changed();
-    emit progress_changed();
+    Q_EMIT downloading_changed();
+    Q_EMIT download_finished_changed();
+    Q_EMIT has_error_changed();
+    Q_EMIT error_message_changed();
+    Q_EMIT progress_changed();
 }
 
 void FileDownloader::end_run() {
     m_downloading = false;
-    emit downloading_changed();
+    Q_EMIT downloading_changed();
 }

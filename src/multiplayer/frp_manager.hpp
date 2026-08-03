@@ -22,7 +22,7 @@ public:
     Q_INVOKABLE void save_toml(const QString& content);
     Q_INVOKABLE QString read_toml() const;
 
-signals:
+Q_SIGNALS:
     void frpc_toml_changed();
 
 protected:

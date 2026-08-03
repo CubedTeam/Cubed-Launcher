@@ -40,7 +40,7 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
             [process, this](int exitCode, QProcess::ExitStatus status) {
                 qDebug() << "Process exit, exit code: " << exitCode;
                 m_processes.removeAll(process);
-                emit running_changed();
+                Q_EMIT running_changed();
                 process->deleteLater();
             });
 
@@ -67,7 +67,7 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     process->start();
     if (process->waitForStarted()) {
         m_processes.append(process);
-        emit running_changed();
+        Q_EMIT running_changed();
     }
 }
 
@@ -75,14 +75,14 @@ Q_INVOKABLE void CubedInstance::set_game_dir_url(const QUrl& game_dir_url) {
     m_game_install_dir = game_dir_url.toLocalFile();
     qDebug() << "Url Change Game Install Dir " << m_game_install_dir;
     check_version();
-    emit path_change();
+    Q_EMIT path_change();
 }
 
 Q_INVOKABLE void CubedInstance::set_game_dir(const QString& game_dir) {
     m_game_install_dir = game_dir;
     qDebug() << "Path: Change Game Install Dir " << m_game_install_dir;
     check_version();
-    emit path_change();
+    Q_EMIT path_change();
 }
 
 Q_INVOKABLE void CubedInstance::set_peer(int index) {
@@ -113,8 +113,8 @@ Q_INVOKABLE void CubedInstance::check_version() {
     auto info = QFileInfo(program_path);
     if (!info.isFile()) {
         m_installed = false;
-        emit installed_changed();
-        emit version_changed();
+        Q_EMIT installed_changed();
+        Q_EMIT version_changed();
         qDebug() << program_path << " is not a file";
         return;
     }
@@ -146,12 +146,12 @@ Q_INVOKABLE void CubedInstance::check_version() {
                     m_version = str;
                     m_installed = true;
                     qDebug() << "Cubed Version: " << m_version;
-                    emit version_changed();
-                    emit installed_changed();
+                    Q_EMIT version_changed();
+                    Q_EMIT installed_changed();
                 } else {
                     m_installed = false;
-                    emit installed_changed();
-                    emit version_changed();
+                    Q_EMIT installed_changed();
+                    Q_EMIT version_changed();
                 }
             });
 
