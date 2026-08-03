@@ -1,5 +1,7 @@
 #include "tool/json_cache.hpp"
 
+#include "path_tools.hpp"
+
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QDir>
@@ -8,30 +10,29 @@
 #include <QStandardPaths>
 #include <QVariant>
 
-// AI-generated: on-disk JSON cache. Each entry is wrapped in
-// {"ts": <msec epoch>, "data": <object>}; ttl is checked against ts.
 namespace {
 constexpr QLatin1StringView kTs("ts");
 constexpr QLatin1StringView kData("data");
 
-QString cache_file_path(const QString& key) {
-    const auto hash = QString::fromLatin1(
-        QCryptographicHash::hash(key.toUtf8(), QCryptographicHash::Sha256)
-            .toHex());
+QString cache_file_path(const QString& cache_name) {
+    const auto hash =
+        QString::fromLatin1(QCryptographicHash::hash(cache_name.toUtf8(),
+                                                     QCryptographicHash::Sha256)
+                                .toHex());
     return JsonCache::cache_dir() + QLatin1Char('/') + hash +
            QStringLiteral(".json");
 }
 } // namespace
 
 QString JsonCache::cache_dir() {
-    return QStandardPaths::writableLocation(QStandardPaths::CacheLocation) +
-           QStringLiteral("/json");
+    return DefaultDir::get_default_cache_dir() + QStringLiteral("/json");
 }
 
-std::optional<QJsonObject> JsonCache::read(const QString& key,
+std::optional<QJsonObject> JsonCache::read(const QString& cache_name,
                                            qint64 ttl_seconds) {
-    QFile f(cache_file_path(key));
+    QFile f(cache_file_path(cache_name));
     if (!f.exists() || !f.open(QIODevice::ReadOnly)) {
+
         return std::nullopt;
     }
 

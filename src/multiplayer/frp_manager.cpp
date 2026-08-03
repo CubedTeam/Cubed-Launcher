@@ -22,7 +22,7 @@ FrpManager::FrpManager(QObject* parent)
 }
 
 QString FrpManager::default_install_dir() const {
-    return get_default_frp_install_dir();
+    return DefaultDir::get_default_frp_install_dir();
 }
 
 QRegularExpression FrpManager::platform_asset_pattern() const {

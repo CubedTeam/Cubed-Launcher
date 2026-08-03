@@ -50,7 +50,7 @@ QString EasyTierManager::public_server_address(int index) const {
 }
 
 QString EasyTierManager::default_install_dir() const {
-    return get_default_easytier_install_dir();
+    return DefaultDir::get_default_easytier_install_dir();
 }
 
 QRegularExpression EasyTierManager::platform_asset_pattern() const {

@@ -10,10 +10,10 @@ CubedInstance::CubedInstance() {}
 
 Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     if (m_game_install_dir.isEmpty()) {
-        m_game_install_dir = get_default_game_install_dir();
+        m_game_install_dir = DefaultDir::get_default_game_install_dir();
     }
-    const QString program_path =
-        m_game_install_dir + "/" + get_default_game_executable_name();
+    const QString program_path = m_game_install_dir + "/" +
+                                 DefaultDir::get_default_game_executable_name();
     qDebug() << "Game Start, dir " << m_game_install_dir << " exec "
              << program_path;
 
@@ -105,10 +105,10 @@ Q_INVOKABLE void CubedInstance::kill_all() {
 
 Q_INVOKABLE void CubedInstance::check_version() {
     if (m_game_install_dir.isEmpty()) {
-        m_game_install_dir = get_default_game_install_dir();
+        m_game_install_dir = DefaultDir::get_default_game_install_dir();
     }
-    const QString program_path =
-        m_game_install_dir + "/" + get_default_game_executable_name();
+    const QString program_path = m_game_install_dir + "/" +
+                                 DefaultDir::get_default_game_executable_name();
 
     auto info = QFileInfo(program_path);
     if (!info.isFile()) {

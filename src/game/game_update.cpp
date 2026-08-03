@@ -13,7 +13,7 @@
 GameUpdate::GameUpdate()
     : m_fetcher(&m_manager, QStringLiteral("Cubed"), this),
       m_downloader(&m_manager, this) {
-    m_game_install_path = get_default_game_install_dir();
+    m_game_install_path = DefaultDir::get_default_game_install_dir();
     connect(&m_downloader, &FileDownloader::progress_changed, this,
             &GameUpdate::download_progress_changed);
     connect(&m_downloader, &FileDownloader::download_finished_changed, this,
@@ -133,7 +133,7 @@ Q_INVOKABLE void GameUpdate::cancel_download() { m_downloader.cancel(); }
 
 void GameUpdate::set_game_install_path(const QString& game_dir) {
     if (game_dir.isEmpty()) {
-        m_game_install_path = get_default_game_install_dir();
+        m_game_install_path = DefaultDir::get_default_game_install_dir();
     } else {
         m_game_install_path = game_dir;
     }
