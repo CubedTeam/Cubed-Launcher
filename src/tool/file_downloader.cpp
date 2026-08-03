@@ -42,7 +42,7 @@ bool FileDownloader::start(const QString& url, const QString& save_path) {
     m_reply = reply;
 
     auto file = std::make_shared<QFile>(save_path);
-    if (!file->open(QIODevice::WriteOnly)) {
+    if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
         m_reply = nullptr;
         reply->abort();
         reply->deleteLater();
@@ -102,6 +102,7 @@ void FileDownloader::on_reply_finished() {
     if (reply && reply->error() == QNetworkReply::NoError) {
         m_progress = 1.0f;
         Q_EMIT progress_changed();
+        end_run();
         Q_EMIT download_complete(m_save_path);
         return;
     }

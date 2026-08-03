@@ -31,8 +31,9 @@ bool GithubReleaseFetcher::fetch(const QString& owner, const QString& repo,
     }
     m_callback = std::move(callback);
 
-    qint64 now = QDateTime::currentDateTime().toMSecsSinceEpoch();
-    auto j = JsonCache::read(m_name, now);
+    constexpr qint64 CACHE_TTL_SECONDS = 3600;
+
+    auto j = JsonCache::read(m_name, CACHE_TTL_SECONDS);
     if (j) {
         Result result;
         result.ok = true;

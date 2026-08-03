@@ -10,7 +10,7 @@ class CubedGame : public QObject {
     QML_SINGLETON
     Q_PROPERTY(bool running READ running NOTIFY running_changed)
     Q_PROPERTY(bool path_selected READ game_path_select NOTIFY path_change)
-    Q_PROPERTY(bool logOn WRITE set_log_statue)
+    Q_PROPERTY(bool logOn READ log_on WRITE set_log_statue)
     Q_PROPERTY(bool installed READ installed NOTIFY installed_changed)
     Q_PROPERTY(QString version READ version NOTIFY version_changed)
 public:
@@ -29,6 +29,7 @@ public:
     bool installed() const;
     void set_log_statue(bool status);
     QString version() const;
+    bool log_on() const;
 Q_SIGNALS:
     void running_changed();
     void path_change();

@@ -69,7 +69,8 @@ QString FrpManager::extract_archive_impl(const QString& archive_path,
     tar.setProgram("tar");
     tar.setArguments({"xzf", archive_path, "-C", tmp_dir});
     tar.start();
-    if (!tar.waitForStarted() || !tar.waitForFinished(-1)) {
+    if (!tar.waitForStarted() || !tar.waitForFinished(-1) ||
+        tar.exitCode() != 0) {
         return QStringLiteral("Failed to run tar: %1").arg(tar.errorString());
     }
     return {};

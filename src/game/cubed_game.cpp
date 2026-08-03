@@ -169,3 +169,4 @@ bool CubedGame::game_path_select() const {
 bool CubedGame::installed() const { return m_installed; }
 void CubedGame::set_log_statue(bool status) { m_log_on = status; }
 QString CubedGame::version() const { return m_version; }
+bool CubedGame::log_on() const { return m_log_on; }
