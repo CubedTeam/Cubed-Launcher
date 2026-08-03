@@ -4,6 +4,7 @@
 #include "tool/log.hpp"
 
 #include <QElapsedTimer>
+#include <QMetaObject>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QTimer>
@@ -67,7 +68,7 @@ void MirrorSource::probe(int index, const QString& url) {
             m_latency_cache.insert(QString::number(index), ms);
             JsonCache::write(kLatencyCacheName, m_latency_cache);
         }
-        Q_EMIT latencyReady(index, ms);
+        emitLatencyReady(index, ms);
     };
 
     auto* watchdog = new QTimer(reply);
@@ -105,7 +106,7 @@ void MirrorSource::test_all_latency(bool force) {
                    : 0;
         if (cached && ok && ms >= 0) {
             m_latency_cache.insert(QString::number(i), ms);
-            Q_EMIT latencyReady(i, ms);
+            emitLatencyReady(i, ms);
         } else {
             pending.append(i);
         }
@@ -118,4 +119,13 @@ void MirrorSource::test_all_latency(bool force) {
         }
         probe(i, url);
     }
+}
+
+// AI-generated: queued emission so the receiver (e.g. QML Connections) is
+// always connected, even when callers fire synchronously during component
+// completion.
+void MirrorSource::emitLatencyReady(int index, int ms) {
+    QMetaObject::invokeMethod(
+        this, [this, index, ms]() { Q_EMIT latencyReady(index, ms); },
+        Qt::QueuedConnection);
 }

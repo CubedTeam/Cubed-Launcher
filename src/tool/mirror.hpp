@@ -59,4 +59,5 @@ private:
     QNetworkAccessManager m_manager;
     QJsonObject m_latency_cache;
     void probe(int index, const QString& url);
+    void emitLatencyReady(int index, int ms);
 };

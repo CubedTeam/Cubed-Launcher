@@ -17,6 +17,17 @@ Dialog {
     title: qsTr("Select Mirror Source")
     standardButtons: Dialog.NoButton
 
+    // AI-generated: run on the root so the Connections handler (declared
+    // later) is already wired up when cached latencies are replayed.
+    Component.onCompleted: {
+        mirrorPopup.pendingTests = mirrorModel.count;
+        for (let i = 0; i < mirrorModel.count; ++i) {
+            mirrorModel.setProperty(i, "testing", true);
+            mirrorModel.setProperty(i, "latency", -1);
+        }
+        MirrorSource.test_all_latency(false);
+    }
+
     ListModel {
         id: mirrorModel
         Component.onCompleted: {
@@ -34,17 +45,6 @@ Dialog {
     ColumnLayout {
         anchors.fill: parent
         spacing: 10
-
-        Component.onCompleted: {
-            // AI-generated: mark items as testing so in-flight probes don't
-            // render as a misleading red "timeout" before they resolve.
-            mirrorPopup.pendingTests = mirrorModel.count;
-            for (let i = 0; i < mirrorModel.count; ++i) {
-                mirrorModel.setProperty(i, "testing", true);
-                mirrorModel.setProperty(i, "latency", -1);
-            }
-            MirrorSource.test_all_latency(false);
-        }
 
         ListView {
             id: mirrorList
