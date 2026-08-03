@@ -1,11 +1,13 @@
 #include "tool/mirror.hpp"
 
 #include "tool/json_cache.hpp"
+#include "tool/log.hpp"
 
 #include <QElapsedTimer>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QTimer>
+#include <optional>
 
 MirrorSource::MirrorSource(QObject* parent) : QObject(parent) {}
 
@@ -38,6 +40,10 @@ QString MirrorSource::apply(const QString& url, int index) const {
 // elapsed ms on first bytes/headers, or -1 on timeout/network error.
 void MirrorSource::probe(int index, const QString& url) {
     QNetworkRequest req(url);
+    req.setRawHeader(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+        "(KHTML, like Gecko) Chrome/120.0 Safari/537.36");
     req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
                      QNetworkRequest::NoLessSafeRedirectPolicy);
     req.setTransferTimeout(8000);
@@ -55,8 +61,12 @@ void MirrorSource::probe(int index, const QString& url) {
             reply->disconnect();
             reply->deleteLater();
         }
-        m_latency_cache.insert(QString::number(index), ms);
-        JsonCache::write(kLatencyCacheName, m_latency_cache);
+        // AI-generated: only persist successful latencies; timeouts would
+        // otherwise freeze as "failed" for the full TTL on every relaunch.
+        if (ms >= 0) {
+            m_latency_cache.insert(QString::number(index), ms);
+            JsonCache::write(kLatencyCacheName, m_latency_cache);
+        }
         Q_EMIT latencyReady(index, ms);
     };
 
@@ -80,23 +90,28 @@ void MirrorSource::probe(int index, const QString& url) {
 }
 
 void MirrorSource::test_all_latency(bool force) {
+    // AI-generated: replay valid cached entries first, then probe only the
+    // indices that are missing or failed on the previous round.
+    m_latency_cache = {};
+    QVector<int> pending;
+    std::optional<QJsonObject> cached;
     if (!force) {
-        auto cached =
-            JsonCache::read(kLatencyCacheName, kLatencyCacheTtlSeconds);
-        if (cached && cached->size() >= mirror_sources.size()) {
-            for (auto it = cached->begin(); it != cached->end(); ++it) {
-                bool ok = false;
-                const int idx = it.key().toInt(&ok);
-                if (!ok || idx < 0 || idx >= mirror_sources.size()) {
-                    continue;
-                }
-                Q_EMIT latencyReady(idx, it.value().toVariant().toInt());
-            }
-            return;
+        cached = JsonCache::read(kLatencyCacheName, kLatencyCacheTtlSeconds);
+    }
+    for (int i = 0; i < mirror_sources.size(); ++i) {
+        bool ok = false;
+        const int ms =
+            cached ? cached->value(QString::number(i)).toVariant().toInt(&ok)
+                   : 0;
+        if (cached && ok && ms >= 0) {
+            m_latency_cache.insert(QString::number(i), ms);
+            Q_EMIT latencyReady(i, ms);
+        } else {
+            pending.append(i);
         }
     }
-    m_latency_cache = {};
-    for (int i = 0; i < mirror_sources.size(); ++i) {
+    Logger::info("Mirror Pending sum {}", pending.size());
+    for (int i : pending) {
         QString url = mirror_sources.at(i).prefix;
         if (url.isEmpty()) {
             url = QStringLiteral("https://github.com/");
