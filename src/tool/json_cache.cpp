@@ -81,3 +81,11 @@ bool JsonCache::remove(const QString& key) {
     }
     return f.remove();
 }
+
+bool JsonCache::clear_all() {
+    const QString dir = DefaultDir::get_default_cache_dir();
+    if (!QDir(dir).exists()) {
+        return true;
+    }
+    return QDir(dir).removeRecursively();
+}

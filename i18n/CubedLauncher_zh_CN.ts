@@ -927,6 +927,17 @@
         <source>Ip</source>
         <translation>IP 地址</translation>
     </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="191"/>
+        <source>Cache</source>
+        <translation>缓存</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="201"/>
+        <location filename="../qml/Tab/Setting.qml" line="275"/>
+        <source>Clear Cache</source>
+        <translation>清理缓存</translation>
+    </message>
 </context>
 <context>
     <name>Sidebar</name>

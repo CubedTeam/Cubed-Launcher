@@ -1,5 +1,6 @@
 #include "settings.hpp"
 
+#include "tool/json_cache.hpp"
 #include "tool/log.hpp"
 
 #include <QFileInfo>
@@ -147,6 +148,8 @@ void Settings::set_easytier_public_server_index(int index) {
 
     Q_EMIT easytier_public_server_index_changed();
 }
+
+void Settings::clear_cache() { JsonCache::clear_all(); }
 
 void Settings::load() {
     if (m_settings.contains("game_path")) {

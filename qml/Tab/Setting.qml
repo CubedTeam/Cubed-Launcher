@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
+
 import CubedLauncher
 import QtQuick.Layouts
 
@@ -178,6 +179,32 @@ Item {
             }
 
             Card {
+                Layout.preferredHeight: cacheLayout.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                visible: advancedSetting.checked
+                ColumnLayout {
+                    id: cacheLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Cache")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    Button {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 250
+                        Layout.preferredHeight: 50
+                        font.pixelSize: 18
+                        Material.roundedScale: Material.MediumScale
+                        text: qsTr("Clear Cache")
+                        onClicked: clearCacheDialog.open()
+                    }
+                }
+            }
+
+            Card {
                 Layout.preferredHeight: networkLayout.implicitHeight + 20
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter
@@ -237,5 +264,18 @@ Item {
                 }
             }
         }
+    }
+
+    Dialog {
+        id: clearCacheDialog
+        anchors.centerIn: Overlay.overlay
+        width: 250
+        height: 150
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        title: qsTr("Clear Cache")
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        onAccepted: Settings.clear_cache()
     }
 }

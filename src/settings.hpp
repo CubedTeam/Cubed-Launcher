@@ -61,6 +61,7 @@ public Q_SLOTS:
     void set_easytier_install_path_url(const QUrl& path);
     void set_easytier_install_path(const QString& path);
     void set_easytier_public_server_index(int index);
+    void clear_cache();
 Q_SIGNALS:
     void game_dir_changed();
     void player_name_changed();

@@ -10,6 +10,7 @@ public:
 
     static bool write(const QString& key, const QJsonObject& object);
     static bool remove(const QString& key);
+    static bool clear_all();
 
     static QString cache_dir();
 };
