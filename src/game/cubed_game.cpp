@@ -45,8 +45,9 @@ Q_INVOKABLE void CubedGame::start_cubed_game() {
             });
 
     connect(process, &QProcess::errorOccurred, this,
-            [](QProcess::ProcessError error) {
+            [process](QProcess::ProcessError error) {
                 Logger::error("Process error: {}", static_cast<int>(error));
+                process->deleteLater();
             });
 
     if (m_log_on) {

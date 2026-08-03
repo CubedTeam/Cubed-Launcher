@@ -1,6 +1,7 @@
 #include "multiplayer/easytier_manager.hpp"
 
 #include "settings.hpp"
+#include "tool/log.hpp"
 #include "tool/path_tools.hpp"
 
 #include <QClipboard>
@@ -13,7 +14,6 @@
 #include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <qmicroz.h>
-
 EasyTierManager::EasyTierManager(QObject* parent)
     : BinaryServiceBase(QStringLiteral("Easytier"), parent) {
     QString path = default_install_dir();
@@ -320,6 +320,10 @@ void EasyTierManager::refresh_virtual_ip() {
                     parse_virtual_ip(data);
                 }
             });
+    connect(cli, &QProcess::errorOccurred, [cli]() {
+        cli->deleteLater();
+        Logger::error("Can't Open Easytier Cil");
+    });
     cli->start();
 }
 

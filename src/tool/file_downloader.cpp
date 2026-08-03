@@ -102,7 +102,6 @@ void FileDownloader::on_reply_finished() {
     if (reply && reply->error() == QNetworkReply::NoError) {
         m_progress = 1.0f;
         Q_EMIT progress_changed();
-        end_run();
         Q_EMIT download_complete(m_save_path);
         return;
     }
