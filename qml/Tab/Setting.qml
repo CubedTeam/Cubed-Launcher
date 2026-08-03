@@ -205,6 +205,40 @@ Item {
             }
 
             Card {
+                Layout.preferredHeight: tokenLayout.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                visible: advancedSetting.checked
+                ColumnLayout {
+                    id: tokenLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("GitHub Token")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    TextField {
+                        id: githubTokenField
+                        Layout.preferredWidth: 300
+                        Layout.alignment: Qt.AlignCenter
+                        echoMode: TextInput.Password
+                        placeholderText: qsTr("Enter GitHub Token")
+                        text: Settings.githubToken
+                        onEditingFinished: {
+                            Settings.githubToken = githubTokenField.text;
+                        }
+                    }
+                    Label {
+                        text: qsTr("Environment variable takes precedence.")
+                        font.pixelSize: 12
+                        Layout.alignment: Qt.AlignCenter
+                        color: Material.color(Material.Grey)
+                    }
+                }
+            }
+
+            Card {
                 Layout.preferredHeight: networkLayout.implicitHeight + 20
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter

@@ -99,6 +99,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/multiplayer/binary_service_base.cpp
         src/tool/json_cache.hpp
         src/tool/json_cache.cpp
+        src/tool/github_auth.hpp
+        src/tool/github_auth.cpp
         src/multiplayer/frp_manager.hpp
         src/multiplayer/frp_manager.cpp
         src/multiplayer/easytier_manager.hpp

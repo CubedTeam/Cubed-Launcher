@@ -938,6 +938,21 @@
         <source>Clear Cache</source>
         <translation>清理缓存</translation>
     </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="217"/>
+        <source>GitHub Token</source>
+        <translation>GitHub Token</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="226"/>
+        <source>Enter GitHub Token</source>
+        <translation>输入 GitHub Token</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="233"/>
+        <source>Environment variable takes precedence.</source>
+        <translation>环境变量优先于设置值。</translation>
+    </message>
 </context>
 <context>
     <name>Sidebar</name>

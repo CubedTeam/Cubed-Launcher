@@ -33,6 +33,7 @@ QString Settings::easytier_install_path() const {
 int Settings::easytier_public_server_index() const {
     return m_easytier_public_server_index;
 }
+QString Settings::github_token() const { return m_github_token; }
 
 Settings* Settings::instance() { return s_instance; }
 
@@ -149,6 +150,14 @@ void Settings::set_easytier_public_server_index(int index) {
     Q_EMIT easytier_public_server_index_changed();
 }
 
+void Settings::set_github_token(const QString& token) {
+    if (!update_value(m_github_token, token.trimmed(), "github_token")) {
+        return;
+    }
+
+    Q_EMIT github_token_changed();
+}
+
 void Settings::clear_cache() { JsonCache::clear_all(); }
 
 void Settings::load() {
@@ -183,6 +192,7 @@ void Settings::load() {
     m_easytier_install_path = m_settings.value("easytier_path").toString();
     m_easytier_public_server_index =
         m_settings.value("easytier_public_server_index", -1).toInt();
+    m_github_token = m_settings.value("github_token").toString();
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

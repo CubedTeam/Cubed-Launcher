@@ -1,5 +1,6 @@
 #include "tool/github_release.hpp"
 
+#include "tool/github_auth.hpp"
 #include "tool/json_cache.hpp"
 #include "tool/user_agent.hpp"
 
@@ -49,6 +50,7 @@ bool GithubReleaseFetcher::fetch(const QString& owner, const QString& repo,
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::UserAgentHeader,
                       buildUserAgent().toUtf8());
+    GitHubAuth::apply_to_request(request);
 
     m_reply = m_manager->get(request);
     connect(m_reply, &QNetworkReply::finished, this, [this, assetRegex]() {
