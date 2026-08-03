@@ -322,7 +322,7 @@ void EasyTierManager::refresh_virtual_ip() {
             });
     connect(cli, &QProcess::errorOccurred, [cli]() {
         cli->deleteLater();
-        Logger::error("Can't Open Easytier Cil");
+        Logger::error("Can't Open Easytier Cli");
     });
     cli->start();
 }
