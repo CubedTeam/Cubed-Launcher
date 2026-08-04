@@ -6,8 +6,10 @@
 #include <QString>
 
 #if defined(_WIN32)
-#include <dpapi.h>
+// clang-format off
 #include <windows.h>
+#include <dpapi.h>
+// clang-format on
 #else
 #include <libsecret/secret.h>
 
@@ -62,14 +64,14 @@ bool save(const QString& key, const QByteArray& secret) {
         return false;
     }
 #if defined(_WIN32)
-    const QByteArray utf8 = key.toUtf8();
+    const std::wstring wkey = key.toStdWString();
     DATA_BLOB input{};
     input.pbData =
         reinterpret_cast<BYTE*>(const_cast<char*>(secret.constData()));
     input.cbData = static_cast<DWORD>(secret.size());
 
     DATA_BLOB output{};
-    if (!CryptProtectData(&input, utf8.constData(), nullptr, nullptr, nullptr,
+    if (!CryptProtectData(&input, wkey.c_str(), nullptr, nullptr, nullptr,
                           CRYPTPROTECT_UI_FORBIDDEN, &output)) {
         Logger::warn("DPAPI CryptProtectData failed: {}", GetLastError());
         return false;
@@ -103,8 +105,8 @@ std::optional<QByteArray> load(const QString& key) {
     }
 #if defined(_WIN32)
     const QByteArray wrapped = read_dpapi_blob(key);
-    if (wrapped.isEmpty() ||
-        !wrapped.startsWith(kDpapiPrefix.data(), kDpapiPrefix.size())) {
+    if (wrapped.isEmpty() || !wrapped.startsWith(QByteArrayView(
+                                 kDpapiPrefix.data(), kDpapiPrefix.size()))) {
         return std::nullopt;
     }
     const QByteArray b64 = wrapped.mid(kDpapiPrefix.size());

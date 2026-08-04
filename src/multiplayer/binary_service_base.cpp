@@ -8,9 +8,11 @@
 #include <QTimer>
 
 #ifdef _WIN32
+// clang-format off
+#include <windows.h>
 #include <shellapi.h>
 #include <thread>
-#include <windows.h>
+// clang-format on
 #endif
 
 BinaryServiceBase::BinaryServiceBase(QStringView name, QObject* parent)
