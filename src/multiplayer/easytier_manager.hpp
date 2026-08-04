@@ -45,9 +45,7 @@ public:
                            const QString& peer_address);
     Q_INVOKABLE void start_join(const QString& network_name,
                                 const QString& network_secret,
-                                const QString& peer_address,
-                                const QString& host_virtual_ip, int host_port,
-                                int local_port);
+                                const QString& peer_address);
     Q_INVOKABLE void stop();
     Q_INVOKABLE void refresh_virtual_ip();
     Q_INVOKABLE void copy_to_clipboard(const QString& text);

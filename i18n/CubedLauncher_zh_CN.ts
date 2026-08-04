@@ -244,129 +244,138 @@
         <translation>选择...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="151"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="132"/>
         <source>EasyTier Client</source>
         <translation>EasyTier 客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="158"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="139"/>
         <source>Status: %1</source>
         <translation>状态：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="158"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="139"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="158"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="139"/>
         <source>Stopped</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="173"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="154"/>
         <source>Create Room</source>
         <translation>创建房间</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="178"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="159"/>
         <source>Join Room</source>
         <translation>加入房间</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="194"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="175"/>
         <source>Public</source>
         <translation>公共</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="199"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="180"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="218"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="199"/>
         <source>Public Server: </source>
         <translation>公共服务器：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="228"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="209"/>
         <source>Peer address (e.g. tcp://1.2.3.4:1010)</source>
         <translation>对等节点地址（例如 tcp://1.2.3.4:1010）</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="237"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="218"/>
         <source>Network name</source>
         <translation>网络名称</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="246"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="227"/>
         <source>Network secret</source>
         <translation>网络密钥</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="262"/>
         <source>Host virtual IP (e.g. 10.0.0.1)</source>
-        <translation>主机虚拟 IP（例如 10.0.0.1）</translation>
+        <translation type="vanished">主机虚拟 IP（例如 10.0.0.1）</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="276"/>
         <source>Host port (e.g. 25565)</source>
-        <translation>主机端口（例如 25565）</translation>
+        <translation type="vanished">主机端口（例如 25565）</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="291"/>
         <source>Local listen port</source>
-        <translation>本地监听端口</translation>
+        <translation type="vanished">本地监听端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="313"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="255"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="330"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="272"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="350"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="291"/>
+        <source>Security Warning</source>
+        <translation>安全警告</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="327"/>
         <source>Virtual IP</source>
         <translation>虚拟 IP</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="365"/>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="428"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="342"/>
         <source>--</source>
         <translation>--</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="375"/>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="438"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="352"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="385"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="362"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="393"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="370"/>
         <source>Waiting for easytier to assign IP...</source>
         <translation>等待 easytier 分配 IP...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="413"/>
-        <source>Game Address</source>
-        <translation>游戏地址</translation>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="237"/>
+        <source>After starting, ask the room host for their virtual IP and enter it in Cubed.</source>
+        <translation>启动后向房主索取其虚拟 IP，填入 Cubed 中连接。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="445"/>
-        <source>Enter this address in Cubed to join the host&apos;s server.</source>
-        <translation>在 Cubed 中输入此地址以加入房主的服务器。</translation>
+        <source>⚠ Security Warning</source>
+        <translation type="vanished">⚠ 安全警告</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="496"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="299"/>
+        <source>Creating a room requires administrator or root privileges. Easytier will create a TUN/TAP virtual network interface with elevated permissions, allowing the easytier-core process to extensively control this machine&apos;s network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.</source>
+        <translation>创建房间需要管理员或 root 权限。Easytier 将以提升的权限创建 TUN/TAP 虚拟网卡，使 easytier-core 进程能够大范围操控本机的网络栈，请确认仅在信任此软件时和确认风险与后果之后再继续</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="307"/>
+        <source>Recommendation: use frp instead (does not require administrator or root privileges).</source>
+        <translation>建议：改用 frp（无需管理员或 root 权限）。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="418"/>
         <source>EasyTier Install Directory</source>
         <translation>EasyTier 安装目录</translation>
     </message>
@@ -379,7 +388,7 @@
         <translation type="vanished">显示日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="473"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="395"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
@@ -388,7 +397,7 @@
         <translation type="vanished">EasyTier 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="497"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="419"/>
         <source>Set EasyTier Folder</source>
         <translation>设置 EasyTier 文件夹</translation>
     </message>
@@ -397,7 +406,7 @@
         <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="513"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="435"/>
         <source>Select EasyTier Folder</source>
         <translation>选择 EasyTier 文件夹</translation>
     </message>
@@ -654,22 +663,22 @@
         <translation>选择镜像源</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="101"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="108"/>
         <source>testing...</source>
         <translation>测试中...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="104"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="111"/>
         <source>timeout</source>
         <translation>超时</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="106"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="113"/>
         <source>ms</source>
         <translation>毫秒</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="131"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="138"/>
         <source>Test Latency</source>
         <translation>测试延迟</translation>
     </message>
@@ -902,28 +911,28 @@
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="251"/>
+        <location filename="../qml/Tab/Setting.qml" line="263"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="260"/>
+        <location filename="../qml/Tab/Setting.qml" line="272"/>
         <source>Host</source>
         <translation>主机</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="260"/>
+        <location filename="../qml/Tab/Setting.qml" line="272"/>
         <source>Client</source>
         <translation>客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="271"/>
-        <location filename="../qml/Tab/Setting.qml" line="292"/>
+        <location filename="../qml/Tab/Setting.qml" line="283"/>
+        <location filename="../qml/Tab/Setting.qml" line="304"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="284"/>
+        <location filename="../qml/Tab/Setting.qml" line="296"/>
         <source>Ip</source>
         <translation>IP 地址</translation>
     </message>
@@ -934,7 +943,7 @@
     </message>
     <message>
         <location filename="../qml/Tab/Setting.qml" line="201"/>
-        <location filename="../qml/Tab/Setting.qml" line="311"/>
+        <location filename="../qml/Tab/Setting.qml" line="323"/>
         <source>Clear Cache</source>
         <translation>清理缓存</translation>
     </message>
@@ -954,7 +963,7 @@
         <translation>Token 保存在系统密钥环中,环境变量优先。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="248"/>
+        <location filename="../qml/Tab/Setting.qml" line="247"/>
         <source>Remove Token</source>
         <translation>移除 Token</translation>
     </message>
