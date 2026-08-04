@@ -87,6 +87,11 @@ private:
     void stop_ip_polling();
     void on_ip_poll_timeout();
     void parse_virtual_ip(const QByteArray& data);
+    // AI-generated: when easytier-core is launched via pkexec, terminating the
+    // pkexec QProcess may leave the root easytier-core child orphaned (pkexec
+    // does not reliably forward SIGTERM). This helper spawns a detached
+    // `pkexec pkill -f <core path>` to guarantee the root process dies.
+    void kill_core_as_root();
 
     QString m_virtual_ip;
     QTimer* m_ip_poll_timer{nullptr};

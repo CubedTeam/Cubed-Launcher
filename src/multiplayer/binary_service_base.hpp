@@ -71,8 +71,13 @@ public:
     // Launch the managed process with the given program and arguments.
     // Subclasses expose their own Q_INVOKABLE start() that gathers
     // arguments and forwards here.
+    // On non-Windows, when elevate is true, the program is launched through
+    // `pkexec`, which triggers the system polkit authentication dialog and
+    // runs the target as root. This keeps the launcher itself unprivileged
+    // while granting the managed process the privileges it needs (e.g.
+    // easytier-core creating a TUN device on Linux).
     void launch_process(const QString& program, const QStringList& arguments,
-                        const QProcessEnvironment& env);
+                        const QProcessEnvironment& env, bool elevate = false);
 
 Q_SIGNALS:
     void state_changed();

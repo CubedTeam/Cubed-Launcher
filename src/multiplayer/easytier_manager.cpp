@@ -13,6 +13,7 @@
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QRegularExpression>
+#include <QStandardPaths>
 #include <qmicroz.h>
 EasyTierManager::EasyTierManager(QObject* parent)
     : BinaryServiceBase(QStringLiteral("Easytier"), parent) {
@@ -233,7 +234,7 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
         QStringLiteral("--dhcp"),           QStringLiteral("true"),
     };
     launch_process(core_binary(), args,
-                   QProcessEnvironment::systemEnvironment());
+                   QProcessEnvironment::systemEnvironment(), /*elevate=*/true);
     if (running()) {
         start_ip_polling();
     }
@@ -266,7 +267,28 @@ Q_INVOKABLE void EasyTierManager::start_join(const QString& network_name,
                    QProcessEnvironment::systemEnvironment());
 }
 
-Q_INVOKABLE void EasyTierManager::stop() { stop_process(); }
+Q_INVOKABLE void EasyTierManager::stop() {
+    stop_process();
+    kill_core_as_root();
+}
+
+void EasyTierManager::kill_core_as_root() {
+#ifndef _WIN32
+    const QString core = core_binary();
+    if (core.isEmpty() ||
+        QStandardPaths::findExecutable(QStringLiteral("pkexec")).isEmpty()) {
+        return;
+    }
+    auto* p = new QProcess(this);
+    p->setProgram(QStringLiteral("pkexec"));
+    p->setArguments(QStringList()
+                    << QStringLiteral("pkill") << QStringLiteral("-f")
+                    << QRegularExpression::escape(core));
+    connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            [p](int, QProcess::ExitStatus) { p->deleteLater(); });
+    p->start();
+#endif
+}
 
 void EasyTierManager::start_ip_polling() {
     if (!m_ip_poll_timer) {

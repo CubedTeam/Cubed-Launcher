@@ -307,7 +307,8 @@ void BinaryServiceBase::wire_process(QProcess* p) {
 
 void BinaryServiceBase::launch_process(const QString& program,
                                        const QStringList& arguments,
-                                       const QProcessEnvironment& env) {
+                                       const QProcessEnvironment& env,
+                                       bool elevate) {
     if (running()) {
         return;
     }
@@ -318,14 +319,32 @@ void BinaryServiceBase::launch_process(const QString& program,
     }
     clear_error();
 
+    // AI-generated: on non-Windows, when elevate is requested, route the
+    // launch through `pkexec` so polkit pops up its authentication dialog
+    // and the target runs as root. The launcher itself stays unprivileged.
+    QString effective_program = program;
+    QStringList effective_arguments = arguments;
+#ifndef _WIN32
+    if (elevate) {
+        if (QStandardPaths::findExecutable(QStringLiteral("pkexec"))
+                .isEmpty()) {
+            set_error(QStringLiteral(
+                "pkexec not found; install polkit/policykit to run as root"));
+            return;
+        }
+        effective_program = QStringLiteral("pkexec");
+        effective_arguments.prepend(program);
+    }
+#endif
+
     if (m_process) {
         m_process->deleteLater();
         m_process = nullptr;
     }
     m_process = new QProcess(this);
     m_process->setWorkingDirectory(m_install_path);
-    m_process->setProgram(program);
-    m_process->setArguments(arguments);
+    m_process->setProgram(effective_program);
+    m_process->setArguments(effective_arguments);
     m_process->setProcessEnvironment(env);
 
     wire_process(m_process);
