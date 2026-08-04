@@ -233,11 +233,19 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
         QStringLiteral("--peers"),          peer_address,
         QStringLiteral("--dhcp"),           QStringLiteral("true"),
     };
+    // AI-generated: connect first so the polling kicks in whether the
+    // process is already running (Linux pkexec) or starts asynchronously
+    // after UAC (Windows runas). SingleShotConnection auto-disconnects
+    // after the first signal.
+    connect(
+        this, &BinaryServiceBase::running_changed, this,
+        [this]() {
+            if (running())
+                start_ip_polling();
+        },
+        Qt::SingleShotConnection);
     launch_process(core_binary(), args,
                    QProcessEnvironment::systemEnvironment(), /*elevate=*/true);
-    if (running()) {
-        start_ip_polling();
-    }
 }
 
 Q_INVOKABLE void EasyTierManager::start_join(const QString& network_name,

@@ -17,6 +17,8 @@
 #include <QString>
 #include <QStringList>
 
+class QTimer;
+
 // AI-generated: shared base for "fetch GitHub release -> download archive ->
 // extract -> install binaries -> run process" services. FrpManager and
 // EasyTierManager share the same state machine and process management;
@@ -71,11 +73,17 @@ public:
     // Launch the managed process with the given program and arguments.
     // Subclasses expose their own Q_INVOKABLE start() that gathers
     // arguments and forwards here.
-    // On non-Windows, when elevate is true, the program is launched through
-    // `pkexec`, which triggers the system polkit authentication dialog and
-    // runs the target as root. This keeps the launcher itself unprivileged
-    // while granting the managed process the privileges it needs (e.g.
-    // easytier-core creating a TUN device on Linux).
+    // When elevate is true:
+    //   - On Linux the program is launched through `pkexec`, which triggers
+    //     the system polkit authentication dialog and runs the target as
+    //     root. The launcher itself stays unprivileged.
+    //   - On Windows the program is launched through `ShellExecuteEx` with
+    //     the `runas` verb, which triggers the UAC consent prompt and runs
+    //     the target as administrator. The UAC dialog blocks the calling
+    //     thread, so the call is dispatched to a worker thread to keep the
+    //     UI responsive. The returned process handle is tracked for stop()
+    //     and exit detection. easytier-core's console output is not
+    //     captured on this path (acceptable, see plan).
     void launch_process(const QString& program, const QStringList& arguments,
                         const QProcessEnvironment& env, bool elevate = false);
 
@@ -120,6 +128,11 @@ protected:
     // Hook fired after the managed process exits; default is a no-op.
     virtual void on_process_finished(int exit_code) { Q_UNUSED(exit_code); }
 
+    // Hook fired once the managed process has successfully started on
+    // either the QProcess path or the (Windows) elevated path. Subclasses
+    // can override to e.g. kick off polling. Default is a no-op.
+    virtual void on_process_started() {}
+
     // Hook fired at the end of reset_install() so subclasses can clear
     // additional state (e.g. cached toml content, virtual IP).
     virtual void reset_install_extra() {}
@@ -160,6 +173,22 @@ private:
     QString m_error_message;
     bool m_has_error{false};
     QProcess* m_process{nullptr};
+
+    // AI-generated: Windows-only state for the UAC-elevated launch path
+    // (ShellExecuteEx + runas). The handle is a void* to avoid pulling
+    // windows.h into the header; reinterpret_cast as HANDLE in the .cpp.
+    // On non-Windows these members are conditionally compiled out.
+#ifdef _WIN32
+    void* m_elevated_handle{nullptr};
+    qint64 m_elevated_pid{0};
+    QTimer* m_elevated_poll_timer{nullptr};
+    bool m_elevate_pending{false};
+    bool m_elevate_stop_requested{false};
+
+    void launch_elevated_windows(const QString& program,
+                                 const QStringList& arguments);
+    void start_elevated_polling();
+#endif
 
 protected:
     // Set by derived constructor before detect_install(); exposed for

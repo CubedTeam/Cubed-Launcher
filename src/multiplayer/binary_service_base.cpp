@@ -5,6 +5,13 @@
 #include "tool/user_agent.hpp"
 
 #include <QStandardPaths>
+#include <QTimer>
+
+#ifdef _WIN32
+#include <shellapi.h>
+#include <thread>
+#include <windows.h>
+#endif
 
 BinaryServiceBase::BinaryServiceBase(QStringView name, QObject* parent)
     : QObject(parent), m_fetcher(&m_manager, name, this) {}
@@ -16,12 +23,37 @@ BinaryServiceBase::~BinaryServiceBase() {
     }
     delete m_process;
     m_process = nullptr;
+#ifdef _WIN32
+    if (m_elevated_poll_timer) {
+        m_elevated_poll_timer->stop();
+    }
+    if (m_elevated_handle) {
+        HANDLE h = reinterpret_cast<HANDLE>(m_elevated_handle);
+        TerminateProcess(h, 1);
+        WaitForSingleObject(h, 2000);
+        CloseHandle(h);
+        m_elevated_handle = nullptr;
+        m_elevated_pid = 0;
+    }
+#endif
 }
 
 bool BinaryServiceBase::installed() const { return is_installed_impl(); }
 
 bool BinaryServiceBase::running() const {
-    return m_process && m_process->state() != QProcess::NotRunning;
+    if (m_process && m_process->state() != QProcess::NotRunning) {
+        return true;
+    }
+#ifdef _WIN32
+    if (m_elevated_handle) {
+        DWORD code = 0;
+        if (GetExitCodeProcess(reinterpret_cast<HANDLE>(m_elevated_handle),
+                               &code)) {
+            return code == STILL_ACTIVE;
+        }
+    }
+#endif
+    return false;
 }
 
 bool BinaryServiceBase::busy() const {
@@ -250,15 +282,39 @@ void BinaryServiceBase::reset_install() {
 }
 
 void BinaryServiceBase::stop_process() {
-    if (!m_process || m_process->state() == QProcess::NotRunning) {
+    if (m_process && m_process->state() != QProcess::NotRunning) {
+        append_log(QStringLiteral("Stopping %1...").arg(process_log_name()));
+        m_process->terminate();
+        if (!m_process->waitForFinished(3000)) {
+            m_process->kill();
+            m_process->waitForFinished(2000);
+        }
+    }
+#ifdef _WIN32
+    if (m_elevate_pending) {
+        // AI-generated: user requested stop while the UAC dialog is still up.
+        // The worker thread will check this flag when ShellExecuteEx returns
+        // and immediately terminate the just-created process.
+        m_elevate_stop_requested = true;
         return;
     }
-    append_log(QStringLiteral("Stopping %1...").arg(process_log_name()));
-    m_process->terminate();
-    if (!m_process->waitForFinished(3000)) {
-        m_process->kill();
-        m_process->waitForFinished(2000);
+    if (m_elevated_handle) {
+        HANDLE h = reinterpret_cast<HANDLE>(m_elevated_handle);
+        append_log(QStringLiteral("Stopping %1...").arg(process_log_name()));
+        if (m_elevated_poll_timer) {
+            m_elevated_poll_timer->stop();
+        }
+        TerminateProcess(h, 1);
+        WaitForSingleObject(h, 3000);
+        CloseHandle(h);
+        m_elevated_handle = nullptr;
+        m_elevated_pid = 0;
+        Q_EMIT running_changed();
+        if (m_state == Running) {
+            set_state(Ready);
+        }
     }
+#endif
 }
 
 void BinaryServiceBase::wire_process(QProcess* p) {
@@ -319,13 +375,21 @@ void BinaryServiceBase::launch_process(const QString& program,
     }
     clear_error();
 
-    // AI-generated: on non-Windows, when elevate is requested, route the
-    // launch through `pkexec` so polkit pops up its authentication dialog
-    // and the target runs as root. The launcher itself stays unprivileged.
+    // AI-generated: when elevate is requested, route the launch through a
+    // privilege-elevation helper so the OS prompts the user for credentials
+    // and runs the target with elevated rights. The launcher itself stays
+    // unprivileged.
+    //   - Linux: `pkexec` + polkit authentication dialog.
+    //   - Windows: `ShellExecuteEx` with the `runas` verb + UAC consent
+    //     prompt. The actual launch runs on a worker thread because UAC
+    //     blocks the calling thread.
     QString effective_program = program;
     QStringList effective_arguments = arguments;
-#ifndef _WIN32
     if (elevate) {
+#ifdef _WIN32
+        launch_elevated_windows(program, arguments);
+        return;
+#else
         if (QStandardPaths::findExecutable(QStringLiteral("pkexec"))
                 .isEmpty()) {
             set_error(QStringLiteral(
@@ -334,8 +398,8 @@ void BinaryServiceBase::launch_process(const QString& program,
         }
         effective_program = QStringLiteral("pkexec");
         effective_arguments.prepend(program);
-    }
 #endif
+    }
 
     if (m_process) {
         m_process->deleteLater();
@@ -363,4 +427,142 @@ void BinaryServiceBase::launch_process(const QString& program,
                    .arg(m_process->processId()));
     set_state(Running);
     Q_EMIT running_changed();
+    on_process_started();
 }
+
+#ifdef _WIN32
+
+// AI-generated: quote a single argument for the ShellExecuteExW lpParameters
+// string. Wraps in double quotes only when the argument contains whitespace
+// or a double quote; embedded double quotes are escaped with a backslash.
+// This is a pragmatic subset of the CommandLineToArgvW rules that covers
+// network names/secrets with spaces.
+static QString quoteWinArg(const QString& arg) {
+    if (arg.isEmpty()) {
+        return QStringLiteral("\"\"");
+    }
+    const bool needsQuote = arg.contains(QLatin1Char(' ')) ||
+                            arg.contains(QLatin1Char('\t')) ||
+                            arg.contains(QLatin1Char('"'));
+    if (!needsQuote) {
+        return arg;
+    }
+    QString escaped = arg;
+    escaped.replace(QLatin1Char('"'), QLatin1String("\\\""));
+    return QLatin1Char('"') + escaped + QLatin1Char('"');
+}
+
+void BinaryServiceBase::launch_elevated_windows(const QString& program,
+                                                const QStringList& arguments) {
+    if (m_elevate_pending || m_elevated_handle) {
+        set_error(QStringLiteral("%1 is already starting/running")
+                      .arg(process_log_name()));
+        return;
+    }
+    clear_error();
+
+    QString params;
+    for (const QString& arg : arguments) {
+        if (!params.isEmpty()) {
+            params += QLatin1Char(' ');
+        }
+        params += quoteWinArg(arg);
+    }
+
+    const std::wstring file = program.toStdWString();
+    const std::wstring dir = m_install_path.toStdWString();
+    const std::wstring args = params.toStdWString();
+
+    m_elevate_pending = true;
+    m_elevate_stop_requested = false;
+
+    // AI-generated: ShellExecuteExW with the `runas` verb blocks the calling
+    // thread until the UAC prompt is answered. Run it on a detached worker
+    // thread so the Qt event loop keeps spinning and the UI stays
+    // responsive. COM is initialized on the worker thread because Shell
+    // APIs require it.
+    std::thread([this, file, dir, args]() {
+        CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+        SHELLEXECUTEINFOW sei{};
+        sei.cbSize = sizeof(sei);
+        sei.fMask = SEE_MASK_NOCLOSEPROCESS;
+        sei.lpVerb = L"runas";
+        sei.lpFile = file.c_str();
+        sei.lpParameters = args.c_str();
+        sei.lpDirectory = dir.c_str();
+        sei.nShow = SW_HIDE;
+        const BOOL ok = ShellExecuteExW(&sei);
+        const DWORD err = ok ? ERROR_SUCCESS : GetLastError();
+        void* handle = ok ? reinterpret_cast<void*>(sei.hProcess) : nullptr;
+        const qint64 pid =
+            ok ? static_cast<qint64>(GetProcessId(sei.hProcess)) : 0;
+        CoUninitialize();
+
+        QMetaObject::invokeMethod(
+            this,
+            [this, ok, err, handle, pid]() {
+                if (ok) {
+                    if (m_elevate_stop_requested) {
+                        // User clicked Stop while the UAC dialog was up;
+                        // terminate the just-created process immediately.
+                        if (handle) {
+                            HANDLE h = reinterpret_cast<HANDLE>(handle);
+                            TerminateProcess(h, 1);
+                            CloseHandle(h);
+                        }
+                        m_elevate_pending = false;
+                        return;
+                    }
+                    m_elevate_pending = false;
+                    m_elevated_handle = handle;
+                    m_elevated_pid = pid;
+                    append_log(QStringLiteral("%1 started elevated (pid %2)")
+                                   .arg(process_log_name())
+                                   .arg(pid));
+                    start_elevated_polling();
+                    set_state(Running);
+                    Q_EMIT running_changed();
+                    on_process_started();
+                } else {
+                    m_elevate_pending = false;
+                    set_error(
+                        QStringLiteral("Failed to start %1 elevated (error %2)")
+                            .arg(process_log_name())
+                            .arg(err));
+                }
+            },
+            Qt::QueuedConnection);
+    }).detach();
+}
+
+void BinaryServiceBase::start_elevated_polling() {
+    if (!m_elevated_poll_timer) {
+        m_elevated_poll_timer = new QTimer(this);
+        m_elevated_poll_timer->setInterval(1000);
+        connect(m_elevated_poll_timer, &QTimer::timeout, this, [this]() {
+            if (!m_elevated_handle) {
+                return;
+            }
+            DWORD code = 0;
+            HANDLE h = reinterpret_cast<HANDLE>(m_elevated_handle);
+            const BOOL gotCode = GetExitCodeProcess(h, &code);
+            if (!gotCode || code != STILL_ACTIVE) {
+                m_elevated_poll_timer->stop();
+                CloseHandle(h);
+                m_elevated_handle = nullptr;
+                m_elevated_pid = 0;
+                append_log(QStringLiteral("%1 exited with code %2")
+                               .arg(process_log_name())
+                               .arg(static_cast<int>(code)));
+                Q_EMIT running_changed();
+                if (m_state == Running) {
+                    set_state(Ready);
+                }
+                on_process_finished(static_cast<int>(code));
+            }
+        });
+    }
+    m_elevated_poll_timer->start();
+}
+
+#endif // _WIN32
