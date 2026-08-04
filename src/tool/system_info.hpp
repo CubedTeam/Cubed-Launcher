@@ -1,5 +1,5 @@
 #pragma once
-#include "tool/game_path.hpp"
+#include "tool/path_tools.hpp"
 
 #include <QCoreApplication>
 #include <QObject>
@@ -29,13 +29,13 @@ public:
     QString machineUniqueId() const { return QSysInfo::machineUniqueId(); }
     QString qtVersion() const { return QString::fromLatin1(QT_VERSION_STR); }
     QString defaultGameInstallDir() const {
-        return get_default_game_install_dir();
+        return DefaultDir::get_default_game_install_dir();
     }
     QString defaultFrpInstallDir() const {
-        return get_default_frp_install_dir();
+        return DefaultDir::get_default_frp_install_dir();
     }
     QString defaultEasyTierInstallDir() const {
-        return get_default_easytier_install_dir();
+        return DefaultDir::get_default_easytier_install_dir();
     }
 
     bool isInChina() const {

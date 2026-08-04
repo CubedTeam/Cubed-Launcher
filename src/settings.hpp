@@ -33,6 +33,8 @@ class Settings : public QObject {
     Q_PROPERTY(int easytierPublicServerIndex READ easytier_public_server_index
                    WRITE set_easytier_public_server_index NOTIFY
                        easytier_public_server_index_changed FINAL)
+    Q_PROPERTY(QString githubToken READ github_token WRITE set_github_token
+                   NOTIFY github_token_changed FINAL)
 public:
     explicit Settings(QObject* parent = nullptr);
     QString game_dir() const;
@@ -46,8 +48,9 @@ public:
     QString frp_install_path() const;
     QString easytier_install_path() const;
     int easytier_public_server_index() const;
+    QString github_token() const;
     static Settings* instance();
-public slots:
+public Q_SLOTS:
     void set_game_dir_url(const QUrl& path);
     void set_game_dir(const QString& path);
     void set_player_name(const QString& name);
@@ -61,7 +64,9 @@ public slots:
     void set_easytier_install_path_url(const QUrl& path);
     void set_easytier_install_path(const QString& path);
     void set_easytier_public_server_index(int index);
-signals:
+    void set_github_token(const QString& token);
+    void clear_cache();
+Q_SIGNALS:
     void game_dir_changed();
     void player_name_changed();
     void path_set_changed();
@@ -73,6 +78,7 @@ signals:
     void frp_install_path_changed();
     void easytier_install_path_changed();
     void easytier_public_server_index_changed();
+    void github_token_changed();
 
 private:
     QSettings m_settings;
@@ -84,6 +90,7 @@ private:
     QString m_frp_install_path;
     QString m_easytier_install_path;
     int m_easytier_public_server_index{-1};
+    QString m_github_token;
 
     QColor m_accent_color;
     bool m_card_colorful_border{true};

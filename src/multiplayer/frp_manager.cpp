@@ -1,14 +1,15 @@
-#include "tool/frp_manager.hpp"
+#include "multiplayer/frp_manager.hpp"
 
 #include "settings.hpp"
-#include "tool/game_path.hpp"
+#include "tool/path_tools.hpp"
 
 #include <QFile>
 #include <QProcess>
 #include <QStandardPaths>
 #include <qmicroz.h>
 
-FrpManager::FrpManager(QObject* parent) : BinaryServiceBase(parent) {
+FrpManager::FrpManager(QObject* parent)
+    : BinaryServiceBase(QStringLiteral("frp"), parent) {
     QString path = default_install_dir();
     if (Settings* s = Settings::instance()) {
         const QString persisted = s->frp_install_path();
@@ -21,7 +22,7 @@ FrpManager::FrpManager(QObject* parent) : BinaryServiceBase(parent) {
 }
 
 QString FrpManager::default_install_dir() const {
-    return get_default_frp_install_dir();
+    return DefaultDir::get_default_frp_install_dir();
 }
 
 QRegularExpression FrpManager::platform_asset_pattern() const {
@@ -68,7 +69,8 @@ QString FrpManager::extract_archive_impl(const QString& archive_path,
     tar.setProgram("tar");
     tar.setArguments({"xzf", archive_path, "-C", tmp_dir});
     tar.start();
-    if (!tar.waitForStarted() || !tar.waitForFinished(-1)) {
+    if (!tar.waitForStarted() || !tar.waitForFinished(-1) ||
+        tar.exitCode() != 0) {
         return QStringLiteral("Failed to run tar: %1").arg(tar.errorString());
     }
     return {};
@@ -122,13 +124,13 @@ void FrpManager::install_binaries_impl(const QString& inner_dir,
     append_log(QStringLiteral("Installed frpc to %1").arg(m_install_path));
     clear_error();
     set_state(Ready);
-    emit installed_changed();
+    Q_EMIT installed_changed();
     load_toml_into_property();
 }
 
 void FrpManager::reset_install_extra() {
     m_frpc_toml.clear();
-    emit frpc_toml_changed();
+    Q_EMIT frpc_toml_changed();
 }
 
 void FrpManager::on_detect_install() { load_toml_into_property(); }
@@ -137,12 +139,12 @@ void FrpManager::load_toml_into_property() {
     QFile f(toml_path());
     if (!f.open(QIODevice::ReadOnly | QIODevice::Text)) {
         m_frpc_toml.clear();
-        emit frpc_toml_changed();
+        Q_EMIT frpc_toml_changed();
         return;
     }
     m_frpc_toml = QString::fromUtf8(f.readAll());
     f.close();
-    emit frpc_toml_changed();
+    Q_EMIT frpc_toml_changed();
 }
 
 Q_INVOKABLE void FrpManager::start() {
@@ -162,7 +164,7 @@ Q_INVOKABLE void FrpManager::save_toml(const QString& content) {
     f.write(content.toUtf8());
     f.close();
     m_frpc_toml = content;
-    emit frpc_toml_changed();
+    Q_EMIT frpc_toml_changed();
     append_log(QStringLiteral("frpc.toml saved"));
 }
 

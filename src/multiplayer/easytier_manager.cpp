@@ -1,7 +1,8 @@
-#include "tool/easytier_manager.hpp"
+#include "multiplayer/easytier_manager.hpp"
 
 #include "settings.hpp"
-#include "tool/game_path.hpp"
+#include "tool/log.hpp"
+#include "tool/path_tools.hpp"
 
 #include <QClipboard>
 #include <QDir>
@@ -13,8 +14,8 @@
 #include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <qmicroz.h>
-
-EasyTierManager::EasyTierManager(QObject* parent) : BinaryServiceBase(parent) {
+EasyTierManager::EasyTierManager(QObject* parent)
+    : BinaryServiceBase(QStringLiteral("Easytier"), parent) {
     QString path = default_install_dir();
     if (Settings* s = Settings::instance()) {
         const QString persisted = s->easytier_install_path();
@@ -49,7 +50,7 @@ QString EasyTierManager::public_server_address(int index) const {
 }
 
 QString EasyTierManager::default_install_dir() const {
-    return get_default_easytier_install_dir();
+    return DefaultDir::get_default_easytier_install_dir();
 }
 
 QRegularExpression EasyTierManager::platform_asset_pattern() const {
@@ -194,7 +195,7 @@ void EasyTierManager::install_binaries_impl(const QString& inner_dir,
     append_log(QStringLiteral("Installed easytier to %1").arg(m_install_path));
     clear_error();
     set_state(Ready);
-    emit installed_changed();
+    Q_EMIT installed_changed();
 }
 
 void EasyTierManager::on_process_finished(int exit_code) {
@@ -202,12 +203,12 @@ void EasyTierManager::on_process_finished(int exit_code) {
     stop_ip_polling();
     if (!m_virtual_ip.isEmpty()) {
         m_virtual_ip.clear();
-        emit virtual_ip_changed();
+        Q_EMIT virtual_ip_changed();
     }
 }
 void EasyTierManager::reset_install_extra() {
     m_virtual_ip.clear();
-    emit virtual_ip_changed();
+    Q_EMIT virtual_ip_changed();
 }
 Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
                                         const QString& network_secret,
@@ -319,6 +320,10 @@ void EasyTierManager::refresh_virtual_ip() {
                     parse_virtual_ip(data);
                 }
             });
+    connect(cli, &QProcess::errorOccurred, [cli]() {
+        cli->deleteLater();
+        Logger::error("Can't Open Easytier Cli");
+    });
     cli->start();
 }
 
@@ -335,7 +340,7 @@ void EasyTierManager::parse_virtual_ip(const QByteArray& data) {
             const QString ip = m.captured(1);
             if (ip != m_virtual_ip) {
                 m_virtual_ip = ip;
-                emit virtual_ip_changed();
+                Q_EMIT virtual_ip_changed();
             }
             return;
         }

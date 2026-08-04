@@ -18,8 +18,8 @@ public:
     };
     using Callback = std::function<void(Result)>;
 
-    explicit GithubReleaseFetcher(QNetworkAccessManager* manager,
-                                  QObject* parent = nullptr);
+    GithubReleaseFetcher(QNetworkAccessManager* manager, QStringView name,
+                         QObject* parent = nullptr);
     ~GithubReleaseFetcher() override;
 
     bool fetch(const QString& owner, const QString& repo,
@@ -28,5 +28,6 @@ public:
 private:
     QNetworkAccessManager* m_manager;
     QNetworkReply* m_reply = nullptr;
+    const QString m_name;
     Callback m_callback;
 };

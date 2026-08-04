@@ -1,7 +1,7 @@
 #pragma once
 #include <QStandardPaths>
 #include <QString>
-
+namespace DefaultDir {
 inline QString get_default_game_install_dir() {
     return QStandardPaths::writableLocation(
                QStandardPaths::AppLocalDataLocation) +
@@ -32,3 +32,8 @@ inline QString get_default_easytier_install_dir() {
                QStandardPaths::AppLocalDataLocation) +
            "/easytier";
 }
+
+inline QString get_default_cache_dir() {
+    return QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+}
+} // namespace DefaultDir

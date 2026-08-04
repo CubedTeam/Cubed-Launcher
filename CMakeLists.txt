@@ -79,8 +79,8 @@ qt_add_qml_module(${PROJECT_NAME}
         resources/logo.png
 
     SOURCES
-        src/game-mgmt/cubed_instance.cpp
-        src/game-mgmt/cubed_instance.hpp
+        src/game/cubed_game.cpp
+        src/game/cubed_game.hpp
         src/tool/system_info.hpp
         src/settings.cpp
         src/settings.hpp
@@ -88,19 +88,25 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/github_release.cpp
         src/tool/file_downloader.hpp
         src/tool/file_downloader.cpp
-        src/tool/launcher_update.hpp
-        src/tool/launcher_update.cpp
+        src/launcher_update.hpp
+        src/launcher_update.cpp
         src/tool/side_tool.hpp
         src/tool/mirror.hpp
         src/tool/mirror.cpp
-        src/tool/game_update.hpp
-        src/tool/game_update.cpp
-        src/tool/binary_service_base.hpp
-        src/tool/binary_service_base.cpp
-        src/tool/frp_manager.hpp
-        src/tool/frp_manager.cpp
-        src/tool/easytier_manager.hpp
-        src/tool/easytier_manager.cpp
+        src/game/game_update.hpp
+        src/game/game_update.cpp
+        src/multiplayer/binary_service_base.hpp
+        src/multiplayer/binary_service_base.cpp
+        src/tool/json_cache.hpp
+        src/tool/json_cache.cpp
+        src/tool/github_auth.hpp
+        src/tool/github_auth.cpp
+        src/tool/secret_store.hpp
+        src/tool/secret_store.cpp
+        src/multiplayer/frp_manager.hpp
+        src/multiplayer/frp_manager.cpp
+        src/multiplayer/easytier_manager.hpp
+        src/multiplayer/easytier_manager.cpp
 
 )
 
@@ -118,8 +124,9 @@ target_include_directories(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_BINARY_DIR}/generated
         ${CMAKE_CURRENT_SOURCE_DIR}/src
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/game-mgmt
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/game
         ${CMAKE_CURRENT_SOURCE_DIR}/src/tool
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/multiplayer
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
@@ -128,6 +135,18 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Network
     qmicroz
 )
+
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Crypt32)
+endif()
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(SECRET REQUIRED IMPORTED_TARGET libsecret-1)
+    target_link_libraries(${PROJECT_NAME} PRIVATE PkgConfig::SECRET)
+endif()
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE QT_NO_KEYWORDS)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 

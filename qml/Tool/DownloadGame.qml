@@ -90,7 +90,7 @@ Item {
                     highlighted: enabled
 
                     font.pixelSize: 20
-                    text: CubedInstance.installed ? qsTr("Update Game") : qsTr("Install Game")
+                    text: CubedGame.installed ? qsTr("Update Game") : qsTr("Install Game")
 
                     onClicked: {
                         if (!Settings.pathSetted) {
@@ -119,7 +119,7 @@ Item {
                     highlighted: true
 
                     font.pixelSize: 20
-                    text: CubedInstance.installed ? qsTr("Update Game") : qsTr("Install Game")
+                    text: CubedGame.installed ? qsTr("Update Game") : qsTr("Install Game")
                     onClicked: {
                         if (!Settings.pathSetted) {
                             Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
@@ -165,7 +165,7 @@ Item {
                         if (value >= to && !GameUpdate.hasError) {
                             console.log("Download Finish");
                             visible = false;
-                            CubedInstance.check_version();
+                            CubedGame.check_version();
                         }
                     }
                 }
@@ -215,7 +215,7 @@ Item {
                     color: Material.color(Material.Green)
 
                     onVisibleChanged: {
-                        CubedInstance.check_version();
+                        CubedGame.check_version();
                     }
                 }
 
@@ -287,7 +287,7 @@ Item {
                         font.pixelSize: 20
                         text: qsTr("Reset Path")
                         onClicked: {
-                            CubedInstance.set_game_dir(SystemInfo.defaultGameInstallDir);
+                            CubedGame.set_game_dir(SystemInfo.defaultGameInstallDir);
                             Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
                             GameUpdate.gameInstallPath = SystemInfo.defaultGameInstallDir;
                         }
@@ -306,7 +306,7 @@ Item {
         id: gameFolderDialog
         title: qsTr("Select Game Folder")
         onAccepted: {
-            CubedInstance.set_game_dir_url(selectedFolder);
+            CubedGame.set_game_dir_url(selectedFolder);
             Settings.set_game_dir_url(selectedFolder);
             GameUpdate.gameInstallPath = Settings.gameDir;
         }

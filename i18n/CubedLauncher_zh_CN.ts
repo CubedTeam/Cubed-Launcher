@@ -861,71 +861,102 @@
 <context>
     <name>Setting</name>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="41"/>
+        <location filename="../qml/Tab/Setting.qml" line="42"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="68"/>
+        <location filename="../qml/Tab/Setting.qml" line="69"/>
         <source>Theme Color</source>
         <translation>主题颜色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="121"/>
+        <location filename="../qml/Tab/Setting.qml" line="122"/>
         <source>Advanced Setting</source>
         <translation>高级设置</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="107"/>
+        <location filename="../qml/Tab/Setting.qml" line="108"/>
         <source>Colorful Card Border</source>
         <translation>彩色卡片边框</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="136"/>
-        <location filename="../qml/Tab/Setting.qml" line="144"/>
+        <location filename="../qml/Tab/Setting.qml" line="137"/>
+        <location filename="../qml/Tab/Setting.qml" line="145"/>
         <source>Wrapper Command</source>
         <translation>包装器命令</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="163"/>
+        <location filename="../qml/Tab/Setting.qml" line="164"/>
         <source>Log</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="175"/>
+        <location filename="../qml/Tab/Setting.qml" line="176"/>
         <source>On</source>
         <translation>开启</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="175"/>
+        <location filename="../qml/Tab/Setting.qml" line="176"/>
         <source>Off</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="190"/>
+        <location filename="../qml/Tab/Setting.qml" line="251"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="199"/>
+        <location filename="../qml/Tab/Setting.qml" line="260"/>
         <source>Host</source>
         <translation>主机</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="199"/>
+        <location filename="../qml/Tab/Setting.qml" line="260"/>
         <source>Client</source>
         <translation>客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="210"/>
-        <location filename="../qml/Tab/Setting.qml" line="231"/>
+        <location filename="../qml/Tab/Setting.qml" line="271"/>
+        <location filename="../qml/Tab/Setting.qml" line="292"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="223"/>
+        <location filename="../qml/Tab/Setting.qml" line="284"/>
         <source>Ip</source>
         <translation>IP 地址</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="191"/>
+        <source>Cache</source>
+        <translation>缓存</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="201"/>
+        <location filename="../qml/Tab/Setting.qml" line="311"/>
+        <source>Clear Cache</source>
+        <translation>清理缓存</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="217"/>
+        <source>GitHub Token</source>
+        <translation>GitHub Token</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="226"/>
+        <source>Enter GitHub Token</source>
+        <translation>输入 GitHub Token</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="233"/>
+        <source>Token stored in system keyring. Environment variable takes precedence.</source>
+        <translation>Token 保存在系统密钥环中,环境变量优先。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="248"/>
+        <source>Remove Token</source>
+        <translation>移除 Token</translation>
     </message>
 </context>
 <context>

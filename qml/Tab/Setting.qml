@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
+
 import CubedLauncher
 import QtQuick.Layouts
 
@@ -170,9 +171,81 @@ Item {
                         font.pixelSize: 20
                         Layout.alignment: Qt.AlignCenter
                         onCheckedChanged: {
-                            CubedInstance.logOn = logStatus.checked;
+                            CubedGame.logOn = logStatus.checked;
                         }
                         text: checked ? qsTr("On") : qsTr("Off")
+                    }
+                }
+            }
+
+            Card {
+                Layout.preferredHeight: cacheLayout.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                visible: advancedSetting.checked
+                ColumnLayout {
+                    id: cacheLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Cache")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    Button {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 250
+                        Layout.preferredHeight: 50
+                        font.pixelSize: 18
+                        Material.roundedScale: Material.MediumScale
+                        text: qsTr("Clear Cache")
+                        onClicked: clearCacheDialog.open()
+                    }
+                }
+            }
+
+            Card {
+                Layout.preferredHeight: tokenLayout.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                visible: advancedSetting.checked
+                ColumnLayout {
+                    id: tokenLayout
+                    anchors.centerIn: parent
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("GitHub Token")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    TextField {
+                        id: githubTokenField
+                        Layout.preferredWidth: 300
+                        Layout.alignment: Qt.AlignCenter
+                        echoMode: TextInput.Password
+                        placeholderText: qsTr("Enter GitHub Token")
+                        text: Settings.githubToken
+                        onEditingFinished: {
+                            Settings.githubToken = githubTokenField.text;
+                        }
+                    }
+                    Label {
+                        text: qsTr("Token stored in system keyring. Environment variable takes precedence.")
+                        font.pixelSize: 12
+                        Layout.alignment: Qt.AlignCenter
+                        color: Material.color(Material.Grey)
+                        wrapMode: Text.WordWrap
+                        Layout.maximumWidth: 320
+                    }
+                    Button {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 250
+                        Layout.preferredHeight: 40
+                        font.pixelSize: 16
+                        Material.roundedScale: Material.MediumScale
+                        visible: Settings.githubToken.length > 0
+                        text: qsTr("Remove Token")
+                        onClicked: Settings.githubToken = ""
                     }
                 }
             }
@@ -199,7 +272,7 @@ Item {
                         model: [qsTr("Host"), qsTr("Client")]
                         currentIndex: 0
                         onCurrentIndexChanged: {
-                            CubedInstance.set_peer(peerMode.currentIndex);
+                            CubedGame.set_peer(peerMode.currentIndex);
                         }
                     }
                     TextField {
@@ -209,7 +282,7 @@ Item {
                         Layout.preferredWidth: 300
                         placeholderText: qsTr("Port")
                         onEditingFinished: {
-                            CubedInstance.set_port(hostPort.text);
+                            CubedGame.set_port(hostPort.text);
                         }
                     }
                     RowLayout {
@@ -222,7 +295,7 @@ Item {
                             Layout.fillWidth: true
                             placeholderText: qsTr("Ip")
                             onEditingFinished: {
-                                CubedInstance.set_ip(serverIp.text);
+                                CubedGame.set_ip(serverIp.text);
                             }
                         }
                         TextField {
@@ -230,12 +303,25 @@ Item {
                             Layout.fillWidth: true
                             placeholderText: qsTr("Port")
                             onEditingFinished: {
-                                CubedInstance.set_port(serverPort.text);
+                                CubedGame.set_port(serverPort.text);
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    Dialog {
+        id: clearCacheDialog
+        anchors.centerIn: Overlay.overlay
+        width: 250
+        height: 150
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        title: qsTr("Clear Cache")
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        onAccepted: Settings.clear_cache()
     }
 }

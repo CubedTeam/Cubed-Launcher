@@ -44,7 +44,7 @@ Card {
                 }
                 Label {
                     Layout.alignment: Qt.AlignHCenter
-                    text: "Blizzard"
+                    text: "阿杰"
                     font.pixelSize: 20
                 }
             }

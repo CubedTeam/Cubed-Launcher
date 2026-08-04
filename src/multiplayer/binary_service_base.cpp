@@ -1,12 +1,13 @@
-#include "tool/binary_service_base.hpp"
+#include "multiplayer/binary_service_base.hpp"
 
+#include "tool/log.hpp"
 #include "tool/mirror.hpp"
 #include "tool/user_agent.hpp"
 
 #include <QStandardPaths>
 
-BinaryServiceBase::BinaryServiceBase(QObject* parent)
-    : QObject(parent), m_fetcher(&m_manager, this) {}
+BinaryServiceBase::BinaryServiceBase(QStringView name, QObject* parent)
+    : QObject(parent), m_fetcher(&m_manager, name, this) {}
 
 BinaryServiceBase::~BinaryServiceBase() {
     if (m_process && m_process->state() != QProcess::NotRunning) {
@@ -47,15 +48,15 @@ void BinaryServiceBase::set_state(State s) {
         return;
     }
     m_state = s;
-    emit state_changed();
+    Q_EMIT state_changed();
 }
 
 void BinaryServiceBase::set_error(const QString& message) {
     m_has_error = true;
     m_error_message = message;
     set_state(Error);
-    emit has_error_changed();
-    emit error_message_changed();
+    Q_EMIT has_error_changed();
+    Q_EMIT error_message_changed();
     append_log(QStringLiteral("[error] ") + message);
 }
 
@@ -65,11 +66,13 @@ void BinaryServiceBase::clear_error() {
     }
     m_has_error = false;
     m_error_message.clear();
-    emit has_error_changed();
-    emit error_message_changed();
+    Q_EMIT has_error_changed();
+    Q_EMIT error_message_changed();
 }
 
-void BinaryServiceBase::append_log(const QString& line) { emit log_line(line); }
+void BinaryServiceBase::append_log(const QString& line) {
+    Q_EMIT log_line(line);
+}
 
 void BinaryServiceBase::detect_install() {
     if (installed()) {
@@ -77,7 +80,7 @@ void BinaryServiceBase::detect_install() {
     } else {
         set_state(NotInstalled);
     }
-    emit installed_changed();
+    Q_EMIT installed_changed();
     on_detect_install();
 }
 
@@ -103,8 +106,9 @@ void BinaryServiceBase::on_release_fetched(int mirror_index,
         return;
     }
     m_version = r.version;
-    qDebug() << service_name() << " Version: " << m_version;
-    emit version_changed();
+    Logger::info("{} Version: {}", service_name().toStdString(),
+                 m_version.toStdString());
+    Q_EMIT version_changed();
 
     QString url = r.downloadUrl;
     if (mirror_index > 0 && mirror_index < mirror_sources.size()) {
@@ -141,7 +145,7 @@ void BinaryServiceBase::start_download(const QString& url) {
     }
 
     m_download_progress = 0.0f;
-    emit download_progress_changed();
+    Q_EMIT download_progress_changed();
     set_state(Downloading);
 
     connect(reply, &QNetworkReply::readyRead, reply,
@@ -150,7 +154,7 @@ void BinaryServiceBase::start_download(const QString& url) {
             [this](qint64 received, qint64 total) {
                 if (total > 0) {
                     m_download_progress = float(received) / float(total);
-                    emit download_progress_changed();
+                    Q_EMIT download_progress_changed();
                 }
             });
     connect(reply, &QNetworkReply::finished, this,
@@ -227,7 +231,7 @@ void BinaryServiceBase::set_install_path(const QString& path) {
         stop_process();
     }
     m_install_path = path;
-    emit install_path_changed();
+    Q_EMIT install_path_changed();
     detect_install();
 }
 
@@ -238,11 +242,11 @@ void BinaryServiceBase::reset_install() {
     QDir(m_install_path).removeRecursively();
     QDir().mkpath(m_install_path);
     m_version.clear();
-    emit version_changed();
+    Q_EMIT version_changed();
     reset_install_extra();
     clear_error();
     set_state(NotInstalled);
-    emit installed_changed();
+    Q_EMIT installed_changed();
 }
 
 void BinaryServiceBase::stop_process() {
@@ -293,7 +297,7 @@ void BinaryServiceBase::wire_process(QProcess* p) {
                     m_process = nullptr;
                 }
                 p->deleteLater();
-                emit running_changed();
+                Q_EMIT running_changed();
                 if (m_state == Running) {
                     set_state(Ready);
                 }
@@ -339,5 +343,5 @@ void BinaryServiceBase::launch_process(const QString& program,
                    .arg(process_log_name())
                    .arg(m_process->processId()));
     set_state(Running);
-    emit running_changed();
+    Q_EMIT running_changed();
 }

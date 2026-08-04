@@ -1,21 +1,21 @@
-#include "game-mgmt/cubed_instance.hpp"
+#include "game/cubed_game.hpp"
 
 #include "settings.hpp"
-#include "tool/game_path.hpp"
+#include "tool/log.hpp"
+#include "tool/path_tools.hpp"
 
-#include <QDebug>
 #include <QFileInfo>
 
-CubedInstance::CubedInstance() {}
+CubedGame::CubedGame() {}
 
-Q_INVOKABLE void CubedInstance::start_cubed_instance() {
+Q_INVOKABLE void CubedGame::start_cubed_game() {
     if (m_game_install_dir.isEmpty()) {
-        m_game_install_dir = get_default_game_install_dir();
+        m_game_install_dir = DefaultDir::get_default_game_install_dir();
     }
-    const QString program_path =
-        m_game_install_dir + "/" + get_default_game_executable_name();
-    qDebug() << "Game Start, dir " << m_game_install_dir << " exec "
-             << program_path;
+    const QString program_path = m_game_install_dir + "/" +
+                                 DefaultDir::get_default_game_executable_name();
+    Logger::info("Game Start, dir {} exec {}", m_game_install_dir.toStdString(),
+                 program_path.toStdString());
 
     QProcess* process = new QProcess(this);
 
@@ -38,14 +38,17 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     process->setArguments(argument);
     connect(process, &QProcess::finished, this,
             [process, this](int exitCode, QProcess::ExitStatus status) {
-                qDebug() << "Process exit, exit code: " << exitCode;
+                Logger::info("Process exit, exit code: {}", exitCode);
                 m_processes.removeAll(process);
-                emit running_changed();
+                Q_EMIT running_changed();
                 process->deleteLater();
             });
 
     connect(process, &QProcess::errorOccurred, this,
-            [](QProcess::ProcessError error) { qDebug() << error; });
+            [process](QProcess::ProcessError error) {
+                Logger::error("Process error: {}", static_cast<int>(error));
+                process->deleteLater();
+            });
 
     if (m_log_on) {
         connect(process, &QProcess::readyReadStandardOutput, this, [process]() {
@@ -67,25 +70,27 @@ Q_INVOKABLE void CubedInstance::start_cubed_instance() {
     process->start();
     if (process->waitForStarted()) {
         m_processes.append(process);
-        emit running_changed();
+        Q_EMIT running_changed();
     }
 }
 
-Q_INVOKABLE void CubedInstance::set_game_dir_url(const QUrl& game_dir_url) {
+Q_INVOKABLE void CubedGame::set_game_dir_url(const QUrl& game_dir_url) {
     m_game_install_dir = game_dir_url.toLocalFile();
-    qDebug() << "Url Change Game Install Dir " << m_game_install_dir;
+    Logger::info("Url Change Game Install Dir {}",
+                 m_game_install_dir.toStdString());
     check_version();
-    emit path_change();
+    Q_EMIT path_change();
 }
 
-Q_INVOKABLE void CubedInstance::set_game_dir(const QString& game_dir) {
+Q_INVOKABLE void CubedGame::set_game_dir(const QString& game_dir) {
     m_game_install_dir = game_dir;
-    qDebug() << "Path: Change Game Install Dir " << m_game_install_dir;
+    Logger::info("Path: Change Game Install Dir {}",
+                 m_game_install_dir.toStdString());
     check_version();
-    emit path_change();
+    Q_EMIT path_change();
 }
 
-Q_INVOKABLE void CubedInstance::set_peer(int index) {
+Q_INVOKABLE void CubedGame::set_peer(int index) {
     if (index == 0) {
         m_peer_mode = "--host";
     } else if (index == 1) {
@@ -93,29 +98,29 @@ Q_INVOKABLE void CubedInstance::set_peer(int index) {
     }
 }
 
-Q_INVOKABLE void CubedInstance::set_port(const QString& port) { m_port = port; }
-Q_INVOKABLE void CubedInstance::set_ip(const QString& ip) { m_ip = ip; }
-Q_INVOKABLE void CubedInstance::set_name(const QString& name) { m_name = name; }
-Q_INVOKABLE void CubedInstance::kill_all() {
+Q_INVOKABLE void CubedGame::set_port(const QString& port) { m_port = port; }
+Q_INVOKABLE void CubedGame::set_ip(const QString& ip) { m_ip = ip; }
+Q_INVOKABLE void CubedGame::set_name(const QString& name) { m_name = name; }
+Q_INVOKABLE void CubedGame::kill_all() {
     for (auto* proc : std::as_const(m_processes)) {
         if (proc->state() != QProcess::NotRunning)
             proc->kill();
     }
 }
 
-Q_INVOKABLE void CubedInstance::check_version() {
+Q_INVOKABLE void CubedGame::check_version() {
     if (m_game_install_dir.isEmpty()) {
-        m_game_install_dir = get_default_game_install_dir();
+        m_game_install_dir = DefaultDir::get_default_game_install_dir();
     }
-    const QString program_path =
-        m_game_install_dir + "/" + get_default_game_executable_name();
+    const QString program_path = m_game_install_dir + "/" +
+                                 DefaultDir::get_default_game_executable_name();
 
     auto info = QFileInfo(program_path);
     if (!info.isFile()) {
         m_installed = false;
-        emit installed_changed();
-        emit version_changed();
-        qDebug() << program_path << " is not a file";
+        Q_EMIT installed_changed();
+        Q_EMIT version_changed();
+        Logger::warn("{} is not a file", program_path.toStdString());
         return;
     }
     QProcess* process = new QProcess(this);
@@ -125,7 +130,7 @@ Q_INVOKABLE void CubedInstance::check_version() {
     connect(process, &QProcess::finished, this,
             [process](int exitCode, QProcess::ExitStatus status) {
                 if (exitCode != 0) {
-                    qDebug() << "Cubed Game error ,can't get version";
+                    Logger::error("Cubed Game error, can't get version");
                 }
 
                 process->deleteLater();
@@ -133,8 +138,8 @@ Q_INVOKABLE void CubedInstance::check_version() {
 
     connect(process, &QProcess::errorOccurred, this,
             [](QProcess::ProcessError error) {
-                qDebug() << "check_version fail";
-                qDebug() << error;
+                Logger::error("check_version fail");
+                Logger::error("Process error: {}", static_cast<int>(error));
             });
 
     connect(process, &QProcess::readyReadStandardOutput, this,
@@ -145,23 +150,24 @@ Q_INVOKABLE void CubedInstance::check_version() {
                 if (!str.isEmpty()) {
                     m_version = str;
                     m_installed = true;
-                    qDebug() << "Cubed Version: " << m_version;
-                    emit version_changed();
-                    emit installed_changed();
+                    Logger::info("Cubed Version: {}", m_version.toStdString());
+                    Q_EMIT version_changed();
+                    Q_EMIT installed_changed();
                 } else {
                     m_installed = false;
-                    emit installed_changed();
-                    emit version_changed();
+                    Q_EMIT installed_changed();
+                    Q_EMIT version_changed();
                 }
             });
 
     process->start();
 }
 
-bool CubedInstance::running() const { return !m_processes.isEmpty(); }
-bool CubedInstance::game_path_select() const {
+bool CubedGame::running() const { return !m_processes.isEmpty(); }
+bool CubedGame::game_path_select() const {
     return !m_game_install_dir.isEmpty();
 }
-bool CubedInstance::installed() const { return m_installed; }
-void CubedInstance::set_log_statue(bool status) { m_log_on = status; }
-QString CubedInstance::version() const { return m_version; }
+bool CubedGame::installed() const { return m_installed; }
+void CubedGame::set_log_statue(bool status) { m_log_on = status; }
+QString CubedGame::version() const { return m_version; }
+bool CubedGame::log_on() const { return m_log_on; }

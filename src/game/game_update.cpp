@@ -1,7 +1,8 @@
-#include "tool/game_update.hpp"
+#include "game/game_update.hpp"
 
-#include "tool/game_path.hpp"
+#include "tool/log.hpp"
 #include "tool/mirror.hpp"
+#include "tool/path_tools.hpp"
 
 #include <QDir>
 #include <QFile>
@@ -11,8 +12,9 @@
 #include <utility>
 
 GameUpdate::GameUpdate()
-    : m_fetcher(&m_manager, this), m_downloader(&m_manager, this) {
-    m_game_install_path = get_default_game_install_dir();
+    : m_fetcher(&m_manager, QStringLiteral("Cubed"), this),
+      m_downloader(&m_manager, this) {
+    m_game_install_path = DefaultDir::get_default_game_install_dir();
     connect(&m_downloader, &FileDownloader::progress_changed, this,
             &GameUpdate::download_progress_changed);
     connect(&m_downloader, &FileDownloader::download_finished_changed, this,
@@ -29,10 +31,10 @@ GameUpdate::GameUpdate()
 
 Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
     if (std::exchange(m_checking_update, true)) {
-        emit checking_update_changed();
+        Q_EMIT checking_update_changed();
         return;
     }
-    qDebug() << "Loacl Version: " << local_version;
+    Logger::debug("Local Version: {}", local_version.toStdString());
     const bool installed = !local_version.isEmpty();
     if (local_version == "dev") {
         m_local_version = QVersionNumber::fromString("0.0.1");
@@ -43,12 +45,12 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
 
     auto finish_check = [this]() {
         m_checking_update = false;
-        emit checking_update_changed();
+        Q_EMIT checking_update_changed();
     };
     auto report_failure = [this, finish_check](const QString& message) {
         m_downloader.set_error_state(message);
         m_new_version = false;
-        emit new_version_changed();
+        Q_EMIT new_version_changed();
         finish_check();
     };
 
@@ -72,16 +74,16 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
                 m_new_version = true;
             }
             m_download_url = r.downloadUrl;
-            emit new_version_changed();
-            emit remote_version_changed();
-            emit local_version_changed();
+            Q_EMIT new_version_changed();
+            Q_EMIT remote_version_changed();
+            Q_EMIT local_version_changed();
             finish_check();
         });
 }
 
 Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
     if (m_download_url.isEmpty()) {
-        qDebug() << "Game Download Url is empty";
+        Logger::warn("Game Download Url is empty");
         m_downloader.start({}, QDir::temp().filePath("Cubed-latest.zip"));
         return;
     }
@@ -119,25 +121,26 @@ void GameUpdate::on_download_complete(const QString& zip_path) {
         return;
     }
 
-    qDebug() << "Install Game Success";
+    Logger::info("Install Game Success");
     QFile::remove(zip_path);
     m_downloader.mark_succeeded();
     m_new_version = false;
     m_local_version = m_remote_version;
-    emit new_version_changed();
-    emit local_version_changed();
+    Q_EMIT new_version_changed();
+    Q_EMIT local_version_changed();
 }
 
 Q_INVOKABLE void GameUpdate::cancel_download() { m_downloader.cancel(); }
 
 void GameUpdate::set_game_install_path(const QString& game_dir) {
     if (game_dir.isEmpty()) {
-        m_game_install_path = get_default_game_install_dir();
+        m_game_install_path = DefaultDir::get_default_game_install_dir();
     } else {
         m_game_install_path = game_dir;
     }
-    qDebug() << "VersionUpdate: Change game dir" << m_game_install_path;
-    emit game_install_path_changed();
+    Logger::info("VersionUpdate: Change game dir {}",
+                 m_game_install_path.toStdString());
+    Q_EMIT game_install_path_changed();
 }
 QString GameUpdate::game_install_path() const { return m_game_install_path; }
 

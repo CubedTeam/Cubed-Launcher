@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tool/binary_service_base.hpp"
+#include "multiplayer/binary_service_base.hpp"
 
 #include <QQmlEngine>
 #include <QString>
@@ -52,7 +52,7 @@ public:
     Q_INVOKABLE void refresh_virtual_ip();
     Q_INVOKABLE void copy_to_clipboard(const QString& text);
 
-signals:
+Q_SIGNALS:
     void virtual_ip_changed();
 
 protected:

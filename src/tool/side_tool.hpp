@@ -13,10 +13,10 @@ public:
 
     void set_current_index(int index) {
         m_current_index = index;
-        emit current_index_changed();
+        Q_EMIT current_index_changed();
     }
 
-signals:
+Q_SIGNALS:
     void current_index_changed();
 
 private:

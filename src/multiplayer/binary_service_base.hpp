@@ -49,7 +49,7 @@ public:
     };
     Q_ENUM(State)
 
-    explicit BinaryServiceBase(QObject* parent = nullptr);
+    explicit BinaryServiceBase(QStringView name, QObject* parent = nullptr);
     ~BinaryServiceBase() override;
 
     State state() const { return m_state; }
@@ -74,7 +74,7 @@ public:
     void launch_process(const QString& program, const QStringList& arguments,
                         const QProcessEnvironment& env);
 
-signals:
+Q_SIGNALS:
     void state_changed();
     void install_path_changed();
     void installed_changed();

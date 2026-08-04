@@ -1,6 +1,14 @@
 #include "settings.hpp"
 
+#include "tool/json_cache.hpp"
+#include "tool/log.hpp"
+#include "tool/secret_store.hpp"
+
 #include <QFileInfo>
+
+namespace {
+constexpr QLatin1StringView kGithubTokenKey("github_token");
+} // namespace
 
 Settings* Settings::s_instance = nullptr;
 
@@ -30,6 +38,7 @@ QString Settings::easytier_install_path() const {
 int Settings::easytier_public_server_index() const {
     return m_easytier_public_server_index;
 }
+QString Settings::github_token() const { return m_github_token; }
 
 Settings* Settings::instance() { return s_instance; }
 
@@ -39,8 +48,8 @@ void Settings::set_game_dir_url(const QUrl& path) {
         return;
     }
 
-    emit game_dir_changed();
-    emit path_set_changed();
+    Q_EMIT game_dir_changed();
+    Q_EMIT path_set_changed();
 }
 
 void Settings::set_game_dir(const QString& path) {
@@ -48,8 +57,8 @@ void Settings::set_game_dir(const QString& path) {
         return;
     }
 
-    emit game_dir_changed();
-    emit path_set_changed();
+    Q_EMIT game_dir_changed();
+    Q_EMIT path_set_changed();
 }
 
 void Settings::set_player_name(const QString& name) {
@@ -57,7 +66,7 @@ void Settings::set_player_name(const QString& name) {
         return;
     }
 
-    emit player_name_changed();
+    Q_EMIT player_name_changed();
 }
 
 void Settings::set_mirror_index(int index) {
@@ -65,7 +74,7 @@ void Settings::set_mirror_index(int index) {
         return;
     }
 
-    emit mirror_index_changed();
+    Q_EMIT mirror_index_changed();
 }
 
 void Settings::set_language(const QString& lang) {
@@ -73,7 +82,7 @@ void Settings::set_language(const QString& lang) {
         return;
     }
 
-    emit language_changed();
+    Q_EMIT language_changed();
 }
 
 void Settings::set_accent_color(const QColor& color) {
@@ -83,7 +92,7 @@ void Settings::set_accent_color(const QColor& color) {
 
     m_accent_color = color;
     m_settings.setValue("accent_color", color.name());
-    emit accent_color_changed();
+    Q_EMIT accent_color_changed();
 }
 
 void Settings::set_card_colorful_border(bool enabled) {
@@ -92,7 +101,7 @@ void Settings::set_card_colorful_border(bool enabled) {
         return;
     }
 
-    emit card_colorful_border_changed();
+    Q_EMIT card_colorful_border_changed();
 }
 
 void Settings::set_wrapper_command(const QString& command) {
@@ -100,7 +109,7 @@ void Settings::set_wrapper_command(const QString& command) {
         return;
     }
 
-    emit wrapper_command_changed();
+    Q_EMIT wrapper_command_changed();
 }
 
 void Settings::set_frp_install_path_url(const QUrl& path) {
@@ -109,7 +118,7 @@ void Settings::set_frp_install_path_url(const QUrl& path) {
         return;
     }
 
-    emit frp_install_path_changed();
+    Q_EMIT frp_install_path_changed();
 }
 
 void Settings::set_frp_install_path(const QString& path) {
@@ -117,7 +126,7 @@ void Settings::set_frp_install_path(const QString& path) {
         return;
     }
 
-    emit frp_install_path_changed();
+    Q_EMIT frp_install_path_changed();
 }
 
 void Settings::set_easytier_install_path_url(const QUrl& path) {
@@ -126,7 +135,7 @@ void Settings::set_easytier_install_path_url(const QUrl& path) {
         return;
     }
 
-    emit easytier_install_path_changed();
+    Q_EMIT easytier_install_path_changed();
 }
 
 void Settings::set_easytier_install_path(const QString& path) {
@@ -134,7 +143,7 @@ void Settings::set_easytier_install_path(const QString& path) {
         return;
     }
 
-    emit easytier_install_path_changed();
+    Q_EMIT easytier_install_path_changed();
 }
 
 void Settings::set_easytier_public_server_index(int index) {
@@ -143,8 +152,25 @@ void Settings::set_easytier_public_server_index(int index) {
         return;
     }
 
-    emit easytier_public_server_index_changed();
+    Q_EMIT easytier_public_server_index_changed();
 }
+
+void Settings::set_github_token(const QString& token) {
+    const QString trimmed = token.trimmed();
+    if (trimmed.isEmpty()) {
+        SecretStore::remove(kGithubTokenKey);
+        m_github_token.clear();
+    } else {
+        if (!SecretStore::save(kGithubTokenKey, trimmed.toUtf8())) {
+            m_github_token.clear();
+        } else {
+            m_github_token = trimmed;
+        }
+    }
+    Q_EMIT github_token_changed();
+}
+
+void Settings::clear_cache() { JsonCache::clear_all(); }
 
 void Settings::load() {
     if (m_settings.contains("game_path")) {
@@ -161,8 +187,8 @@ void Settings::load() {
         }
         m_game_dir = raw;
     }
-    qDebug() << "Settings Game Dir {" << m_game_dir << "}" << " empty "
-             << m_game_dir.isEmpty();
+    Logger::info("Settings Game Dir {{{}}} empty {}", m_game_dir.toStdString(),
+                 m_game_dir.isEmpty());
 
     m_player_name = m_settings.value("player_name").toString();
 
@@ -178,6 +204,21 @@ void Settings::load() {
     m_easytier_install_path = m_settings.value("easytier_path").toString();
     m_easytier_public_server_index =
         m_settings.value("easytier_public_server_index", -1).toInt();
+
+    // AI-generated: migrate legacy plaintext token to the OS keyring, then
+    // drop the old key.
+    if (m_settings.contains(kGithubTokenKey)) {
+        const QString legacy =
+            m_settings.value(kGithubTokenKey).toString().trimmed();
+        if (!legacy.isEmpty()) {
+            SecretStore::save(kGithubTokenKey, legacy.toUtf8());
+        }
+        m_settings.remove(kGithubTokenKey);
+    }
+
+    if (auto stored = SecretStore::load(kGithubTokenKey)) {
+        m_github_token = QString::fromUtf8(*stored);
+    }
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

@@ -1,5 +1,6 @@
-#include "tool/launcher_update.hpp"
+#include "launcher_update.hpp"
 
+#include "tool/log.hpp"
 #include "tool/mirror.hpp"
 #include "version.hpp"
 
@@ -8,7 +9,8 @@
 #include <QProcess>
 
 LauncherUpdate::LauncherUpdate()
-    : m_fetcher(&m_manager, this), m_downloader(&m_manager, this) {
+    : m_fetcher(&m_manager, QStringLiteral("CubedLauncher"), this),
+      m_downloader(&m_manager, this) {
 
     if (QString(APP_VERSION) == "dev") {
         m_local_version = QVersionNumber::fromString("0.0.1");
@@ -69,8 +71,8 @@ Q_INVOKABLE void LauncherUpdate::check_update(const QString& owner,
             }
             m_new_version = m_remote_version > m_local_version;
             m_latest_launcher_link = r.downloadUrl;
-            emit remote_version_changed();
-            emit new_version_changed();
+            Q_EMIT remote_version_changed();
+            Q_EMIT new_version_changed();
         });
 }
 
@@ -81,7 +83,7 @@ Q_INVOKABLE void LauncherUpdate::update_launcher_from_url(const QString& url) {
 Q_INVOKABLE void LauncherUpdate::update_launcher(int mirror_index) {
 
     if (m_latest_launcher_link.isEmpty()) {
-        qDebug() << "Download Url is Null";
+        Logger::error("Download Url is Null");
         return;
     }
     QString download_url = m_latest_launcher_link;
@@ -113,7 +115,7 @@ void LauncherUpdate::on_download_complete(const QString& setup_path) {
         return;
     }
 
-    qDebug() << "Download Finish Start Installing...";
+    Logger::info("Download Finish Start Installing...");
     if (!QProcess::startDetached(setup_path)) {
         m_downloader.report_error(
             QStringLiteral("Error can't start Installing Program"));

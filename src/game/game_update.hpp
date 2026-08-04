@@ -52,7 +52,7 @@ public:
 
     void set_game_install_path(const QString& game_dir);
 
-signals:
+Q_SIGNALS:
 
     void game_install_path_changed();
     void new_version_changed();
@@ -65,7 +65,7 @@ signals:
     void checking_update_changed();
     void downloading_changed();
 
-private slots:
+private Q_SLOTS:
     void on_download_complete(const QString& save_path);
 
 private:

@@ -44,15 +44,15 @@ Item {
 
     Connections {
         id: checkConnections
-        target: CubedInstance
+        target: CubedGame
         property bool checked: false
         function onVersion_changed() {
             if (checked) {
                 return;
             }
             checked = true;
-            console.log("version changed:", CubedInstance.version);
-            GameUpdate.check_update(CubedInstance.version);
+            console.log("version changed:", CubedGame.version);
+            GameUpdate.check_update(CubedGame.version);
         }
     }
 }

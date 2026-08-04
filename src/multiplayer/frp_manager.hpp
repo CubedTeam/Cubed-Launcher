@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tool/binary_service_base.hpp"
+#include "multiplayer/binary_service_base.hpp"
 
 #include <QQmlEngine>
 #include <QString>
@@ -22,7 +22,7 @@ public:
     Q_INVOKABLE void save_toml(const QString& content);
     Q_INVOKABLE QString read_toml() const;
 
-signals:
+Q_SIGNALS:
     void frpc_toml_changed();
 
 protected:

@@ -11,7 +11,7 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
     Component.onCompleted: {
-        CubedInstance.check_version();
+        CubedGame.check_version();
     }
     Loader {
         active: LauncherUpdate.hasNewVersion || LauncherUpdate.hasError
@@ -33,7 +33,7 @@ Item {
     }
     ColumnLayout {
         id: installTip
-        visible: !CubedInstance.installed
+        visible: !CubedGame.installed
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
         anchors.verticalCenterOffset: 30
@@ -64,8 +64,8 @@ Item {
                     Layout.preferredWidth: 350
                     Layout.preferredHeight: 60
                     font.pixelSize: 20
-                    enabled: !CubedInstance.installed
-                    highlighted: !CubedInstance.installed
+                    enabled: !CubedGame.installed
+                    highlighted: !CubedGame.installed
                     Material.roundedScale: Material.MediumScale
                     text: qsTr("Go to Install Game")
                     onClicked: {
@@ -90,14 +90,14 @@ Item {
             Layout.preferredHeight: statusLayout.implicitHeight + 20
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            visible: CubedInstance.running
+            visible: CubedGame.running
             ColumnLayout {
                 id: statusLayout
                 anchors.centerIn: parent
                 spacing: gameLayout.spacing
                 Button {
                     text: qsTr("Kill All Process")
-                    visible: CubedInstance.running
+                    visible: CubedGame.running
                     Material.roundedScale: Material.MediumScale
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: 250
@@ -105,7 +105,7 @@ Item {
                     font.pixelSize: 20
                     highlighted: true
                     onClicked: {
-                        CubedInstance.kill_all();
+                        CubedGame.kill_all();
                     }
                 }
             }
@@ -114,7 +114,7 @@ Item {
             Layout.preferredHeight: versionLayout.implicitHeight + 20
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
-            visible: CubedInstance.installed
+            visible: CubedGame.installed
             ColumnLayout {
                 id: versionLayout
                 anchors.centerIn: parent
@@ -127,8 +127,8 @@ Item {
                 }
 
                 Label {
-                    visible: CubedInstance.installed
-                    text: qsTr("Cubed Version: %1").arg(CubedInstance.version)
+                    visible: CubedGame.installed
+                    text: qsTr("Cubed Version: %1").arg(CubedGame.version)
                     Layout.alignment: Qt.AlignCenter
                     font.pixelSize: 20
                 }
@@ -145,14 +145,14 @@ Item {
                 TextField {
                     id: playerNameText
                     Component.onCompleted: {
-                        CubedInstance.set_name(playerNameText.text);
+                        CubedGame.set_name(playerNameText.text);
                     }
                     text: Settings.playerName
                     Layout.fillWidth: true
                     placeholderText: qsTr("Enter Player Name")
                     onEditingFinished: {
                         Settings.playerName = playerNameText.text;
-                        CubedInstance.set_name(playerNameText.text);
+                        CubedGame.set_name(playerNameText.text);
                     }
                 }
 
@@ -163,17 +163,17 @@ Item {
                     Layout.preferredHeight: 60
                     font.pixelSize: 20
                     text: qsTr("Start Game")
-                    enabled: CubedInstance.installed
+                    enabled: CubedGame.installed
                     highlighted: enabled
                     Component.onCompleted: {
                         if (Settings.pathSetted) {
                             console.log("Set Cubed Instance game dir sucessful");
-                            CubedInstance.set_game_dir(Settings.gameDir);
+                            CubedGame.set_game_dir(Settings.gameDir);
                         }
                     }
                     Material.roundedScale: Material.MediumScale
                     onClicked: {
-                        CubedInstance.start_cubed_instance();
+                        CubedGame.start_cubed_game();
                     }
                 }
             }
