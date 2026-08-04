@@ -2,8 +2,13 @@
 
 #include "tool/json_cache.hpp"
 #include "tool/log.hpp"
+#include "tool/secret_store.hpp"
 
 #include <QFileInfo>
+
+namespace {
+constexpr QLatin1StringView kGithubTokenKey("github_token");
+} // namespace
 
 Settings* Settings::s_instance = nullptr;
 
@@ -151,10 +156,17 @@ void Settings::set_easytier_public_server_index(int index) {
 }
 
 void Settings::set_github_token(const QString& token) {
-    if (!update_value(m_github_token, token.trimmed(), "github_token")) {
-        return;
+    const QString trimmed = token.trimmed();
+    if (trimmed.isEmpty()) {
+        SecretStore::remove(kGithubTokenKey);
+        m_github_token.clear();
+    } else {
+        if (!SecretStore::save(kGithubTokenKey, trimmed.toUtf8())) {
+            m_github_token.clear();
+        } else {
+            m_github_token = trimmed;
+        }
     }
-
     Q_EMIT github_token_changed();
 }
 
@@ -192,7 +204,21 @@ void Settings::load() {
     m_easytier_install_path = m_settings.value("easytier_path").toString();
     m_easytier_public_server_index =
         m_settings.value("easytier_public_server_index", -1).toInt();
-    m_github_token = m_settings.value("github_token").toString();
+
+    // AI-generated: migrate legacy plaintext token to the OS keyring, then
+    // drop the old key.
+    if (m_settings.contains(kGithubTokenKey)) {
+        const QString legacy =
+            m_settings.value(kGithubTokenKey).toString().trimmed();
+        if (!legacy.isEmpty()) {
+            SecretStore::save(kGithubTokenKey, legacy.toUtf8());
+        }
+        m_settings.remove(kGithubTokenKey);
+    }
+
+    if (auto stored = SecretStore::load(kGithubTokenKey)) {
+        m_github_token = QString::fromUtf8(*stored);
+    }
 }
 void Settings::save(const QString& key, const QString& value) {
     m_settings.setValue(key, value);

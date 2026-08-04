@@ -101,6 +101,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/json_cache.cpp
         src/tool/github_auth.hpp
         src/tool/github_auth.cpp
+        src/tool/secret_store.hpp
+        src/tool/secret_store.cpp
         src/multiplayer/frp_manager.hpp
         src/multiplayer/frp_manager.cpp
         src/multiplayer/easytier_manager.hpp
@@ -133,6 +135,16 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Network
     qmicroz
 )
+
+if (WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Crypt32)
+endif()
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(SECRET REQUIRED IMPORTED_TARGET libsecret-1)
+    target_link_libraries(${PROJECT_NAME} PRIVATE PkgConfig::SECRET)
+endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE QT_NO_KEYWORDS)
 

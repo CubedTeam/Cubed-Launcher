@@ -950,8 +950,13 @@
     </message>
     <message>
         <location filename="../qml/Tab/Setting.qml" line="233"/>
-        <source>Environment variable takes precedence.</source>
-        <translation>环境变量优先于设置值。</translation>
+        <source>Token stored in system keyring. Environment variable takes precedence.</source>
+        <translation>Token 保存在系统密钥环中,环境变量优先。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="248"/>
+        <source>Remove Token</source>
+        <translation>移除 Token</translation>
     </message>
 </context>
 <context>

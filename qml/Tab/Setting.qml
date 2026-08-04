@@ -230,10 +230,22 @@ Item {
                         }
                     }
                     Label {
-                        text: qsTr("Environment variable takes precedence.")
+                        text: qsTr("Token stored in system keyring. Environment variable takes precedence.")
                         font.pixelSize: 12
                         Layout.alignment: Qt.AlignCenter
                         color: Material.color(Material.Grey)
+                        wrapMode: Text.WordWrap
+                        Layout.maximumWidth: 320
+                    }
+                    Button {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredWidth: 250
+                        Layout.preferredHeight: 40
+                        font.pixelSize: 16
+                        Material.roundedScale: Material.MediumScale
+                        visible: Settings.githubToken.length > 0
+                        text: qsTr("Remove Token")
+                        onClicked: Settings.githubToken = ""
                     }
                 }
             }
