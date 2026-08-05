@@ -17,6 +17,29 @@
 #include <QString>
 #include <QStringList>
 
+class QTimer;
+
+#ifdef _WIN32
+#include <atomic>
+#include <memory>
+#endif
+
+#ifdef _WIN32
+// AI-generated: result buffer for the elevated (UAC) launch path. The worker
+// thread writes this struct and signals completion via `done`; the main
+// thread consumes it from the poll timer. `handle` ownership is transferred
+// to the manager on successful consumption (the manager sets it to null so
+// the destructor here does not double-close).
+struct ElevatedLaunchState {
+    std::atomic<bool> done{false};
+    bool ok{false};
+    unsigned long error{0};
+    qint64 pid{0};
+    void* handle{nullptr};
+    ~ElevatedLaunchState();
+};
+#endif
+
 // AI-generated: shared base for "fetch GitHub release -> download archive ->
 // extract -> install binaries -> run process" services. FrpManager and
 // EasyTierManager share the same state machine and process management;
@@ -68,11 +91,27 @@ public:
     Q_INVOKABLE void reset_install();
     Q_INVOKABLE void stop_process();
 
+    // True while the managed process was launched with elevation
+    // (Linux pkexec path). Reset on stop / natural exit. Used to decide
+    // whether the stop sequence needs a privileged cleanup.
+    bool was_elevated() const { return m_launch_elevated; }
+
     // Launch the managed process with the given program and arguments.
     // Subclasses expose their own Q_INVOKABLE start() that gathers
     // arguments and forwards here.
+    // When elevate is true:
+    //   - On Linux the program is launched through `pkexec`, which triggers
+    //     the system polkit authentication dialog and runs the target as
+    //     root. The launcher itself stays unprivileged.
+    //   - On Windows the program is launched through `ShellExecuteEx` with
+    //     the `runas` verb, which triggers the UAC consent prompt and runs
+    //     the target as administrator. The UAC dialog blocks the calling
+    //     thread, so the call is dispatched to a worker thread to keep the
+    //     UI responsive. The returned process handle is tracked for stop()
+    //     and exit detection. easytier-core's console output is not
+    //     captured on this path (acceptable, see plan).
     void launch_process(const QString& program, const QStringList& arguments,
-                        const QProcessEnvironment& env);
+                        const QProcessEnvironment& env, bool elevate = false);
 
 Q_SIGNALS:
     void state_changed();
@@ -115,6 +154,11 @@ protected:
     // Hook fired after the managed process exits; default is a no-op.
     virtual void on_process_finished(int exit_code) { Q_UNUSED(exit_code); }
 
+    // Hook fired once the managed process has successfully started on
+    // either the QProcess path or the (Windows) elevated path. Subclasses
+    // can override to e.g. kick off polling. Default is a no-op.
+    virtual void on_process_started() {}
+
     // Hook fired at the end of reset_install() so subclasses can clear
     // additional state (e.g. cached toml content, virtual IP).
     virtual void reset_install_extra() {}
@@ -155,6 +199,28 @@ private:
     QString m_error_message;
     bool m_has_error{false};
     QProcess* m_process{nullptr};
+    // True while the managed process was launched through pkexec (Linux).
+    // Drives whether the stop sequence needs a privileged cleanup.
+    bool m_launch_elevated{false};
+
+    // AI-generated: Windows-only state for the UAC-elevated launch path
+    // (ShellExecuteEx + runas). The handle is a void* to avoid pulling
+    // windows.h into the header; reinterpret_cast as HANDLE in the .cpp.
+    // On non-Windows these members are conditionally compiled out.
+#ifdef _WIN32
+    void* m_elevated_handle{nullptr};
+    qint64 m_elevated_pid{0};
+    QTimer* m_elevated_poll_timer{nullptr};
+    bool m_elevate_pending{false};
+    bool m_elevate_stop_requested{false};
+    std::shared_ptr<ElevatedLaunchState> m_elevated_state;
+
+    void launch_elevated_windows(const QString& program,
+                                 const QStringList& arguments);
+    // Unified tick: drives both "consume UAC launch result" (while pending)
+    // and "monitor the elevated process for natural exit" (while running).
+    void on_elevated_tick();
+#endif
 
 protected:
     // Set by derived constructor before detect_install(); exposed for

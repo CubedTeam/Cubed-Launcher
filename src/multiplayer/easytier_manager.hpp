@@ -45,9 +45,7 @@ public:
                            const QString& peer_address);
     Q_INVOKABLE void start_join(const QString& network_name,
                                 const QString& network_secret,
-                                const QString& peer_address,
-                                const QString& host_virtual_ip, int host_port,
-                                int local_port);
+                                const QString& peer_address);
     Q_INVOKABLE void stop();
     Q_INVOKABLE void refresh_virtual_ip();
     Q_INVOKABLE void copy_to_clipboard(const QString& text);
@@ -89,6 +87,11 @@ private:
     void stop_ip_polling();
     void on_ip_poll_timeout();
     void parse_virtual_ip(const QByteArray& data);
+    // AI-generated: when easytier-core is launched via pkexec, terminating the
+    // pkexec QProcess may leave the root easytier-core child orphaned (pkexec
+    // does not reliably forward SIGTERM). This helper spawns a detached
+    // `pkexec pkill -f <core path>` to guarantee the root process dies.
+    void kill_core_as_root();
 
     QString m_virtual_ip;
     QTimer* m_ip_poll_timer{nullptr};

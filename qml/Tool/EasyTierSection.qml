@@ -96,26 +96,7 @@ Item {
         if (easytierSection.resolvedPeerAddress().length === 0) {
             return false;
         }
-        if (easytierSection.roomMode === 1) {
-            if (hostVirtualIpField.text.length === 0) {
-                return false;
-            }
-            if (easytierSection.parsePort(hostPortField.text) < 0) {
-                return false;
-            }
-            if (easytierSection.parsePort(localPortField.text) < 0) {
-                return false;
-            }
-        }
         return true;
-    }
-
-    function gameAddress() {
-        const port = easytierSection.parsePort(localPortField.text);
-        if (port < 0) {
-            return "";
-        }
-        return "127.0.0.1:" + port;
     }
 
     ColumnLayout {
@@ -249,54 +230,15 @@ Item {
                     }
                 }
 
-                ColumnLayout {
+                Label {
                     Layout.alignment: Qt.AlignCenter
-                    spacing: 8
+                    Layout.preferredWidth: 480
                     visible: easytierSection.roomMode === 1
-
-                    TextField {
-                        id: hostVirtualIpField
-                        Layout.preferredWidth: 400
-                        Layout.preferredHeight: 40
-                        font.pixelSize: 13
-                        placeholderText: qsTr("Host virtual IP (e.g. 10.0.0.1)")
-                        enabled: !EasyTierManager.running
-                    }
-
-                    RowLayout {
-                        Layout.alignment: Qt.AlignCenter
-                        spacing: 8
-
-                        TextField {
-                            id: hostPortField
-                            Layout.preferredWidth: 196
-                            Layout.preferredHeight: 40
-                            font.pixelSize: 13
-                            text: "25530"
-                            placeholderText: qsTr("Host port (e.g. 25565)")
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            validator: IntValidator {
-                                bottom: 1
-                                top: 65535
-                            }
-                            enabled: !EasyTierManager.running
-                        }
-
-                        TextField {
-                            id: localPortField
-                            Layout.preferredWidth: 196
-                            Layout.preferredHeight: 40
-                            font.pixelSize: 13
-                            text: "25530"
-                            placeholderText: qsTr("Local listen port")
-                            inputMethodHints: Qt.ImhDigitsOnly
-                            validator: IntValidator {
-                                bottom: 1
-                                top: 65535
-                            }
-                            enabled: !EasyTierManager.running
-                        }
-                    }
+                    text: qsTr("After starting, ask the room host for their virtual IP and enter it in Cubed.")
+                    font.pixelSize: 12
+                    color: Material.color(Material.Grey)
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
                 }
 
                 RowLayout {
@@ -315,7 +257,7 @@ Item {
                             if (easytierSection.roomMode === 0) {
                                 EasyTierManager.start(networkNameField.text, networkSecretField.text, easytierSection.resolvedPeerAddress());
                             } else {
-                                EasyTierManager.start_join(networkNameField.text, networkSecretField.text, easytierSection.resolvedPeerAddress(), hostVirtualIpField.text, easytierSection.parsePort(hostPortField.text), easytierSection.parsePort(localPortField.text));
+                                EasyTierManager.start_join(networkNameField.text, networkSecretField.text, easytierSection.resolvedPeerAddress());
                             }
                         }
                     }
@@ -333,7 +275,45 @@ Item {
                 }
             }
         }
+        Card {
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredHeight: warningLayout.implicitHeight + 20
+            visible: EasyTierManager.installed && easytierSection.roomMode === 0
+            ColumnLayout {
+                id: warningLayout
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 6
 
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("Security Warning")
+                    font.pixelSize: 16
+                    font.bold: true
+                    color: Material.color(Material.Red)
+                }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    Layout.preferredWidth: 480
+                    text: qsTr("The Cubed launcher itself does not require administrator or root privileges. However, when starting, easytier-core will request administrator (Windows) or root (Linux) privileges to create a TUN/TAP virtual network interface. With elevated privileges, the easytier-core process can extensively control this machine's network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.")
+                    color: Material.color(Material.Red)
+                    font.pixelSize: 12
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    Layout.preferredWidth: 480
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
+                    text: qsTr("Recommendation: use frp instead (does not require administrator or root privileges).")
+                    color: Material.color(Material.Red)
+                    font.pixelSize: 12
+                    font.italic: true
+                }
+            }
+        }
         Card {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
@@ -393,61 +373,6 @@ Item {
                     text: qsTr("Waiting for easytier to assign IP...")
                     font.pixelSize: 12
                     color: Material.color(Material.Grey)
-                }
-            }
-        }
-
-        Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: joinInfoLayout.implicitHeight + 20
-            visible: EasyTierManager.installed && easytierSection.roomMode === 1
-            ColumnLayout {
-                id: joinInfoLayout
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Game Address")
-                    font.pixelSize: 18
-                    font.bold: true
-                }
-
-                RowLayout {
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 8
-
-                    Label {
-                        id: gameAddressLabel
-                        Layout.preferredWidth: 240
-                        font.pixelSize: 20
-                        font.family: "Monospace"
-                        horizontalAlignment: Text.AlignHCenter
-                        text: easytierSection.gameAddress().length > 0 ? easytierSection.gameAddress() : qsTr("--")
-                        color: easytierSection.gameAddress().length > 0 ? Material.color(Material.Green) : Material.color(Material.Grey)
-                    }
-
-                    Button {
-                        Layout.preferredHeight: 40
-                        Layout.preferredWidth: 80
-                        font.pixelSize: 14
-                        Material.roundedScale: Material.MediumScale
-                        enabled: easytierSection.gameAddress().length > 0
-                        text: qsTr("Copy")
-                        onClicked: EasyTierManager.copy_to_clipboard(easytierSection.gameAddress())
-                    }
-                }
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Enter this address in Cubed to join the host's server.")
-                    font.pixelSize: 12
-                    color: Material.color(Material.Grey)
-                    wrapMode: Text.WordWrap
-                    Layout.preferredWidth: 400
-                    horizontalAlignment: Text.AlignHCenter
                 }
             }
         }

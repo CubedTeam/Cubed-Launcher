@@ -137,7 +137,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 if (WIN32)
-    target_link_libraries(${PROJECT_NAME} PRIVATE Crypt32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Crypt32 shell32)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
