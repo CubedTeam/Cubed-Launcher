@@ -276,14 +276,17 @@ Q_INVOKABLE void EasyTierManager::start_join(const QString& network_name,
 }
 
 Q_INVOKABLE void EasyTierManager::stop() {
-    // AI-generated: only the elevated launch path (Linux pkexec for
-    // create-room) needs a privileged kill; the non-elevated join path
-    // has already been terminated by stop_process().
-    const bool elevated = was_elevated();
-    stop_process();
-    if (elevated) {
+    // AI-generated: on the elevated (pkexec) path the wrapper QProcess
+    // does not forward signals to the child, so stop_process() would
+    // block the UI thread waiting up to 5s for a process that won't
+    // exit on its own. Fire the privileged pkill immediately instead;
+    // the QProcess finished handler updates state when the core
+    // actually dies.
+    if (was_elevated()) {
         kill_core_as_root();
+        return;
     }
+    stop_process();
 }
 
 void EasyTierManager::kill_core_as_root() {
@@ -303,8 +306,9 @@ void EasyTierManager::kill_core_as_root() {
                                   QLatin1String("\\/"), QLatin1String("/"));
     auto* p = new QProcess(this);
     p->setProgram(QStringLiteral("pkexec"));
-    p->setArguments(QStringList() << QStringLiteral("pkill")
-                                  << QStringLiteral("-f") << pattern);
+    p->setArguments(QStringList()
+                    << QStringLiteral("pkill") << QStringLiteral("-KILL")
+                    << QStringLiteral("-f") << pattern);
     connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             [this, p](int exitCode, QProcess::ExitStatus) {
                 // pkill exit 0 = killed, 1 = no match (orphan if we know
