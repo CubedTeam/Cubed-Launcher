@@ -141,7 +141,7 @@ Item {
             Button {
                 id: downloadUpdateButton
                 text: qsTr("Update")
-                enabled: !LauncherUpdate.downloading
+                enabled: !LauncherUpdate.downloading && (Qt.platform.os === "windows")
                 Layout.alignment: Qt.AlignCenter
                 font.pixelSize: 20
                 Material.roundedScale: Material.MediumScale
