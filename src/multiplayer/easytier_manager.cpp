@@ -29,6 +29,23 @@ EasyTierManager::EasyTierManager(QObject* parent)
 }
 
 EasyTierManager::~EasyTierManager() {
+#ifndef _WIN32
+    if (was_elevated() && running()) {
+        const QString core = core_binary();
+        if (!core.isEmpty() &&
+            !QStandardPaths::findExecutable(QStringLiteral("pkexec"))
+                 .isEmpty()) {
+            const QString pattern =
+                QStringLiteral("^") +
+                QRegularExpression::escape(core).replace(QLatin1String("\\/"),
+                                                         QLatin1String("/"));
+            // Synchronous call: blocks until pkill finishes
+            QProcess::execute(QStringLiteral("pkexec"),
+                              {QStringLiteral("pkill"), QStringLiteral("-KILL"),
+                               QStringLiteral("-f"), pattern});
+        }
+    }
+#endif
     stop_ip_polling();
     delete m_ip_poll_timer;
     m_ip_poll_timer = nullptr;

@@ -19,9 +19,14 @@ BinaryServiceBase::BinaryServiceBase(QStringView name, QObject* parent)
     : QObject(parent), m_fetcher(&m_manager, name, this) {}
 
 BinaryServiceBase::~BinaryServiceBase() {
-    if (m_process && m_process->state() != QProcess::NotRunning) {
-        m_process->kill();
-        m_process->waitForFinished(2000);
+    if (m_process) {
+        m_process->disconnect();
+        if (m_process->state() != QProcess::NotRunning) {
+            m_process->kill();
+            m_process->waitForFinished(2000);
+        }
+        delete m_process;
+        m_process = nullptr;
     }
     delete m_process;
     m_process = nullptr;
