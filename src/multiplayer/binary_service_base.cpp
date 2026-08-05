@@ -292,6 +292,7 @@ void BinaryServiceBase::stop_process() {
             m_process->waitForFinished(2000);
         }
     }
+    m_launch_elevated = false;
 #ifdef _WIN32
     if (m_elevate_pending) {
         // AI-generated: user requested stop while the UAC dialog is still up.
@@ -354,6 +355,7 @@ void BinaryServiceBase::wire_process(QProcess* p) {
                 if (m_process == p) {
                     m_process = nullptr;
                 }
+                m_launch_elevated = false;
                 p->deleteLater();
                 Q_EMIT running_changed();
                 if (m_state == Running) {
@@ -420,10 +422,12 @@ void BinaryServiceBase::launch_process(const QString& program,
         const QString err = m_process->errorString();
         m_process->deleteLater();
         m_process = nullptr;
+        m_launch_elevated = false;
         set_error(QStringLiteral("Failed to start %1: %2")
                       .arg(process_log_name(), err));
         return;
     }
+    m_launch_elevated = elevate;
     append_log(QStringLiteral("%1 started (pid %2)")
                    .arg(process_log_name())
                    .arg(m_process->processId()));
@@ -433,6 +437,16 @@ void BinaryServiceBase::launch_process(const QString& program,
 }
 
 #ifdef _WIN32
+
+ElevatedLaunchState::~ElevatedLaunchState() {
+    if (handle) {
+        HANDLE h = reinterpret_cast<HANDLE>(handle);
+        TerminateProcess(h, 1);
+        WaitForSingleObject(h, 2000);
+        CloseHandle(h);
+        handle = nullptr;
+    }
+}
 
 // AI-generated: quote a single argument for the ShellExecuteExW lpParameters
 // string. Wraps in double quotes only when the argument contains whitespace
@@ -475,15 +489,25 @@ void BinaryServiceBase::launch_elevated_windows(const QString& program,
     const std::wstring dir = m_install_path.toStdWString();
     const std::wstring args = params.toStdWString();
 
+    // AI-generated: worker thread communicates only through this heap
+    // state; it never dereferences the manager. If the manager is
+    // destroyed while the UAC dialog is up, the worker's last shared_ptr
+    // ref keeps the state alive, writes the result, then drops the ref
+    // and the state destructor closes whatever handle was created.
+    auto state = std::make_shared<ElevatedLaunchState>();
+    m_elevated_state = state;
     m_elevate_pending = true;
     m_elevate_stop_requested = false;
 
-    // AI-generated: ShellExecuteExW with the `runas` verb blocks the calling
-    // thread until the UAC prompt is answered. Run it on a detached worker
-    // thread so the Qt event loop keeps spinning and the UI stays
-    // responsive. COM is initialized on the worker thread because Shell
-    // APIs require it.
-    std::thread([this, file, dir, args]() {
+    if (!m_elevated_poll_timer) {
+        m_elevated_poll_timer = new QTimer(this);
+        m_elevated_poll_timer->setInterval(1000);
+        connect(m_elevated_poll_timer, &QTimer::timeout, this,
+                &BinaryServiceBase::on_elevated_tick);
+    }
+    m_elevated_poll_timer->start();
+
+    std::thread([state, file, dir, args]() {
         CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
         SHELLEXECUTEINFOW sei{};
         sei.cbSize = sizeof(sei);
@@ -494,77 +518,86 @@ void BinaryServiceBase::launch_elevated_windows(const QString& program,
         sei.lpDirectory = dir.c_str();
         sei.nShow = SW_HIDE;
         const BOOL ok = ShellExecuteExW(&sei);
-        const DWORD err = ok ? ERROR_SUCCESS : GetLastError();
-        void* handle = ok ? reinterpret_cast<void*>(sei.hProcess) : nullptr;
-        const qint64 pid =
-            ok ? static_cast<qint64>(GetProcessId(sei.hProcess)) : 0;
+        state->ok = ok != FALSE;
+        state->error = ok ? ERROR_SUCCESS : GetLastError();
+        state->handle = ok ? reinterpret_cast<void*>(sei.hProcess) : nullptr;
+        state->pid = ok ? static_cast<qint64>(GetProcessId(sei.hProcess)) : 0;
         CoUninitialize();
-
-        QMetaObject::invokeMethod(
-            this,
-            [this, ok, err, handle, pid]() {
-                if (ok) {
-                    if (m_elevate_stop_requested) {
-                        // User clicked Stop while the UAC dialog was up;
-                        // terminate the just-created process immediately.
-                        if (handle) {
-                            HANDLE h = reinterpret_cast<HANDLE>(handle);
-                            TerminateProcess(h, 1);
-                            CloseHandle(h);
-                        }
-                        m_elevate_pending = false;
-                        return;
-                    }
-                    m_elevate_pending = false;
-                    m_elevated_handle = handle;
-                    m_elevated_pid = pid;
-                    append_log(QStringLiteral("%1 started elevated (pid %2)")
-                                   .arg(process_log_name())
-                                   .arg(pid));
-                    start_elevated_polling();
-                    set_state(Running);
-                    Q_EMIT running_changed();
-                    on_process_started();
-                } else {
-                    m_elevate_pending = false;
-                    set_error(
-                        QStringLiteral("Failed to start %1 elevated (error %2)")
-                            .arg(process_log_name())
-                            .arg(err));
-                }
-            },
-            Qt::QueuedConnection);
+        state->done.store(true, std::memory_order_release);
     }).detach();
 }
 
-void BinaryServiceBase::start_elevated_polling() {
-    if (!m_elevated_poll_timer) {
-        m_elevated_poll_timer = new QTimer(this);
-        m_elevated_poll_timer->setInterval(1000);
-        connect(m_elevated_poll_timer, &QTimer::timeout, this, [this]() {
-            if (!m_elevated_handle) {
+void BinaryServiceBase::on_elevated_tick() {
+    if (m_elevate_pending) {
+        const auto state = m_elevated_state;
+        if (!state || !state->done.load(std::memory_order_acquire)) {
+            return; // UAC dialog still up.
+        }
+        if (state->ok) {
+            if (m_elevate_stop_requested) {
+                if (state->handle) {
+                    HANDLE h = reinterpret_cast<HANDLE>(state->handle);
+                    TerminateProcess(h, 1);
+                    CloseHandle(h);
+                    state->handle = nullptr;
+                }
+                m_elevate_pending = false;
+                m_elevate_stop_requested = false;
+                m_elevated_state.reset();
+                if (m_elevated_poll_timer) {
+                    m_elevated_poll_timer->stop();
+                }
                 return;
             }
-            DWORD code = 0;
-            HANDLE h = reinterpret_cast<HANDLE>(m_elevated_handle);
-            const BOOL gotCode = GetExitCodeProcess(h, &code);
-            if (!gotCode || code != STILL_ACTIVE) {
+            m_elevated_handle = state->handle;
+            m_elevated_pid = state->pid;
+            state->handle = nullptr; // Ownership transferred.
+            m_elevate_pending = false;
+            m_elevate_stop_requested = false;
+            m_elevated_state.reset();
+            append_log(QStringLiteral("%1 started elevated (pid %2)")
+                           .arg(process_log_name())
+                           .arg(m_elevated_pid));
+            set_state(Running);
+            Q_EMIT running_changed();
+            on_process_started();
+            // Timer keeps running to monitor the running process.
+        } else {
+            m_elevate_pending = false;
+            m_elevated_state.reset();
+            set_error(QStringLiteral("Failed to start %1 elevated (error %2)")
+                          .arg(process_log_name())
+                          .arg(state->error));
+            if (m_elevated_poll_timer) {
                 m_elevated_poll_timer->stop();
-                CloseHandle(h);
-                m_elevated_handle = nullptr;
-                m_elevated_pid = 0;
-                append_log(QStringLiteral("%1 exited with code %2")
-                               .arg(process_log_name())
-                               .arg(static_cast<int>(code)));
-                Q_EMIT running_changed();
-                if (m_state == Running) {
-                    set_state(Ready);
-                }
-                on_process_finished(static_cast<int>(code));
             }
-        });
+        }
+        return;
     }
-    m_elevated_poll_timer->start();
+
+    if (!m_elevated_handle) {
+        if (m_elevated_poll_timer) {
+            m_elevated_poll_timer->stop();
+        }
+        return;
+    }
+    DWORD code = 0;
+    HANDLE h = reinterpret_cast<HANDLE>(m_elevated_handle);
+    const BOOL gotCode = GetExitCodeProcess(h, &code);
+    if (!gotCode || code != STILL_ACTIVE) {
+        m_elevated_poll_timer->stop();
+        CloseHandle(h);
+        m_elevated_handle = nullptr;
+        m_elevated_pid = 0;
+        append_log(QStringLiteral("%1 exited with code %2")
+                       .arg(process_log_name())
+                       .arg(static_cast<int>(code)));
+        Q_EMIT running_changed();
+        if (m_state == Running) {
+            set_state(Ready);
+        }
+        on_process_finished(static_cast<int>(code));
+    }
 }
 
 #endif // _WIN32

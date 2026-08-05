@@ -19,6 +19,27 @@
 
 class QTimer;
 
+#ifdef _WIN32
+#include <atomic>
+#include <memory>
+#endif
+
+#ifdef _WIN32
+// AI-generated: result buffer for the elevated (UAC) launch path. The worker
+// thread writes this struct and signals completion via `done`; the main
+// thread consumes it from the poll timer. `handle` ownership is transferred
+// to the manager on successful consumption (the manager sets it to null so
+// the destructor here does not double-close).
+struct ElevatedLaunchState {
+    std::atomic<bool> done{false};
+    bool ok{false};
+    unsigned long error{0};
+    qint64 pid{0};
+    void* handle{nullptr};
+    ~ElevatedLaunchState();
+};
+#endif
+
 // AI-generated: shared base for "fetch GitHub release -> download archive ->
 // extract -> install binaries -> run process" services. FrpManager and
 // EasyTierManager share the same state machine and process management;
@@ -69,6 +90,11 @@ public:
     Q_INVOKABLE void set_install_path(const QString& path);
     Q_INVOKABLE void reset_install();
     Q_INVOKABLE void stop_process();
+
+    // True while the managed process was launched with elevation
+    // (Linux pkexec path). Reset on stop / natural exit. Used to decide
+    // whether the stop sequence needs a privileged cleanup.
+    bool was_elevated() const { return m_launch_elevated; }
 
     // Launch the managed process with the given program and arguments.
     // Subclasses expose their own Q_INVOKABLE start() that gathers
@@ -173,6 +199,9 @@ private:
     QString m_error_message;
     bool m_has_error{false};
     QProcess* m_process{nullptr};
+    // True while the managed process was launched through pkexec (Linux).
+    // Drives whether the stop sequence needs a privileged cleanup.
+    bool m_launch_elevated{false};
 
     // AI-generated: Windows-only state for the UAC-elevated launch path
     // (ShellExecuteEx + runas). The handle is a void* to avoid pulling
@@ -184,10 +213,13 @@ private:
     QTimer* m_elevated_poll_timer{nullptr};
     bool m_elevate_pending{false};
     bool m_elevate_stop_requested{false};
+    std::shared_ptr<ElevatedLaunchState> m_elevated_state;
 
     void launch_elevated_windows(const QString& program,
                                  const QStringList& arguments);
-    void start_elevated_polling();
+    // Unified tick: drives both "consume UAC launch result" (while pending)
+    // and "monitor the elevated process for natural exit" (while running).
+    void on_elevated_tick();
 #endif
 
 protected:

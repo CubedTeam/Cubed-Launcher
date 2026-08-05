@@ -276,8 +276,14 @@ Q_INVOKABLE void EasyTierManager::start_join(const QString& network_name,
 }
 
 Q_INVOKABLE void EasyTierManager::stop() {
+    // AI-generated: only the elevated launch path (Linux pkexec for
+    // create-room) needs a privileged kill; the non-elevated join path
+    // has already been terminated by stop_process().
+    const bool elevated = was_elevated();
     stop_process();
-    kill_core_as_root();
+    if (elevated) {
+        kill_core_as_root();
+    }
 }
 
 void EasyTierManager::kill_core_as_root() {
@@ -287,13 +293,31 @@ void EasyTierManager::kill_core_as_root() {
         QStandardPaths::findExecutable(QStringLiteral("pkexec")).isEmpty()) {
         return;
     }
+    // Anchor to the start of the command line so pkill -f only matches
+    // the easytier-core binary (and never the pkexec wrapper or an
+    // unrelated process whose command line merely contains the path).
+    // Drop QRegularExpression::escape's "<\/"; pkill's regex engine
+    // treats the slash as a literal even on stricter implementations.
+    const QString pattern =
+        QStringLiteral("^") + QRegularExpression::escape(core).replace(
+                                  QLatin1String("\\/"), QLatin1String("/"));
     auto* p = new QProcess(this);
     p->setProgram(QStringLiteral("pkexec"));
-    p->setArguments(QStringList()
-                    << QStringLiteral("pkill") << QStringLiteral("-f")
-                    << QRegularExpression::escape(core));
+    p->setArguments(QStringList() << QStringLiteral("pkill")
+                                  << QStringLiteral("-f") << pattern);
     connect(p, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            [p](int, QProcess::ExitStatus) { p->deleteLater(); });
+            [this, p](int exitCode, QProcess::ExitStatus) {
+                // pkill exit 0 = killed, 1 = no match (orphan if we know
+                // one existed). Other codes typically mean the user
+                // canceled the polkit prompt.
+                if (exitCode != 0) {
+                    append_log(
+                        QStringLiteral("pkexec pkill exited with %1 (core may "
+                                       "still be running as root)")
+                            .arg(exitCode));
+                }
+                p->deleteLater();
+            });
     p->start();
 #endif
 }
