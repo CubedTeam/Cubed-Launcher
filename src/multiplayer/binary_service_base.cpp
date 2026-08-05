@@ -28,8 +28,6 @@ BinaryServiceBase::~BinaryServiceBase() {
         delete m_process;
         m_process = nullptr;
     }
-    delete m_process;
-    m_process = nullptr;
 #ifdef _WIN32
     if (m_elevated_poll_timer) {
         m_elevated_poll_timer->stop();
