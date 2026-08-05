@@ -279,7 +279,7 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
             Layout.preferredHeight: warningLayout.implicitHeight + 20
-            visible: !EasyTierManager.installed || easytierSection.roomMode === 0
+            visible: EasyTierManager.installed && easytierSection.roomMode === 0
             ColumnLayout {
                 id: warningLayout
                 anchors.fill: parent
@@ -296,7 +296,7 @@ Item {
                 Label {
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: 480
-                    text: qsTr("Creating a room requires administrator or root privileges. Easytier will create a TUN/TAP virtual network interface with elevated permissions, allowing the easytier-core process to extensively control this machine's network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.")
+                    text: qsTr("The Cubed launcher itself does not require administrator or root privileges. However, when starting, easytier-core will request administrator (Windows) or root (Linux) privileges to create a TUN/TAP virtual network interface. With elevated privileges, the easytier-core process can extensively control this machine's network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.")
                     color: Material.color(Material.Red)
                     font.pixelSize: 12
                     wrapMode: Text.WordWrap
@@ -304,6 +304,9 @@ Item {
                 }
                 Label {
                     Layout.alignment: Qt.AlignCenter
+                    Layout.preferredWidth: 480
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
                     text: qsTr("Recommendation: use frp instead (does not require administrator or root privileges).")
                     color: Material.color(Material.Red)
                     font.pixelSize: 12

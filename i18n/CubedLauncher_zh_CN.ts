@@ -331,27 +331,32 @@
         <translation>安全警告</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="327"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="299"/>
+        <source>The Cubed launcher itself does not require administrator or root privileges. However, when starting, easytier-core will request administrator (Windows) or root (Linux) privileges to create a TUN/TAP virtual network interface. With elevated privileges, the easytier-core process can extensively control this machine&apos;s network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.</source>
+        <translation>启动器本身不需要管理员或 root 权限。但启动时，easytier-core 会申请管理员（Windows）或 root（Linux）权限以创建 TUN/TAP 虚拟网卡。以提升的权限运行时，easytier-core 进程能够大范围操控本机的网络栈，请确认仅在信任此软件且了解风险与后果后再继续。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="330"/>
         <source>Virtual IP</source>
         <translation>虚拟 IP</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="342"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="345"/>
         <source>--</source>
         <translation>--</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="352"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="355"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="362"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="365"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="370"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="373"/>
         <source>Waiting for easytier to assign IP...</source>
         <translation>等待 easytier 分配 IP...</translation>
     </message>
@@ -365,17 +370,16 @@
         <translation type="vanished">⚠ 安全警告</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="299"/>
         <source>Creating a room requires administrator or root privileges. Easytier will create a TUN/TAP virtual network interface with elevated permissions, allowing the easytier-core process to extensively control this machine&apos;s network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.</source>
-        <translation>创建房间需要管理员或 root 权限。Easytier 将以提升的权限创建 TUN/TAP 虚拟网卡，使 easytier-core 进程能够大范围操控本机的网络栈，请确认仅在信任此软件时和确认风险与后果之后再继续</translation>
+        <translation type="vanished">启动器本身不需要管理员或 root 权限。但启动时，easytier-core 会申请管理员（Windows）或 root（Linux）权限以创建 TUN/TAP 虚拟网卡。以提升的权限运行时，easytier-core 进程能够大范围操控本机的网络栈，请确认仅在信任此软件且了解风险与后果后再继续。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="307"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="310"/>
         <source>Recommendation: use frp instead (does not require administrator or root privileges).</source>
         <translation>建议：改用 frp（无需管理员或 root 权限）。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="418"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="421"/>
         <source>EasyTier Install Directory</source>
         <translation>EasyTier 安装目录</translation>
     </message>
@@ -388,7 +392,7 @@
         <translation type="vanished">显示日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="395"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="398"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
@@ -397,7 +401,7 @@
         <translation type="vanished">EasyTier 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="419"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="422"/>
         <source>Set EasyTier Folder</source>
         <translation>设置 EasyTier 文件夹</translation>
     </message>
@@ -406,7 +410,7 @@
         <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="435"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="438"/>
         <source>Select EasyTier Folder</source>
         <translation>选择 EasyTier 文件夹</translation>
     </message>
