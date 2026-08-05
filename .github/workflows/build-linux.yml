@@ -1,16 +1,11 @@
 name: Build-Linux
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       version:
-        description: Version
-        required: false
-        default: dev
-
-  push:
-    tags:
-      - "v*"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -20,17 +15,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-
-      - name: Get Version
-        id: version
-        shell: bash
-        run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            VERSION="${GITHUB_REF_NAME#v}"
-          else
-            VERSION="${{ github.event.inputs.version }}"
-          fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Install Linux Dependencies
         run: |
@@ -62,7 +46,7 @@ jobs:
           -B build
           -G Ninja
           -DCMAKE_BUILD_TYPE=Release
-          "-DAPP_VERSION=${{ steps.version.outputs.version }}"
+          "-DAPP_VERSION=${{ inputs.version }}"
 
       - name: Build
         run: cmake --build build --config Release --target CubedLauncher
