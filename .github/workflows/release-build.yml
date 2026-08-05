@@ -64,14 +64,14 @@ jobs:
             libfuse2 \
             desktop-file-utils
 
-      - name: Install GCC 13 (for C++23)
+      - name: Install GCC 14 (for C++23)
         if: matrix.platform == 'linux'
         run: |
           sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
           sudo apt update
-          sudo apt install gcc-13 g++-13 -y
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 \
-                                  --slave /usr/bin/g++ g++ /usr/bin/g++-13
+          sudo apt install gcc-14 g++-14 -y
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 \
+                                  --slave /usr/bin/g++ g++ /usr/bin/g++-14
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -130,12 +130,11 @@ jobs:
         run: |
           cmake --install build --prefix AppDir/usr
 
-      - name: Download linuxdeploy and qt plugin
+      - name: Install linuxdeploy
         if: matrix.platform == 'linux'
-        run: |
-          wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
+        uses: miurahr/install-linuxdeploy-action@v1
+        with:
+          plugins: qt appimage
 
       - name: Build AppImage
         if: matrix.platform == 'linux'
@@ -144,13 +143,11 @@ jobs:
           QML_SOURCES_PATHS: "qml" 
           LDAI_OUTPUT: "CubedLauncher-${{ steps.version.outputs.version }}-linux-x64.AppImage"
         run: |
-          ./linuxdeploy-x86_64.AppImage \
+          linuxdeploy-x86_64.AppImage \
             --appdir AppDir \
             --desktop-file AppDir/usr/share/applications/CubedLauncher.desktop \
             --plugin qt \
             --output appimage
-
-          rm linuxdeploy-x86_64.AppImage linuxdeploy-plugin-qt-x86_64.AppImage
       
 
       ####################################################################
