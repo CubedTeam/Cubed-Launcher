@@ -1,0 +1,83 @@
+name: Build-Windows
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: false
+        default: dev
+
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Version
+        id: version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF_NAME#v}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          host: windows
+          target: desktop
+          arch: win64_msvc2022_64
+          version: '6.8.3'
+
+      - name: Configure
+        run: >
+          cmake
+          -B build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          "-DAPP_VERSION=${{ steps.version.outputs.version }}"
+
+      - name: Build
+        run: cmake --build build --config Release --target CubedLauncher
+
+      - name: Deploy Qt
+        shell: cmd
+        run: |
+          windeployqt --release --qmldir qml build\CubedLauncher\CubedLauncher.exe
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Build Installer
+        shell: cmd
+        run: |
+          iscc /DCubedLauncherVersion=${{ steps.version.outputs.version }} installer\installer.iss
+
+      - name: Create Portable Zip
+        shell: pwsh
+        run: |
+          Compress-Archive `
+            -Path build/CubedLauncher/* `
+            -DestinationPath CubedLauncher-${{ steps.version.outputs.version }}-windows-x64-portable.zip
+
+      - name: Upload Windows Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            installer/output/*.exe
+            *.zip
