@@ -46,12 +46,6 @@ Item {
         }
     }
 
-    onRoomModeChanged: {
-        if (easytierSection.roomMode === 0) {
-            easytierSection.regenerateRoomCode();
-        }
-    }
-
     Connections {
         target: Settings
         function onEasytier_install_path_changed() {
