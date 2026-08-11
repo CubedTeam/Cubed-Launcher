@@ -30,10 +30,25 @@ Item {
     // Local state only, not persisted: the persisted signal is the public
     // server index alone.
     property int serverMode: 0
+    // AI-generated: room code generated on host side; player side stores the
+    // entered code. Both are upper-cased; the actual network name / secret
+    // are derived from whichever code is active.
+    property string roomCode: ""
+    property string joinCode: ""
+    property bool joinCodeValid: false
 
     Component.onCompleted: {
         if (Settings.easytierInstallPath && Settings.easytierInstallPath.length > 0) {
             EasyTierManager.set_install_path(Settings.easytierInstallPath);
+        }
+        if (easytierSection.roomMode === 0) {
+            easytierSection.regenerateRoomCode();
+        }
+    }
+
+    onRoomModeChanged: {
+        if (easytierSection.roomMode === 0) {
+            easytierSection.regenerateRoomCode();
         }
     }
 
@@ -83,18 +98,51 @@ Item {
         return n;
     }
 
+    // AI-generated: produce a fresh room code from the C++ helper. Called
+    // on entering Create Room mode and from the Regenerate button.
+    function regenerateRoomCode() {
+        easytierSection.roomCode = EasyTierManager.generate_room_code();
+    }
+
+    // AI-generated: Advanced fields, when both filled, override the room
+    // code derived credentials. Otherwise derive network name + secret
+    // from the active room code (host: roomCode, join: joinCode).
+    function resolvedCredentials() {
+        if (advancedButton.checked &&
+            networkNameField.text.length > 0 &&
+            networkSecretField.text.length > 0) {
+            return { name: networkNameField.text, secret: networkSecretField.text };
+        }
+        const code = (easytierSection.roomMode === 0)
+                         ? easytierSection.roomCode
+                         : easytierSection.joinCode;
+        if (code.length === 0) {
+            return { name: "", secret: "" };
+        }
+        const creds = EasyTierManager.credentials_for_code(code);
+        return { name: creds.name, secret: creds.secret };
+    }
+
     function canStart() {
         if (!EasyTierManager.installed || EasyTierManager.running) {
             return false;
         }
-        if (networkNameField.text.length === 0) {
-            return false;
-        }
-        if (networkSecretField.text.length === 0) {
-            return false;
-        }
         if (easytierSection.resolvedPeerAddress().length === 0) {
             return false;
+        }
+        const c = easytierSection.resolvedCredentials();
+        if (c.name.length === 0 || c.secret.length === 0) {
+            return false;
+        }
+        // AI-generated: join mode additionally requires a syntactically
+        // valid room code, unless Advanced fields override it.
+        if (easytierSection.roomMode === 1) {
+            if (advancedButton.checked &&
+                networkNameField.text.length > 0 &&
+                networkSecretField.text.length > 0) {
+                return true;
+            }
+            return easytierSection.joinCodeValid;
         }
         return true;
     }
@@ -210,23 +258,84 @@ Item {
                         enabled: !EasyTierManager.running
                     }
 
-                    TextField {
-                        id: networkNameField
-                        Layout.preferredWidth: 400
-                        Layout.preferredHeight: 40
-                        font.pixelSize: 13
-                        placeholderText: qsTr("Network name")
-                        enabled: !EasyTierManager.running
+                    // AI-generated: host view shows the generated room code
+                    // and lets the host copy / regenerate it.
+                    RowLayout {
+                        Layout.alignment: Qt.AlignCenter
+                        spacing: 8
+                        visible: easytierSection.roomMode === 0
+
+                        Label {
+                            text: qsTr("Room Code:")
+                            font.pixelSize: 14
+                        }
+                        Label {
+                            Layout.preferredWidth: 140
+                            text: easytierSection.roomCode
+                            font.family: "Monospace"
+                            font.pixelSize: 18
+                            font.bold: true
+                            horizontalAlignment: Text.AlignHCenter
+                            color: Material.color(Material.Indigo)
+                        }
+                        Button {
+                            Layout.preferredHeight: 36
+                            Layout.preferredWidth: 80
+                            font.pixelSize: 13
+                            Material.roundedScale: Material.MediumScale
+                            enabled: easytierSection.roomCode.length > 0
+                            text: qsTr("Copy")
+                            onClicked: EasyTierManager.copy_to_clipboard(easytierSection.roomCode)
+                        }
+                        Button {
+                            Layout.preferredHeight: 36
+                            Layout.preferredWidth: 100
+                            font.pixelSize: 13
+                            Material.roundedScale: Material.MediumScale
+                            enabled: !EasyTierManager.running
+                            text: qsTr("Regenerate")
+                            onClicked: easytierSection.regenerateRoomCode()
+                        }
                     }
 
-                    TextField {
-                        id: networkSecretField
-                        Layout.preferredWidth: 400
-                        Layout.preferredHeight: 40
-                        font.pixelSize: 13
-                        placeholderText: qsTr("Network secret")
-                        enabled: !EasyTierManager.running
-                        echoMode: TextInput.Password
+                    // AI-generated: join view accepts the 6-char code and
+                    // surfaces validation feedback inline.
+                    ColumnLayout {
+                        Layout.alignment: Qt.AlignCenter
+                        spacing: 4
+                        visible: easytierSection.roomMode === 1
+
+                        RowLayout {
+                            Layout.alignment: Qt.AlignCenter
+                            spacing: 8
+                            Label {
+                                text: qsTr("Room Code:")
+                                font.pixelSize: 14
+                            }
+                            TextField {
+                                id: joinCodeField
+                                Layout.preferredWidth: 200
+                                Layout.preferredHeight: 40
+                                font.family: "Monospace"
+                                font.pixelSize: 16
+                                placeholderText: qsTr("6-char code")
+                                enabled: !EasyTierManager.running
+                                maximumLength: 6
+                                onTextChanged: {
+                                    easytierSection.joinCode = text.toUpperCase();
+                                    easytierSection.joinCodeValid =
+                                        EasyTierManager.is_valid_room_code(easytierSection.joinCode);
+                                }
+                            }
+                        }
+                        Label {
+                            Layout.alignment: Qt.AlignCenter
+                            text: qsTr("Invalid room code")
+                            font.pixelSize: 11
+                            color: Material.color(Material.Red)
+                            visible: easytierSection.joinCode.length > 0 &&
+                                !easytierSection.joinCodeValid
+                        }
                     }
                 }
 
@@ -234,7 +343,7 @@ Item {
                     Layout.alignment: Qt.AlignCenter
                     Layout.preferredWidth: 480
                     visible: easytierSection.roomMode === 1
-                    text: qsTr("After starting, ask the room host for their virtual IP and enter it in Cubed.")
+                    text: qsTr("Enter the room code from the host above, then click Start.")
                     font.pixelSize: 12
                     color: Material.color(Material.Grey)
                     wrapMode: Text.WordWrap
@@ -254,10 +363,11 @@ Item {
                         enabled: easytierSection.canStart()
                         text: qsTr("Start")
                         onClicked: {
+                            const c = easytierSection.resolvedCredentials();
                             if (easytierSection.roomMode === 0) {
-                                EasyTierManager.start(networkNameField.text, networkSecretField.text, easytierSection.resolvedPeerAddress());
+                                EasyTierManager.start(c.name, c.secret, easytierSection.resolvedPeerAddress());
                             } else {
-                                EasyTierManager.start_join(networkNameField.text, networkSecretField.text, easytierSection.resolvedPeerAddress());
+                                EasyTierManager.start_join(c.name, c.secret, easytierSection.resolvedPeerAddress());
                             }
                         }
                     }
@@ -409,6 +519,55 @@ Item {
                 id: advancedSetting
                 width: parent.width
                 anchors.centerIn: parent
+            }
+        }
+
+        // AI-generated: Manual network identity override. When both fields
+        // are filled, they win over the room-code-derived credentials.
+        Card {
+            Layout.fillWidth: true
+            Layout.alignment: Qt.AlignCenter
+            Layout.preferredHeight: identityLayout.implicitHeight + 20
+            visible: advancedButton.checked && EasyTierManager.installed
+
+            ColumnLayout {
+                id: identityLayout
+                anchors.fill: parent
+                anchors.margins: 10
+                spacing: 8
+
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("Manual Network Identity")
+                    font.pixelSize: 14
+                    font.bold: true
+                }
+                Label {
+                    Layout.alignment: Qt.AlignCenter
+                    Layout.preferredWidth: 480
+                    text: qsTr("When both fields are filled, overrides the room code.")
+                    font.pixelSize: 11
+                    color: Material.color(Material.Grey)
+                    wrapMode: Text.WordWrap
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                TextField {
+                    id: networkNameField
+                    Layout.preferredWidth: 400
+                    Layout.preferredHeight: 40
+                    font.pixelSize: 13
+                    placeholderText: qsTr("Network name")
+                    enabled: !EasyTierManager.running
+                }
+                TextField {
+                    id: networkSecretField
+                    Layout.preferredWidth: 400
+                    Layout.preferredHeight: 40
+                    font.pixelSize: 13
+                    placeholderText: qsTr("Network secret")
+                    echoMode: TextInput.Password
+                    enabled: !EasyTierManager.running
+                }
             }
         }
 
