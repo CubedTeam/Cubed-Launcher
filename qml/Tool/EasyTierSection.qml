@@ -279,7 +279,7 @@ Item {
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignCenter
             Layout.preferredHeight: warningLayout.implicitHeight + 20
-            visible: EasyTierManager.installed && easytierSection.roomMode === 0
+            visible: EasyTierManager.installed
             ColumnLayout {
                 id: warningLayout
                 anchors.fill: parent

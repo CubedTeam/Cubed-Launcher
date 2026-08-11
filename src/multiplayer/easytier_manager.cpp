@@ -247,8 +247,9 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
     const QStringList args{
         QStringLiteral("--network-name"),   network_name,
         QStringLiteral("--network-secret"), network_secret,
+        QStringLiteral("--ipv4"),           QStringLiteral("10.126.126.1"),
         QStringLiteral("--peers"),          peer_address,
-        QStringLiteral("--dhcp"),           QStringLiteral("true"),
+        QStringLiteral("--need-p2p"),       QStringLiteral("true"),
     };
     // AI-generated: connect first so the polling kicks in whether the
     // process is already running (Linux pkexec) or starts asynchronously
@@ -285,11 +286,11 @@ Q_INVOKABLE void EasyTierManager::start_join(const QString& network_name,
         QStringLiteral("--network-name"),   network_name,
         QStringLiteral("--network-secret"), network_secret,
         QStringLiteral("--peers"),          peer_address,
-        QStringLiteral("--no-tun"),         QStringLiteral("true"),
         QStringLiteral("--dhcp"),           QStringLiteral("true"),
     };
     launch_process(core_binary(), args,
-                   QProcessEnvironment::systemEnvironment());
+                   QProcessEnvironment::systemEnvironment(),
+                   /*elevate=*/true);
 }
 
 Q_INVOKABLE void EasyTierManager::stop() {
