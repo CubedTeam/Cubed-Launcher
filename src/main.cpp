@@ -34,6 +34,8 @@ int main(int argc, char** argv) {
 
     QGuiApplication app(argc, argv);
 
+    QCoreApplication::setApplicationName("CubedLauncher");
+
     QSettings cfg(QSettings::IniFormat, QSettings::UserScope, "Cubed",
                   "Launcher");
     QString lang = cfg.value("language").toString();
