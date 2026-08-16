@@ -6,6 +6,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTimer>
+#include <QVariantMap>
 #include <QVector>
 
 // AI-generated: hardcoded public EasyTier community servers. Mirrors the
@@ -39,6 +40,14 @@ public:
     QString virtual_ip() const { return m_virtual_ip; }
     QStringList public_server_names() const;
     Q_INVOKABLE QString public_server_address(int index) const;
+
+    // AI-generated: room code helpers. The code is a short random
+    // identifier; the actual network name + secret are derived
+    // deterministically so host and players converge on the same
+    // EasyTier network without sharing long strings.
+    Q_INVOKABLE QString generate_room_code() const;
+    Q_INVOKABLE QVariantMap credentials_for_code(const QString& code) const;
+    Q_INVOKABLE bool is_valid_room_code(const QString& code) const;
 
     Q_INVOKABLE void start(const QString& network_name,
                            const QString& network_secret,

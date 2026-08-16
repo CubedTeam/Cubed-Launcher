@@ -5,6 +5,7 @@
 #include "tool/path_tools.hpp"
 
 #include <QClipboard>
+#include <QCryptographicHash>
 #include <QDir>
 #include <QDirIterator>
 #include <QFile>
@@ -12,9 +13,20 @@
 #include <QGuiApplication>
 #include <QProcess>
 #include <QProcessEnvironment>
+#include <QRandomGenerator>
 #include <QRegularExpression>
 #include <QStandardPaths>
 #include <qmicroz.h>
+
+namespace {
+// AI-generated: room-code alphabet excludes confusable characters
+// (0/O, 1/I/L) so codes read cleanly when shared verbally or in chat.
+constexpr QLatin1StringView
+    kRoomCodeAlphabet("ABCDEFGHJKMNPQRSTUVWXYZ23456789");
+constexpr int kRoomCodeLength = 6;
+constexpr QLatin1StringView kRoomNamePrefix("cubed-");
+constexpr QLatin1StringView kRoomSecretSalt("cubed-secret-");
+} // namespace
 EasyTierManager::EasyTierManager(QObject* parent)
     : BinaryServiceBase(QStringLiteral("Easytier"), parent) {
     QString path = default_install_dir();
@@ -65,6 +77,39 @@ QString EasyTierManager::public_server_address(int index) const {
         return {};
     }
     return easytier_public_servers.at(index).address;
+}
+
+QString EasyTierManager::generate_room_code() const {
+    QString code;
+    code.reserve(kRoomCodeLength);
+    QRandomGenerator rng = QRandomGenerator::securelySeeded();
+    for (int i = 0; i < kRoomCodeLength; ++i) {
+        const int idx = rng.bounded(kRoomCodeAlphabet.size());
+        code.append(kRoomCodeAlphabet[idx]);
+    }
+    return code;
+}
+
+QVariantMap EasyTierManager::credentials_for_code(const QString& code) const {
+    QVariantMap m;
+    const QString upper = code.toUpper();
+    m.insert(QStringLiteral("name"), kRoomNamePrefix + upper);
+    const QByteArray digest = QCryptographicHash::hash(
+        (kRoomSecretSalt + upper).toUtf8(), QCryptographicHash::Sha256);
+    m.insert(QStringLiteral("secret"), QString::fromLatin1(digest.toHex()));
+    return m;
+}
+
+bool EasyTierManager::is_valid_room_code(const QString& code) const {
+    if (code.length() != kRoomCodeLength) {
+        return false;
+    }
+    for (const QChar c : code) {
+        if (!kRoomCodeAlphabet.contains(c.toUpper())) {
+            return false;
+        }
+    }
+    return true;
 }
 
 QString EasyTierManager::default_install_dir() const {
@@ -247,8 +292,9 @@ Q_INVOKABLE void EasyTierManager::start(const QString& network_name,
     const QStringList args{
         QStringLiteral("--network-name"),   network_name,
         QStringLiteral("--network-secret"), network_secret,
+        QStringLiteral("--ipv4"),           QStringLiteral("10.126.126.1"),
         QStringLiteral("--peers"),          peer_address,
-        QStringLiteral("--dhcp"),           QStringLiteral("true"),
+        QStringLiteral("--need-p2p"),       QStringLiteral("true"),
     };
     // AI-generated: connect first so the polling kicks in whether the
     // process is already running (Linux pkexec) or starts asynchronously
@@ -285,11 +331,11 @@ Q_INVOKABLE void EasyTierManager::start_join(const QString& network_name,
         QStringLiteral("--network-name"),   network_name,
         QStringLiteral("--network-secret"), network_secret,
         QStringLiteral("--peers"),          peer_address,
-        QStringLiteral("--no-tun"),         QStringLiteral("true"),
         QStringLiteral("--dhcp"),           QStringLiteral("true"),
     };
     launch_process(core_binary(), args,
-                   QProcessEnvironment::systemEnvironment());
+                   QProcessEnvironment::systemEnvironment(),
+                   /*elevate=*/true);
 }
 
 Q_INVOKABLE void EasyTierManager::stop() {
