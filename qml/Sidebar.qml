@@ -95,20 +95,22 @@ Item {
                         leftPadding: root.expanded ? Theme.space16 : 0
                         rightPadding: root.expanded ? Theme.space16 : 0
 
-                        contentItem: RowLayout {
-                            spacing: Theme.space12
+                        contentItem: Item {
                             MdIcon {
-                                Layout.alignment: Qt.AlignCenter
+                                x: root.expanded ? 0 : (parent.width - width) / 2
+                                anchors.verticalCenter: parent.verticalCenter
                                 name: navDelegate.modelData.icon
                                 color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
                             }
                             Label {
                                 visible: root.expanded
-                                Layout.fillWidth: true
+                                anchors.fill: parent
                                 text: navList.labelFor(navDelegate.modelData.key)
                                 color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
                                 font.pixelSize: Theme.bodySize
                                 font.weight: navDelegate.highlighted ? Font.DemiBold : Font.Normal
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
                             }
                         }
 

@@ -62,21 +62,50 @@ MdDialog {
                 width: mirrorList.width
                 height: 64
                 highlighted: Settings.mirrorIndex === index
+                leftPadding: Theme.space16
+                rightPadding: Theme.space16
+                topPadding: 0
+                bottomPadding: 0
                 onClicked: { Settings.mirrorIndex = index; root.close(); }
                 contentItem: RowLayout {
-                    MdIcon { name: row.highlighted ? "check" : "public"; color: row.highlighted ? Theme.primary : Theme.surfaceVariantForeground }
-                    ColumnLayout {
+                    spacing: Theme.space12
+                    Item {
+                        Layout.preferredWidth: 24
+                        Layout.fillHeight: true
+                        MdIcon {
+                            anchors.centerIn: parent
+                            name: row.highlighted ? "check" : "public"
+                            color: row.highlighted ? Theme.primary : Theme.surfaceVariantForeground
+                        }
+                    }
+                    Label {
                         Layout.fillWidth: true
-                        spacing: 2
-                        Label { text: row.name; color: Theme.surfaceForeground; font.pixelSize: Theme.bodyLargeSize }
+                        text: row.name
+                        color: Theme.surfaceForeground
+                        font.pixelSize: Theme.bodyLargeSize
+                        elide: Text.ElideRight
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    RowLayout {
+                        Layout.preferredWidth: 120
+                        Layout.alignment: Qt.AlignVCenter
+                        spacing: Theme.space8
                         Label {
+                            Layout.fillWidth: true
                             text: row.testing ? qsTr("Testing latency…")
                                   : row.latency < 0 ? qsTr("Timed out") : row.latency + " " + qsTr("ms")
                             color: row.latency >= 0 && row.latency < 300 ? Theme.primary : Theme.surfaceVariantForeground
                             font.pixelSize: Theme.labelSize
+                            horizontalAlignment: Text.AlignRight
+                            elide: Text.ElideRight
+                        }
+                        BusyIndicator {
+                            visible: row.testing
+                            running: row.testing
+                            implicitWidth: 20
+                            implicitHeight: 20
                         }
                     }
-                    BusyIndicator { visible: row.testing; running: row.testing; implicitWidth: 24; implicitHeight: 24 }
                 }
                 background: Rectangle {
                     radius: Theme.radiusMedium

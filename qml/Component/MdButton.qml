@@ -37,21 +37,30 @@ Button {
         return "transparent";
     }
 
-    contentItem: RowLayout {
-        id: contentRow
-        spacing: Theme.space8
-        MdIcon {
-            visible: root.iconName.length > 0
-            name: root.iconName
-            color: root.foregroundColor()
-            iconSize: 20
-        }
-        Label {
-            text: root.text
-            color: root.foregroundColor()
-            font.pixelSize: Theme.labelSize
-            font.weight: Font.DemiBold
-            Layout.alignment: Qt.AlignVCenter
+    contentItem: Item {
+        implicitWidth: contentRow.implicitWidth
+        implicitHeight: contentRow.implicitHeight
+
+        RowLayout {
+            id: contentRow
+            anchors.centerIn: parent
+            spacing: Theme.space8
+            MdIcon {
+                visible: root.iconName.length > 0
+                name: root.iconName
+                color: root.foregroundColor()
+                iconSize: 20
+                Layout.alignment: Qt.AlignVCenter
+            }
+            Label {
+                text: root.text
+                color: root.foregroundColor()
+                font.pixelSize: Theme.labelSize
+                font.weight: Font.DemiBold
+                verticalAlignment: Text.AlignVCenter
+                Layout.preferredHeight: 20
+                Layout.alignment: Qt.AlignVCenter
+            }
         }
     }
 
