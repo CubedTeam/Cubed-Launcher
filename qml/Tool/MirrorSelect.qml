@@ -6,9 +6,9 @@ import CubedLauncher
 
 MdDialog {
     id: root
-    anchors.centerIn: Overlay.overlay
-    width: Math.min(560, Overlay.overlay.width - 48)
-    height: Math.min(560, Overlay.overlay.height - 48)
+    anchors.centerIn: parent
+    width: Math.min(560, parent ? parent.width - 48 : 560)
+    height: Math.min(560, parent ? parent.height - 48 : 560)
     modal: true
     title: qsTr("Select Mirror Source")
     standardButtons: Dialog.NoButton

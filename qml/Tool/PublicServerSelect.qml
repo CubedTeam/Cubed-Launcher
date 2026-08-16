@@ -6,9 +6,9 @@ import CubedLauncher
 
 MdDialog {
     id: root
-    anchors.centerIn: Overlay.overlay
-    width: Math.min(520, Overlay.overlay.width - 48)
-    height: Math.min(440, Overlay.overlay.height - 48)
+    anchors.centerIn: parent
+    width: Math.min(520, parent ? parent.width - 48 : 520)
+    height: Math.min(440, parent ? parent.height - 48 : 440)
     modal: true
     title: qsTr("Select Public Server")
     standardButtons: Dialog.NoButton

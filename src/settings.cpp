@@ -43,6 +43,7 @@ Settings* Settings::s_instance = nullptr;
 Settings::Settings(QObject* parent)
     : QObject(parent), m_settings(QSettings::IniFormat, QSettings::UserScope,
                                   "Cubed", "Launcher") {
+    qRegisterMetaType<ThemeMode>("Settings::ThemeMode");
     load();
     if (s_instance == nullptr) {
         s_instance = this;
@@ -121,9 +122,11 @@ void Settings::set_accent_color(const QColor& color) {
 }
 
 void Settings::set_theme_mode(ThemeMode mode) {
-    if (!update_value(m_theme_mode, mode, "theme_mode")) {
+    if (m_theme_mode == mode) {
         return;
     }
+    m_theme_mode = mode;
+    m_settings.setValue("theme_mode", static_cast<int>(mode));
     Q_EMIT theme_mode_changed();
 }
 
@@ -273,6 +276,7 @@ void Settings::load() {
         theme_mode <= static_cast<int>(ThemeMode::Dark)) {
         m_theme_mode = static_cast<ThemeMode>(theme_mode);
     }
+    m_settings.setValue("theme_mode", static_cast<int>(m_theme_mode));
     m_card_colorful_border =
         m_settings.value("card_colorful_border", true).toBool();
     m_wrapper_command = m_settings.value("wrapper_command").toString();
