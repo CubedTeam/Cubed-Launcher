@@ -130,7 +130,7 @@ void BinaryServiceBase::check_and_install(int mirror_index) {
     append_log(
         QStringLiteral("Checking %1 latest release...").arg(service_name()));
 
-    m_fetcher.fetch(repo_owner(), repo_name(), platform_asset_pattern(),
+    m_fetcher.fetch(repo_owner(), repo_name(), platform_asset_pattern(), false,
                     [this, mirror_index](GithubReleaseFetcher::Result r) {
                         on_release_fetched(mirror_index, r);
                     });

@@ -151,27 +151,32 @@
         <translation>安装完成</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="236"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="223"/>
+        <source>A new game version is available</source>
+        <translation>有新的游戏版本可用</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tool/DownloadGame.qml" line="245"/>
         <source>Game Install Directory: </source>
         <translation>游戏安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="258"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="267"/>
         <source>Advanced Option</source>
         <translation>高级选项</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="277"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="286"/>
         <source>Set Game Folder</source>
         <translation>设置游戏文件夹</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="288"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="297"/>
         <source>Reset Path</source>
         <translation>重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="307"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="316"/>
         <source>Select Game Folder</source>
         <translation>选择游戏文件夹</translation>
     </message>
@@ -239,103 +244,103 @@
         <translation type="vanished">EasyTier 客户端：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="88"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="82"/>
         <source>Select...</source>
         <translation>选择...</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="180"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="174"/>
         <source>EasyTier Client</source>
         <translation>EasyTier 客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="187"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="181"/>
         <source>Status: %1</source>
         <translation>状态：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="187"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="181"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="187"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="181"/>
         <source>Stopped</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="202"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="196"/>
         <source>Create Room</source>
         <translation>创建房间</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="207"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="201"/>
         <source>Join Room</source>
         <translation>加入房间</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="223"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="217"/>
         <source>Public</source>
         <translation>公共</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="228"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="222"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="247"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="241"/>
         <source>Public Server: </source>
         <translation>公共服务器：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="257"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="251"/>
         <source>Peer address (e.g. tcp://1.2.3.4:1010)</source>
         <translation>对等节点地址（例如 tcp://1.2.3.4:1010）</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="269"/>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="312"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="263"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="306"/>
         <source>Room Code:</source>
         <translation>房间码：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="296"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="290"/>
         <source>Regenerate</source>
         <translation>重新生成</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="321"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="315"/>
         <source>6-char code</source>
         <translation>6 位房间码</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="333"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="327"/>
         <source>Invalid room code</source>
         <translation>房间码无效</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="346"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="340"/>
         <source>Enter the room code from the host above, then click Start.</source>
         <translation>在上方输入房主提供的房间码，然后点击启动。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="541"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="535"/>
         <source>Manual Network Identity</source>
         <translation>手动网络身份</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="548"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="542"/>
         <source>When both fields are filled, overrides the room code.</source>
         <translation>当两个字段都填时，将覆盖房间码派生值。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="559"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="553"/>
         <source>Network name</source>
         <translation>网络名称</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="567"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="561"/>
         <source>Network secret</source>
         <translation>网络密钥</translation>
     </message>
@@ -352,48 +357,48 @@
         <translation type="vanished">本地监听端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="364"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="358"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="382"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="376"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="401"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="395"/>
         <source>Security Warning</source>
         <translation>安全警告</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="409"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="403"/>
         <source>The Cubed launcher itself does not require administrator or root privileges. However, when starting, easytier-core will request administrator (Windows) or root (Linux) privileges to create a TUN/TAP virtual network interface. With elevated privileges, the easytier-core process can extensively control this machine&apos;s network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.</source>
         <translation>启动器本身不需要管理员或 root 权限。但启动时，easytier-core 会申请管理员（Windows）或 root（Linux）权限以创建 TUN/TAP 虚拟网卡。以提升的权限运行时，easytier-core 进程能够大范围操控本机的网络栈，请确认仅在信任此软件且了解风险与后果后再继续。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="440"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="434"/>
         <source>Virtual IP</source>
         <translation>虚拟 IP</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="455"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="449"/>
         <source>--</source>
         <translation>--</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="287"/>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="465"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="281"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="459"/>
         <source>Copy</source>
         <translation>复制</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="475"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="469"/>
         <source>Refresh</source>
         <translation>刷新</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="483"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="477"/>
         <source>Waiting for easytier to assign IP...</source>
         <translation>等待 easytier 分配 IP...</translation>
     </message>
@@ -410,12 +415,12 @@
         <translation type="vanished">启动器本身不需要管理员或 root 权限。但启动时，easytier-core 会申请管理员（Windows）或 root（Linux）权限以创建 TUN/TAP 虚拟网卡。以提升的权限运行时，easytier-core 进程能够大范围操控本机的网络栈，请确认仅在信任此软件且了解风险与后果后再继续。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="420"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="414"/>
         <source>Recommendation: use frp instead (does not require administrator or root privileges).</source>
         <translation>建议：改用 frp（无需管理员或 root 权限）。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="580"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="574"/>
         <source>EasyTier Install Directory</source>
         <translation>EasyTier 安装目录</translation>
     </message>
@@ -428,7 +433,7 @@
         <translation type="vanished">显示日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="508"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="502"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
@@ -437,7 +442,7 @@
         <translation type="vanished">EasyTier 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="581"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="575"/>
         <source>Set EasyTier Folder</source>
         <translation>设置 EasyTier 文件夹</translation>
     </message>
@@ -446,7 +451,7 @@
         <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="597"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="591"/>
         <source>Select EasyTier Folder</source>
         <translation>选择 EasyTier 文件夹</translation>
     </message>
@@ -920,7 +925,7 @@
         <translation>主题颜色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="122"/>
+        <location filename="../qml/Tab/Setting.qml" line="140"/>
         <source>Advanced Setting</source>
         <translation>高级设置</translation>
     </message>
@@ -930,80 +935,85 @@
         <translation>彩色卡片边框</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="137"/>
-        <location filename="../qml/Tab/Setting.qml" line="145"/>
+        <location filename="../qml/Tab/Setting.qml" line="122"/>
+        <source>Receive Pre-release Updates</source>
+        <translation>接收预发布版本更新</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="155"/>
+        <location filename="../qml/Tab/Setting.qml" line="163"/>
         <source>Wrapper Command</source>
         <translation>包装器命令</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="164"/>
+        <location filename="../qml/Tab/Setting.qml" line="182"/>
         <source>Log</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="176"/>
+        <location filename="../qml/Tab/Setting.qml" line="194"/>
         <source>On</source>
         <translation>开启</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="176"/>
+        <location filename="../qml/Tab/Setting.qml" line="194"/>
         <source>Off</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="263"/>
+        <location filename="../qml/Tab/Setting.qml" line="281"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="272"/>
+        <location filename="../qml/Tab/Setting.qml" line="290"/>
         <source>Host</source>
         <translation>主机</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="272"/>
+        <location filename="../qml/Tab/Setting.qml" line="290"/>
         <source>Client</source>
         <translation>客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="283"/>
-        <location filename="../qml/Tab/Setting.qml" line="304"/>
+        <location filename="../qml/Tab/Setting.qml" line="301"/>
+        <location filename="../qml/Tab/Setting.qml" line="322"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="296"/>
+        <location filename="../qml/Tab/Setting.qml" line="314"/>
         <source>Ip</source>
         <translation>IP 地址</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="191"/>
+        <location filename="../qml/Tab/Setting.qml" line="209"/>
         <source>Cache</source>
         <translation>缓存</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="201"/>
-        <location filename="../qml/Tab/Setting.qml" line="323"/>
+        <location filename="../qml/Tab/Setting.qml" line="219"/>
+        <location filename="../qml/Tab/Setting.qml" line="341"/>
         <source>Clear Cache</source>
         <translation>清理缓存</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="217"/>
+        <location filename="../qml/Tab/Setting.qml" line="235"/>
         <source>GitHub Token</source>
         <translation>GitHub Token</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="226"/>
+        <location filename="../qml/Tab/Setting.qml" line="244"/>
         <source>Enter GitHub Token</source>
         <translation>输入 GitHub Token</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="233"/>
+        <location filename="../qml/Tab/Setting.qml" line="251"/>
         <source>Token stored in system keyring. Environment variable takes precedence.</source>
         <translation>Token 保存在系统密钥环中,环境变量优先。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="247"/>
+        <location filename="../qml/Tab/Setting.qml" line="265"/>
         <source>Remove Token</source>
         <translation>移除 Token</translation>
     </message>

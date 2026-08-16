@@ -35,6 +35,9 @@ class Settings : public QObject {
                        easytier_public_server_index_changed FINAL)
     Q_PROPERTY(QString githubToken READ github_token WRITE set_github_token
                    NOTIFY github_token_changed FINAL)
+    Q_PROPERTY(
+        bool prereleaseUpdates READ prerelease_updates WRITE
+            set_prerelease_updates NOTIFY prerelease_updates_changed FINAL)
 public:
     explicit Settings(QObject* parent = nullptr);
     QString game_dir() const;
@@ -49,6 +52,7 @@ public:
     QString easytier_install_path() const;
     int easytier_public_server_index() const;
     QString github_token() const;
+    bool prerelease_updates() const;
     static Settings* instance();
 public Q_SLOTS:
     void set_game_dir_url(const QUrl& path);
@@ -65,6 +69,7 @@ public Q_SLOTS:
     void set_easytier_install_path(const QString& path);
     void set_easytier_public_server_index(int index);
     void set_github_token(const QString& token);
+    void set_prerelease_updates(bool enabled);
     void clear_cache();
 Q_SIGNALS:
     void game_dir_changed();
@@ -79,6 +84,7 @@ Q_SIGNALS:
     void easytier_install_path_changed();
     void easytier_public_server_index_changed();
     void github_token_changed();
+    void prerelease_updates_changed();
 
 private:
     QSettings m_settings;
@@ -91,6 +97,7 @@ private:
     QString m_easytier_install_path;
     int m_easytier_public_server_index{-1};
     QString m_github_token;
+    bool m_prerelease_updates{false};
 
     QColor m_accent_color;
     bool m_card_colorful_border{true};

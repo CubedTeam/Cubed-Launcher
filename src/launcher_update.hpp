@@ -2,12 +2,13 @@
 
 #include "tool/file_downloader.hpp"
 #include "tool/github_release.hpp"
+#include "tool/semantic_version.hpp"
 
 #include <QCoreApplication>
 #include <QNetworkAccessManager>
 #include <QObject>
 #include <QQmlEngine>
-#include <QVersionNumber>
+#include <optional>
 class LauncherUpdate : public QObject {
     Q_OBJECT
     QML_ELEMENT
@@ -65,8 +66,8 @@ private:
     FileDownloader m_downloader;
 
     bool m_new_version{false};
-    QVersionNumber m_local_version;
-    QVersionNumber m_remote_version;
+    std::optional<SemanticVersion> m_local_version;
+    std::optional<SemanticVersion> m_remote_version;
     QString m_latest_launcher_link;
 
     void update_launcher_internal(const QString& url);

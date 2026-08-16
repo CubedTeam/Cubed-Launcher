@@ -23,11 +23,13 @@ public:
     ~GithubReleaseFetcher() override;
 
     bool fetch(const QString& owner, const QString& repo,
-               const QRegularExpression& assetRegex, Callback callback);
+               const QRegularExpression& assetRegex, bool includePrereleases,
+               Callback callback);
 
 private:
     QNetworkAccessManager* m_manager;
     QNetworkReply* m_reply = nullptr;
     const QString m_name;
     Callback m_callback;
+    quint64 m_request_generation = 0;
 };

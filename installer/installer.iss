@@ -2,10 +2,12 @@
 #define CubedLauncherVersion "dev"
 #endif
 
-#if CubedLauncherVersion == "dev"
-  #define CubedLauncherFileVersion "0.0.0.0"
-#else
-  #define CubedLauncherFileVersion CubedLauncherVersion + ".0"
+#ifndef CubedLauncherFileVersion
+  #if CubedLauncherVersion == "dev"
+    #define CubedLauncherFileVersion "0.0.0.0"
+  #else
+    #define CubedLauncherFileVersion CubedLauncherVersion + ".0"
+  #endif
 #endif
 
 [Setup]
