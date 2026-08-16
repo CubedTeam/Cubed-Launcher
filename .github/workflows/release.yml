@@ -9,6 +9,8 @@ on:
         default: dev
 
   push:
+    branches:
+      - main
     tags:
       - "v*"
 
@@ -30,7 +32,7 @@ jobs:
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION="${GITHUB_REF_NAME#v}"
           else
-            VERSION="${{ github.event.inputs.version }}"
+            VERSION="${{ github.event.inputs.version || 'dev' }}"
           fi
 
           if [[ "$VERSION" != "dev" ]]; then
@@ -61,12 +63,14 @@ jobs:
     with:
       version: ${{ needs.get-version.outputs.version }}
       core_version: ${{ needs.get-version.outputs.core_version }}
+      package: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
 
   build-linux:
     needs: get-version
     uses: $/.github/workflows/build-linux.yml
     with:
       version: ${{ needs.get-version.outputs.version }}
+      package: ${{ github.event_name != 'push' || github.ref != 'refs/heads/main' }}
 
   release:
     runs-on: ubuntu-latest

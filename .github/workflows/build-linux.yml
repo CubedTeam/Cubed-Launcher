@@ -6,6 +6,10 @@ on:
       version:
         required: true
         type: string
+      package:
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -15,6 +19,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Compiler Cache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: linux-release
 
       - name: Install Linux Dependencies
         run: |
@@ -39,6 +48,7 @@ jobs:
           target: desktop
           arch: linux_gcc_64
           version: '6.8.3'
+          cache: true
 
       - name: Configure
         run: >
@@ -46,21 +56,26 @@ jobs:
           -B build
           -G Ninja
           -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_C_COMPILER_LAUNCHER=ccache
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           "-DAPP_VERSION=${{ inputs.version }}"
 
       - name: Build
         run: cmake --build build --config Release --target CubedLauncher
 
       - name: Install App
+        if: inputs.package
         run: |
           cmake --install build --prefix AppDir/usr
 
       - name: Install linuxdeploy
+        if: inputs.package
         uses: miurahr/install-linuxdeploy-action@v1
         with:
           plugins: qt appimage
 
       - name: Build AppImage
+        if: inputs.package
         env:
           QML_SOURCES_PATHS: "qml"
           LDAI_OUTPUT: "CubedLauncher-${{ inputs.version }}-linux-x64.AppImage"
@@ -72,6 +87,7 @@ jobs:
             --output appimage
 
       - name: Upload Linux Artifact
+        if: inputs.package
         uses: actions/upload-artifact@v4
         with:
           name: linux
