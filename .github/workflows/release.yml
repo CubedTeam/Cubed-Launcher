@@ -103,7 +103,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: |
-            artifacts/**/*
+            artifacts/CubedLauncher-*
             artifacts/SHA256SUMS
           generate_release_notes: true
           draft: false
