@@ -1,300 +1,142 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
-import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Layouts
+import CubedLauncher
 
-Item {
-    // AI-generated: size to the inner column so Manager.qml's Flickable
-    // reports a real height and can scroll correctly.
-    implicitWidth: managerColumn.implicitWidth
-    implicitHeight: managerColumn.implicitHeight
-    width: managerColumn.width
-    height: managerColumn.implicitHeight
+Card {
+    id: root
+    implicitHeight: managerColumn.implicitHeight + Theme.space32 * 2
 
     ColumnLayout {
         id: managerColumn
-        anchors.horizontalCenter: parent.horizontalCenter
-        width: 520
-        spacing: 10
-        Component.onCompleted: {
-            GameUpdate.gameInstallPath = Settings.gameDir;
+        anchors.fill: parent
+        anchors.margins: Theme.space32
+        spacing: Theme.space16
+
+        Component.onCompleted: GameUpdate.gameInstallPath = Settings.gameDir
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: Theme.space12
+            MdIcon { name: "download"; color: Theme.primary; iconSize: 32 }
+            ColumnLayout {
+                Layout.fillWidth: true
+                spacing: 2
+                Label {
+                    text: CubedGame.installed ? qsTr("Update Cubed") : qsTr("Install Cubed")
+                    color: Theme.surfaceForeground
+                    font.pixelSize: Theme.titleSize
+                    font.weight: Font.DemiBold
+                }
+                Label {
+                    text: CubedGame.installed
+                        ? qsTr("Installed version: %1").arg(CubedGame.version)
+                        : qsTr("The game has not been installed on this device.")
+                    color: Theme.surfaceVariantForeground
+                    font.pixelSize: Theme.bodySize
+                }
+            }
+            StatusChip {
+                text: GameUpdate.downloading ? qsTr("Downloading")
+                      : GameUpdate.checkingUpdate ? qsTr("Checking")
+                      : CubedGame.installed ? qsTr("Installed") : qsTr("Not installed")
+                iconName: GameUpdate.downloading ? "download" : CubedGame.installed ? "check" : "info"
+                tone: CubedGame.installed ? "success" : "neutral"
+            }
         }
 
-        Card {
-            Layout.preferredHeight: sourceLayout.implicitHeight + 20
+        Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+
+        GridLayout {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
+            columns: root.width >= 760 ? 2 : 1
+            columnSpacing: Theme.space24
+            rowSpacing: Theme.space16
+
             ColumnLayout {
-                id: sourceLayout
-                anchors.centerIn: parent
-                spacing: managerColumn.spacing
+                Layout.fillWidth: true
+                spacing: Theme.space12
                 Label {
-                    text: qsTr("Download Source")
-                    font.pixelSize: 20
-                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("Download source")
+                    color: Theme.surfaceForeground
+                    font.pixelSize: Theme.bodyLargeSize
+                    font.weight: Font.DemiBold
                 }
-                Switch {
+                MdSwitch {
                     id: downloadSource
-                    text: qsTr("Use Custom Link")
-                    checked: false
-                    font.pixelSize: 20
-                    Layout.alignment: Qt.AlignCenter
+                    text: qsTr("Use custom link")
                 }
-                Button {
-                    id: mirrorButton
+                MdButton {
                     visible: !downloadSource.checked
-                    enabled: !downloadSource.checked
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: 400
-                    Layout.preferredHeight: 60
-                    Material.roundedScale: Material.MediumScale
-                    highlighted: enabled
-                    font.pixelSize: 20
+                    Layout.fillWidth: true
+                    variant: "tonal"
+                    iconName: "public"
                     text: {
-                        const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                        return qsTr("Mirror: ") + MirrorSource.names[idx];
+                        const index = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                        return qsTr("Mirror: ") + MirrorSource.names[index];
                     }
                     onClicked: mirrorPopup.open()
                 }
-                TextField {
+                MdTextField {
                     id: downloadLink
                     visible: downloadSource.checked
-                    enabled: downloadSource.checked
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: 400
-                    Layout.preferredHeight: 60
+                    Layout.fillWidth: true
                     placeholderText: qsTr("Download Link")
                 }
             }
-        }
 
-        Card {
-            Layout.preferredHeight: actionLayout.implicitHeight + 20
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
             ColumnLayout {
-                id: actionLayout
-                anchors.centerIn: parent
-                spacing: managerColumn.spacing
-                Button {
-                    id: downloadGameGithubButton
-                    visible: !downloadSource.checked
-                    enabled: !downloadSource.checked && !GameUpdate.checkingUpdate && !GameUpdate.downloading
-                    Layout.alignment: Qt.AlignCenter
-                    Material.roundedScale: Material.MediumScale
-                    Layout.preferredWidth: 250
-                    Layout.preferredHeight: 60
-                    highlighted: enabled
-
-                    font.pixelSize: 20
-                    text: CubedGame.installed ? qsTr("Update Game") : qsTr("Install Game")
-
-                    onClicked: {
-                        if (!Settings.pathSetted) {
-                            Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
-                        }
-
-                        downloadProgress.visible = true;
-                        cancelButton.visible = true;
-                        gamePathButton.enabled = false;
-                        gamePathButton.highlighted = false;
-                        enabled = false;
-                        highlighted = false;
-                        const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                        GameUpdate.download_from_github(idx);
-                    }
+                Layout.fillWidth: true
+                spacing: Theme.space12
+                Label {
+                    text: qsTr("Install location")
+                    color: Theme.surfaceForeground
+                    font.pixelSize: Theme.bodyLargeSize
+                    font.weight: Font.DemiBold
                 }
-
-                Button {
-                    id: downloadGameCustomButton
-                    visible: downloadSource.checked
-                    enabled: downloadSource.checked
-                    Layout.alignment: Qt.AlignCenter
-                    Material.roundedScale: Material.MediumScale
-                    Layout.preferredWidth: 250
-                    Layout.preferredHeight: 60
-                    highlighted: true
-
-                    font.pixelSize: 20
-                    text: CubedGame.installed ? qsTr("Update Game") : qsTr("Install Game")
-                    onClicked: {
-                        if (!Settings.pathSetted) {
-                            Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
-                        }
-
-                        downloadProgress.visible = true;
-                        cancelButton.visible = true;
-                        gamePathButton.enabled = false;
-                        gamePathButton.highlighted = false;
-                        enabled = false;
-                        highlighted = false;
-                        GameUpdate.download_game(downloadLink.text);
-                    }
-                }
-
-                Button {
-                    id: cancelButton
-                    visible: false
-                    enabled: GameUpdate.downloading
-                    Layout.alignment: Qt.AlignCenter
-                    Material.roundedScale: Material.MediumScale
-                    Layout.preferredWidth: 250
-                    Layout.preferredHeight: 60
-                    highlighted: enabled
-                    Material.background: Material.color(Material.Red)
-
-                    font.pixelSize: 20
-                    text: qsTr("Cancel Download")
-                    onClicked: {
-                        GameUpdate.cancel_download();
-                    }
-                }
-                ProgressBar {
-                    id: downloadProgress
-                    Layout.alignment: Qt.AlignCenter
-                    visible: false
-                    from: 0.0
-                    to: 1.0
-                    Layout.preferredHeight: 20
-                    Layout.preferredWidth: 400
-                    value: GameUpdate.downloadProgress
-                    onValueChanged: {
-                        if (value >= to && !GameUpdate.hasError) {
-                            console.log("Download Finish");
-                            visible = false;
-                            CubedGame.check_version();
+                Rectangle {
+                    Layout.fillWidth: true
+                    implicitHeight: pathLabel.implicitHeight + Theme.space16 * 2
+                    radius: Theme.radiusMedium
+                    color: Theme.surfaceContainer
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: Theme.space16
+                        spacing: Theme.space12
+                        MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
+                        Label {
+                            id: pathLabel
+                            Layout.fillWidth: true
+                            text: GameUpdate.gameInstallPath.length > 0
+                                ? GameUpdate.gameInstallPath : SystemInfo.defaultGameInstallDir
+                            color: Theme.surfaceVariantForeground
+                            font.pixelSize: Theme.labelSize
+                            wrapMode: Text.WrapAnywhere
                         }
                     }
                 }
-
-                // AI-generated: re-enable Install Game after download ends.
-                Connections {
-                    target: GameUpdate
-                    function onDownloadingChanged() {
-                        if (!GameUpdate.downloading) {
-                            downloadGameGithubButton.enabled = true && !downloadSource.checked && !GameUpdate.checkingUpdate;
-                            downloadGameGithubButton.highlighted = downloadGameGithubButton.enabled;
-                            downloadGameCustomButton.enabled = true && downloadSource.checked;
-                            downloadGameCustomButton.highlighted = downloadGameCustomButton.enabled;
-                            gamePathButton.enabled = true;
-                            gamePathButton.highlighted = true;
-                            cancelButton.visible = false;
-                            if (!GameUpdate.downloadFinish || GameUpdate.hasError) {
-                                downloadProgress.visible = false;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Card {
-            Layout.preferredHeight: statusLayout.implicitHeight + 20
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            ColumnLayout {
-                id: statusLayout
-                anchors.centerIn: parent
-                spacing: managerColumn.spacing
-                Label {
-                    text: qsTr("Checking Update...")
-                    visible: GameUpdate.checkingUpdate
-                    Layout.alignment: Qt.AlignCenter
-                    font.pixelSize: 24
-                    font.bold: true
-                }
-                Label {
-                    text: qsTr("Install Finished")
-                    visible: GameUpdate.downloadFinish && !GameUpdate.hasError
-                    Layout.alignment: Qt.AlignCenter
-                    font.pixelSize: 24
-                    font.bold: true
-                    color: Material.color(Material.Green)
-
-                    onVisibleChanged: {
-                        CubedGame.check_version();
-                    }
-                }
-
-                Label {
-                    text: qsTr("A new game version is available")
-                    visible: GameUpdate.hasNewVersion && !GameUpdate.checkingUpdate && !GameUpdate.hasError
-                    Layout.alignment: Qt.AlignCenter
-                    font.pixelSize: 24
-                    font.bold: true
-                    color: Material.accent
-                }
-
-                Label {
-                    text: GameUpdate.errorMessage
-                    visible: GameUpdate.hasError
-                    enabled: GameUpdate.hasError
-                    font.bold: true
-                    Layout.alignment: Qt.AlignCenter
-                    font.pixelSize: 24
-                    color: Material.color(Material.Red)
-                    wrapMode: Text.WrapAnywhere
-                    Layout.preferredWidth: 460
-                    horizontalAlignment: Text.AlignHCenter
-                }
-
-                Label {
-                    text: qsTr("Game Install Directory: ") + GameUpdate.gameInstallPath
-                    font.pixelSize: 20
-                    Layout.alignment: Qt.AlignCenter
-                    wrapMode: Text.WrapAnywhere
-                    Layout.preferredWidth: 460
-                    horizontalAlignment: Text.AlignHCenter
-                }
-            }
-        }
-
-        Card {
-            Layout.preferredHeight: advancedLayout.implicitHeight + 20
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            ColumnLayout {
-                id: advancedLayout
-                anchors.centerIn: parent
-                spacing: managerColumn.spacing
-                Switch {
-                    id: advancedOpt
-                    Layout.alignment: Qt.AlignCenter
-                    font.pixelSize: 20
-                    text: qsTr("Advanced Option")
-                    checked: false
+                MdSwitch {
+                    id: advancedOption
+                    text: qsTr("Advanced folder options")
                 }
                 RowLayout {
-                    enabled: advancedOpt.checked
-                    visible: advancedOpt.checked
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 10
-                    Button {
+                    visible: advancedOption.checked
+                    Layout.fillWidth: true
+                    MdButton {
                         id: gamePathButton
-
-                        Material.roundedScale: Material.MediumScale
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 60
-
-                        font.pixelSize: 20
-
-                        highlighted: true
-                        text: qsTr("Set Game Folder")
-                        onClicked: {
-                            gameFolderDialog.open();
-                        }
+                        Layout.fillWidth: true
+                        variant: "outlined"
+                        iconName: "folder"
+                        text: qsTr("Choose Folder")
+                        enabled: !GameUpdate.downloading
+                        onClicked: gameFolderDialog.open()
                     }
-                    Button {
-                        Material.roundedScale: Material.MediumScale
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 60
-                        font.pixelSize: 20
-                        text: qsTr("Reset Path")
+                    MdIconButton {
+                        iconName: "refresh"
+                        toolTip: qsTr("Reset path")
+                        enabled: !GameUpdate.downloading
                         onClicked: {
                             CubedGame.set_game_dir(SystemInfo.defaultGameInstallDir);
                             Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
@@ -304,13 +146,70 @@ Item {
                 }
             }
         }
+
+        MdProgressBar {
+            visible: GameUpdate.downloading
+            Layout.fillWidth: true
+            from: 0
+            to: 1
+            value: GameUpdate.downloadProgress
+        }
+
+        InfoBanner {
+            visible: GameUpdate.hasError
+            Layout.fillWidth: true
+            tone: "error"
+            text: GameUpdate.errorMessage
+        }
+        InfoBanner {
+            visible: GameUpdate.downloadFinish && !GameUpdate.hasError
+            Layout.fillWidth: true
+            iconName: "check"
+            text: qsTr("Installation finished successfully.")
+        }
+        InfoBanner {
+            visible: GameUpdate.hasNewVersion && !GameUpdate.checkingUpdate && !GameUpdate.hasError
+            Layout.fillWidth: true
+            iconName: "update"
+            text: qsTr("A new game version is available.")
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Item { Layout.fillWidth: true }
+            MdButton {
+                visible: GameUpdate.downloading
+                variant: "danger"
+                iconName: "stop"
+                text: qsTr("Cancel Download")
+                onClicked: GameUpdate.cancel_download()
+            }
+            MdButton {
+                visible: !GameUpdate.downloading
+                iconName: CubedGame.installed ? "update" : "download"
+                text: CubedGame.installed ? qsTr("Update Game") : qsTr("Install Game")
+                enabled: !GameUpdate.checkingUpdate && Qt.platform.os === "windows"
+                onClicked: {
+                    if (!Settings.pathSetted)
+                        Settings.set_game_dir(SystemInfo.defaultGameInstallDir);
+                    if (downloadSource.checked)
+                        GameUpdate.download_game(downloadLink.text);
+                    else
+                        GameUpdate.download_from_github(Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0));
+                }
+            }
+        }
     }
 
-    MirrorSelect {
-        id: mirrorPopup
-        parent: Overlay.overlay
+    Connections {
+        target: GameUpdate
+        function onDownloadingChanged() {
+            if (!GameUpdate.downloading && GameUpdate.downloadFinish)
+                CubedGame.check_version();
+        }
     }
 
+    MirrorSelect { id: mirrorPopup; parent: Overlay.overlay }
     FolderDialog {
         id: gameFolderDialog
         title: qsTr("Select Game Folder")

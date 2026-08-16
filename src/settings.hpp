@@ -8,6 +8,15 @@ class Settings : public QObject {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
+public:
+    enum class ThemeMode {
+        System,
+        Light,
+        Dark,
+    };
+    Q_ENUM(ThemeMode)
+
+private:
     Q_PROPERTY(QString gameDir READ game_dir WRITE set_game_dir_url NOTIFY
                    game_dir_changed FINAL)
     Q_PROPERTY(QString playerName READ player_name WRITE set_player_name NOTIFY
@@ -19,6 +28,10 @@ class Settings : public QObject {
                    language_changed FINAL)
     Q_PROPERTY(QColor accentColor READ accent_color WRITE set_accent_color
                    NOTIFY accent_color_changed FINAL)
+    Q_PROPERTY(ThemeMode themeMode READ theme_mode WRITE set_theme_mode NOTIFY
+                   theme_mode_changed FINAL)
+    Q_PROPERTY(QString themePalette READ theme_palette WRITE set_theme_palette
+                   NOTIFY theme_palette_changed FINAL)
     Q_PROPERTY(
         bool cardColorfulBorder READ card_colorful_border WRITE
             set_card_colorful_border NOTIFY card_colorful_border_changed FINAL)
@@ -46,6 +59,8 @@ public:
     int mirror_index() const;
     QString language() const;
     QColor accent_color() const;
+    ThemeMode theme_mode() const;
+    QString theme_palette() const;
     bool card_colorful_border() const;
     QString wrapper_command() const;
     QString frp_install_path() const;
@@ -61,6 +76,8 @@ public Q_SLOTS:
     void set_mirror_index(int index);
     void set_language(const QString& lang);
     void set_accent_color(const QColor& color);
+    void set_theme_mode(ThemeMode mode);
+    void set_theme_palette(const QString& palette);
     void set_card_colorful_border(bool enabled);
     void set_wrapper_command(const QString& command);
     void set_frp_install_path_url(const QUrl& path);
@@ -78,6 +95,8 @@ Q_SIGNALS:
     void mirror_index_changed();
     void language_changed();
     void accent_color_changed();
+    void theme_mode_changed();
+    void theme_palette_changed();
     void card_colorful_border_changed();
     void wrapper_command_changed();
     void frp_install_path_changed();
@@ -100,6 +119,8 @@ private:
     bool m_prerelease_updates{false};
 
     QColor m_accent_color;
+    ThemeMode m_theme_mode{ThemeMode::System};
+    QString m_theme_palette{"cubed"};
     bool m_card_colorful_border{true};
     static Settings* s_instance;
     void load();

@@ -1,225 +1,136 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
 import QtQuick.Layouts
+import CubedLauncher
 
 Item {
-    anchors.fill: parent
-    ColumnLayout {
-        anchors.centerIn: parent
+    id: root
+    implicitHeight: banner.implicitHeight
 
-        Button {
-            id: updateButton
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-            highlighted: true
-            Material.roundedScale: Material.MediumScale
-            Layout.alignment: Qt.AlignCenter
-            contentItem: ColumnLayout {
-                spacing: 5
-                anchors.top: parent.top
-                anchors.topMargin: 5
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                Text {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Launcher New Version")
-                    font.bold: true
-                    font.pixelSize: 16
-                    color: "white"
-                }
-                Text {
-                    Layout.alignment: Qt.AlignCenter
-
-                    text: LauncherUpdate.localVersion + " -> " + LauncherUpdate.remoteVersion
-                    color: "white"
-                    font.bold: true
-                    font.pixelSize: 16
-                }
-            }
-            onClicked: {
-                Qt.openUrlExternally("https://github.com/CubedTeam/Cubed-Launcher/releases");
-            }
-        }
-
-        Button {
-            id: updateLauncherButton
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 60
-            Material.roundedScale: Material.MediumScale
-            Layout.alignment: Qt.AlignCenter
-            highlighted: true
-            text: qsTr("Click me to Update")
-            font.bold: true
-            font.pixelSize: 16
-            onClicked: {
-                updatePopup.open();
-            }
-        }
-
-        Label {
-            enabled: LauncherUpdate.hasError
-            visible: LauncherUpdate.hasError
-            text: LauncherUpdate.errorMessage
-            color: Material.color(Material.Red)
-            Layout.alignment: Qt.AlignCenter
-            font.pixelSize: 20
-            font.bold: true
-            wrapMode: Text.WrapAnywhere
-            Layout.preferredWidth: 500
-            horizontalAlignment: Text.AlignHCenter
-        }
+    InfoBanner {
+        id: banner
+        anchors.left: parent.left
+        anchors.right: parent.right
+        tone: LauncherUpdate.hasError ? "error" : "info"
+        iconName: LauncherUpdate.hasError ? "warning" : "update"
+        text: LauncherUpdate.hasError
+            ? LauncherUpdate.errorMessage
+            : qsTr("Launcher update available: %1 → %2").arg(LauncherUpdate.localVersion).arg(LauncherUpdate.remoteVersion)
+        actionText: LauncherUpdate.hasError ? qsTr("Details") : qsTr("Update")
+        onActionClicked: updatePopup.open()
     }
 
-    Dialog {
+    MdDialog {
         id: updatePopup
+        parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
-        width: 520
-        height: 540
+        width: Math.min(560, Overlay.overlay.width - Theme.space32 * 2)
         modal: true
         focus: true
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         title: qsTr("Update Launcher")
         standardButtons: Dialog.NoButton
+        padding: Theme.space24
+        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
 
         ColumnLayout {
-            anchors.centerIn: parent
-            spacing: 10
+            width: parent.width
+            spacing: Theme.space16
 
-            Label {
-                text: qsTr("Only Support Windows")
-                Layout.alignment: Qt.AlignCenter
-
-                font.pixelSize: 20
+            InfoBanner {
+                visible: Qt.platform.os !== "windows"
+                Layout.fillWidth: true
+                tone: "warning"
+                text: qsTr("Automatic launcher updates are currently available on Windows only.")
             }
 
             Label {
-                text: LauncherUpdate.localVersion + " -> " + LauncherUpdate.remoteVersion
-                Layout.alignment: Qt.AlignCenter
+                text: LauncherUpdate.localVersion + " → " + LauncherUpdate.remoteVersion
+                color: Theme.surfaceForeground
+                font.pixelSize: Theme.titleSize
+                font.weight: Font.DemiBold
+                Layout.alignment: Qt.AlignHCenter
+            }
 
-                font.pixelSize: 20
+            MdSwitch {
+                id: customDownloadSwitch
+                text: qsTr("Use custom download link")
+                Layout.alignment: Qt.AlignHCenter
             }
-            Switch {
-                id: customDowlaodSwitch
-                checked: false
-                font.pixelSize: 20
-                Layout.alignment: Qt.AlignCenter
-                text: qsTr("Custom Link")
-            }
-            Button {
+
+            MdButton {
                 id: mirrorButton
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 400
-                Layout.preferredHeight: 60
-                Material.roundedScale: Material.MediumScale
-                visible: !customDowlaodSwitch.checked
-                enabled: visible
-                highlighted: true
-                font.pixelSize: 20
+                visible: !customDownloadSwitch.checked
+                Layout.fillWidth: true
+                variant: "tonal"
+                iconName: "public"
                 text: {
-                    const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                    return qsTr("Mirror: ") + MirrorSource.names[idx];
+                    const index = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                    return qsTr("Mirror: ") + MirrorSource.names[index];
                 }
                 onClicked: mirrorPopup.open()
             }
-            TextField {
+
+            MdTextField {
                 id: customLinkText
-                visible: customDowlaodSwitch.checked
-                enabled: visible
-                Layout.alignment: Qt.AlignCenter
-                Layout.preferredWidth: 400
-                Layout.preferredHeight: 60
+                visible: customDownloadSwitch.checked
+                Layout.fillWidth: true
                 placeholderText: qsTr("Download Link")
             }
-            MirrorSelect {
-                id: mirrorPopup
-                parent: Overlay.overlay
-            }
 
-            Button {
-                id: downloadUpdateButton
-                text: qsTr("Update")
-                enabled: !LauncherUpdate.downloading && (Qt.platform.os === "windows")
-                Layout.alignment: Qt.AlignCenter
-                font.pixelSize: 20
-                Material.roundedScale: Material.MediumScale
-                Layout.preferredWidth: 250
-                Layout.preferredHeight: 60
-                highlighted: enabled
-                onClicked: {
-                    launcherProgress.visible = true;
-                    cancelLauncherButton.visible = true;
-                    downloadUpdateButton.enabled = false;
-                    downloadUpdateButton.highlighted = false;
-                    if (customDowlaodSwitch.checked) {
-                        LauncherUpdate.update_launcher_from_url(customLinkText.text);
-                    } else {
-                        const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                        LauncherUpdate.update_launcher(idx);
-                    }
-                }
-            }
-
-            Button {
-                id: cancelLauncherButton
-                visible: false
-                enabled: LauncherUpdate.downloading
-                Layout.alignment: Qt.AlignCenter
-                Material.roundedScale: Material.MediumScale
-                Layout.preferredWidth: 250
-                Layout.preferredHeight: 60
-                Material.background: Material.color(Material.Red)
-                font.pixelSize: 20
-                text: qsTr("Cancel Download")
-                onClicked: {
-                    LauncherUpdate.cancel_download();
-                }
-            }
-            ProgressBar {
+            MdProgressBar {
                 id: launcherProgress
-                visible: false
-                Layout.alignment: Qt.AlignCenter
-                from: 0.0
-                to: 1.0
-                Layout.preferredHeight: 20
-                Layout.preferredWidth: 400
+                visible: LauncherUpdate.downloading
+                Layout.fillWidth: true
+                from: 0
+                to: 1
                 value: LauncherUpdate.downloadProgress
-                onValueChanged: {
-                    if (value >= to && !LauncherUpdate.hasError) {
-                        console.log("Launcher Download Finish");
-                        visible = false;
-                    }
-                }
-            }
-
-            // AI-generated: re-enable Update button once download ends any way.
-            Connections {
-                target: LauncherUpdate
-                function onDownloadingChanged() {
-                    if (!LauncherUpdate.downloading) {
-                        downloadUpdateButton.enabled = true && !LauncherUpdate.downloading;
-                        downloadUpdateButton.highlighted = downloadUpdateButton.enabled;
-                        cancelLauncherButton.visible = false;
-                        if (!LauncherUpdate.downloadFinish || LauncherUpdate.hasError) {
-                            launcherProgress.visible = false;
-                        }
-                    }
-                }
             }
 
             Label {
-                enabled: LauncherUpdate.hasError
                 visible: LauncherUpdate.hasError
                 text: LauncherUpdate.errorMessage
-                Layout.alignment: Qt.AlignCenter
-                font.pixelSize: 20
-                color: Material.color(Material.Red)
+                color: Theme.error
+                font.pixelSize: Theme.bodySize
                 wrapMode: Text.WrapAnywhere
-                Layout.preferredWidth: 500
                 horizontalAlignment: Text.AlignHCenter
+                Layout.fillWidth: true
             }
+
+            RowLayout {
+                Layout.fillWidth: true
+                Item { Layout.fillWidth: true }
+                MdButton {
+                    text: qsTr("Release page")
+                    variant: "text"
+                    onClicked: Qt.openUrlExternally("https://github.com/CubedTeam/Cubed-Launcher/releases")
+                }
+                MdButton {
+                    visible: LauncherUpdate.downloading
+                    text: qsTr("Cancel")
+                    variant: "danger"
+                    iconName: "stop"
+                    onClicked: LauncherUpdate.cancel_download()
+                }
+                MdButton {
+                    visible: !LauncherUpdate.downloading
+                    text: qsTr("Update")
+                    iconName: "update"
+                    enabled: Qt.platform.os === "windows"
+                    onClicked: {
+                        if (customDownloadSwitch.checked)
+                            LauncherUpdate.update_launcher_from_url(customLinkText.text);
+                        else
+                            LauncherUpdate.update_launcher(Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0));
+                    }
+                }
+            }
+        }
+
+        MirrorSelect {
+            id: mirrorPopup
+            parent: Overlay.overlay
         }
     }
 }

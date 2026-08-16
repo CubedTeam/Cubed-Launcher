@@ -54,6 +54,7 @@ qt_add_executable(${PROJECT_NAME}
     src/main.cpp
 )
 
+set_source_files_properties(qml/Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 
 if (WIN32)
     set_target_properties(${PROJECT_NAME}
@@ -69,8 +70,22 @@ qt_add_qml_module(${PROJECT_NAME}
     VERSION 1.0
     QML_FILES 
         qml/Main.qml
+        qml/Theme.qml
         qml/Sidebar.qml
         qml/Component/Card.qml
+        qml/Component/MdIcon.qml
+        qml/Component/MdButton.qml
+        qml/Component/MdIconButton.qml
+        qml/Component/MdTextField.qml
+        qml/Component/MdComboBox.qml
+        qml/Component/MdSwitch.qml
+        qml/Component/MdProgressBar.qml
+        qml/Component/MdDialog.qml
+        qml/Component/StatusChip.qml
+        qml/Component/InfoBanner.qml
+        qml/Component/SettingRow.qml
+        qml/Component/PageScaffold.qml
+        qml/Component/SectionHeader.qml
         qml/Component/FirstLaunchDialog.qml
         qml/Component/LogCard.qml
         qml/Component/InstallPathCard.qml
@@ -91,6 +106,8 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/pages/SpecialThanks.qml
     RESOURCES
         resources/logo.png
+        resources/CubedLauncher.png
+        resources/MaterialSymbols-LICENSE.txt
 
     SOURCES
         src/game/cubed_game.cpp

@@ -1,112 +1,166 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
 import QtQuick.Layouts
-import QtQuick.Controls.Material.impl
+import CubedLauncher
 
-Rectangle {
-    anchors.fill: parent
-
-    color: Material.backgroundColor
+Item {
+    id: root
+    property string appVersion
+    readonly property bool expanded: width >= 1180
+    readonly property int navigationWidth: expanded ? 216 : 88
 
     RowLayout {
         anchors.fill: parent
+        spacing: 0
+
         Rectangle {
-            Layout.preferredWidth: 140
+            Layout.preferredWidth: root.navigationWidth
             Layout.fillHeight: true
-            color: Material.backgroundColor
-            ListView {
-                id: navList
+            color: Theme.surfaceContainerLow
+
+            Behavior on Layout.preferredWidth {
+                NumberAnimation { duration: Theme.motionNormal; easing.type: Easing.OutCubic }
+            }
+
+            ColumnLayout {
                 anchors.fill: parent
+                anchors.margins: Theme.space12
+                spacing: Theme.space8
 
-                // AI-generated: plain string keys so retranslate does not rebuild
-                // the model and currentIndex stays stable.
-                model: ["Launcher", "Manager", "Multiplayer", "Setting", "About"]
-                currentIndex: SideTool.currentIndex
-
-                delegate: ItemDelegate {
-                    id: sideDelegate
-                    required property int index
-                    required property string modelData
-                    width: ListView.view.width
-                    height: 60
-                    font.pixelSize: 20
-
-                    contentItem: Label {
-                        text: sideDelegate.text
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                        elide: Text.ElideRight
-                    }
-
-                    Rectangle {
-                        anchors.bottom: parent.bottom
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        visible: sideDelegate.index < navList.count - 1
-                        height: 1
-                        color: Qt.rgba(0, 0, 0, 0.12)
-                    }
-
-                    background: Rectangle {
-                        id: bg
+                Item {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 64
+                    RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 8
-                        radius: 16
-                        color: sideDelegate.highlighted ? Qt.lighter(Material.accent, 1.4) : "transparent"
-                        clip: true
-
-                        Ripple {
-                            clipRadius: bg.radius
-                            width: parent.width
-                            height: parent.height
-                            pressed: sideDelegate.pressed
-                            active: sideDelegate.pressed
-                            anchor: sideDelegate
-                            color: Qt.lighter(Material.accent, 1.2)
+                        spacing: Theme.space12
+                        Image {
+                            source: "qrc:/qt/qml/CubedLauncher/resources/CubedLauncher.png"
+                            sourceSize.width: 44
+                            sourceSize.height: 44
+                            Layout.preferredWidth: 44
+                            Layout.preferredHeight: 44
+                            smooth: true
                         }
-                        Rectangle {
-                            anchors.fill: parent
-                            radius: parent.radius
-                            color: sideDelegate.pressed ? Qt.rgba(0, 0, 0, 0.1) : (sideDelegate.hovered && !sideDelegate.highlighted ? Qt.rgba(0, 0, 0, 0.05) : "transparent")
+                        ColumnLayout {
+                            visible: root.expanded
+                            Layout.fillWidth: true
+                            spacing: 0
+                            Label {
+                                text: "Cubed"
+                                color: Theme.surfaceForeground
+                                font.pixelSize: Theme.titleSize
+                                font.weight: Font.Bold
+                            }
+                            Label {
+                                text: qsTr("Launcher")
+                                color: Theme.surfaceVariantForeground
+                                font.pixelSize: Theme.labelSize
+                            }
                         }
                     }
+                }
 
-                    text: {
-                        if (modelData === "Launcher")
-                            return qsTr("Launcher");
-                        if (modelData === "Manager")
-                            return qsTr("Manager");
-                        if (modelData === "Multiplayer")
-                            return qsTr("Multiplayer");
-                        if (modelData === "Setting")
-                            return qsTr("Setting");
-                        if (modelData === "About")
-                            return qsTr("About");
-                        return modelData;
+                ListView {
+                    id: navList
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    spacing: Theme.space4
+                    clip: true
+                    currentIndex: SideTool.currentIndex
+                    model: [
+                        { key: "launcher", icon: "sports_esports" },
+                        { key: "manager", icon: "download" },
+                        { key: "multiplayer", icon: "hub" },
+                        { key: "setting", icon: "settings" },
+                        { key: "about", icon: "info" }
+                    ]
+
+                    function labelFor(key) {
+                        if (key === "launcher") return qsTr("Launcher");
+                        if (key === "manager") return qsTr("Manager");
+                        if (key === "multiplayer") return qsTr("Multiplayer");
+                        if (key === "setting") return qsTr("Setting");
+                        return qsTr("About");
                     }
 
-                    highlighted: ListView.isCurrentItem
+                    delegate: ItemDelegate {
+                        id: navDelegate
+                        required property int index
+                        required property var modelData
+                        width: navList.width
+                        height: 56
+                        hoverEnabled: true
+                        highlighted: ListView.isCurrentItem
+                        leftPadding: root.expanded ? Theme.space16 : 0
+                        rightPadding: root.expanded ? Theme.space16 : 0
 
-                    onClicked: SideTool.currentIndex = index
+                        contentItem: Item {
+                            MdIcon {
+                                x: root.expanded ? 0 : (parent.width - width) / 2
+                                anchors.verticalCenter: parent.verticalCenter
+                                name: navDelegate.modelData.icon
+                                color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
+                            }
+                            Label {
+                                visible: root.expanded
+                                anchors.fill: parent
+                                text: navList.labelFor(navDelegate.modelData.key)
+                                color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
+                                font.pixelSize: Theme.bodySize
+                                font.weight: navDelegate.highlighted ? Font.DemiBold : Font.Normal
+                                horizontalAlignment: Text.AlignHCenter
+                                verticalAlignment: Text.AlignVCenter
+                            }
+                        }
+
+                        background: Rectangle {
+                            radius: height / 2
+                            color: navDelegate.highlighted ? Theme.secondaryContainer
+                                 : navDelegate.down ? Theme.surfaceContainerHighest
+                                 : navDelegate.hovered ? Theme.surfaceContainerHigh : "transparent"
+                            border.width: navDelegate.activeFocus ? 1 : 0
+                            border.color: Theme.primary
+                            Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+                        }
+
+                        ToolTip.visible: !root.expanded && hovered
+                        ToolTip.text: navList.labelFor(navDelegate.modelData.key)
+                        ToolTip.delay: 450
+                        onClicked: SideTool.currentIndex = index
+                    }
                 }
             }
         }
 
-        StackLayout {
-            Layout.fillHeight: true
+        Rectangle {
             Layout.fillWidth: true
+            Layout.fillHeight: true
+            color: Theme.surface
 
-            currentIndex: SideTool.currentIndex
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 0
 
-            Launch {}
-            Manager {}
-            Multiplayer {}
-            Setting {}
+                CheckUpdate {
+                    Layout.fillWidth: true
+                    Layout.leftMargin: Theme.space24
+                    Layout.rightMargin: Theme.space24
+                    Layout.topMargin: visible ? Theme.space16 : 0
+                    visible: LauncherUpdate.hasNewVersion || LauncherUpdate.hasError
+                }
 
-            About {}
+                StackLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    currentIndex: SideTool.currentIndex
+                    Launch {}
+                    Manager {}
+                    Multiplayer {}
+                    Setting {}
+                    About { appVersion: root.appVersion }
+                }
+            }
         }
     }
 }

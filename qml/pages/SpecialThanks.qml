@@ -1,53 +1,40 @@
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
 import QtQuick.Layouts
 import CubedLauncher
 
-Card {
-    id: creditsCard
-    implicitHeight: creditsButton.implicitHeight + 20
+MdButton {
+    id: root
+    text: qsTr("Credits")
+    iconName: "info"
+    variant: "tonal"
+    onClicked: creditsDialog.open()
 
-    Button {
-        id: creditsButton
-        text: qsTr("Special Thanks")
-        anchors.centerIn: parent
-        width: 300
-        font.pixelSize: 24
-        onClicked: creditsDialog.open()
-    }
-
-    Dialog {
+    MdDialog {
         id: creditsDialog
         parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
-        width: 480
-        height: 360
+        width: Math.min(460, Overlay.overlay.width - 48)
         modal: true
-        focus: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         title: qsTr("Special Thanks")
         standardButtons: Dialog.Close
+        palette.text: Theme.surfaceForeground
+        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
 
-        ScrollView {
-            anchors.fill: parent
-            clip: true
-
-            ColumnLayout {
-                width: creditsDialog.availableWidth
-                spacing: 12
-
-                Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "克公"
-                    font.pixelSize: 20
-                }
-                Label {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "阿杰"
-                    font.pixelSize: 20
-                }
+        ColumnLayout {
+            width: parent.width
+            spacing: Theme.space16
+            MdIcon { name: "badge"; color: Theme.primary; iconSize: 40; Layout.alignment: Qt.AlignHCenter }
+            Label {
+                text: qsTr("Thanks to everyone who helped Cubed Launcher grow.")
+                color: Theme.surfaceVariantForeground
+                font.pixelSize: Theme.bodySize
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+                Layout.fillWidth: true
             }
+            StatusChip { text: "克公"; iconName: "badge"; Layout.alignment: Qt.AlignHCenter }
+            StatusChip { text: "阿杰"; iconName: "badge"; Layout.alignment: Qt.AlignHCenter }
         }
     }
 }

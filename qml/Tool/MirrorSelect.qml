@@ -1,165 +1,139 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
 import QtQuick.Layouts
+import CubedLauncher
 
-// AI-generated: mirror source picker dialog with a per-mirror latency tester.
-Dialog {
-    id: mirrorPopup
-    anchors.centerIn: Overlay.overlay
-    width: 520
-    height: 540
+MdDialog {
+    id: root
+    anchors.centerIn: parent
+    width: Math.min(560, parent ? parent.width - 48 : 560)
+    height: Math.min(560, parent ? parent.height - 48 : 560)
     modal: true
-    focus: true
-    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     title: qsTr("Select Mirror Source")
     standardButtons: Dialog.NoButton
+    padding: Theme.space16
+    property int pendingTests: 0
+    palette.text: Theme.surfaceForeground
+    background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
 
-    // AI-generated: run on the root so the Connections handler (declared
-    // later) is already wired up when cached latencies are replayed.
-    Component.onCompleted: {
-        mirrorPopup.pendingTests = mirrorModel.count;
-        for (let i = 0; i < mirrorModel.count; ++i) {
-            mirrorModel.setProperty(i, "testing", true);
-            mirrorModel.setProperty(i, "latency", -1);
+    function testMirrors(force) {
+        pendingTests = mirrorModel.count;
+        for (let index = 0; index < mirrorModel.count; ++index) {
+            mirrorModel.setProperty(index, "testing", true);
+            mirrorModel.setProperty(index, "latency", -1);
         }
-        MirrorSource.test_all_latency(false);
+        MirrorSource.test_all_latency(force);
     }
+    onOpened: testMirrors(false)
 
     ListModel {
         id: mirrorModel
         Component.onCompleted: {
             const names = MirrorSource.names;
-            for (let i = 0; i < names.length; ++i) {
-                mirrorModel.append({
-                    "name": names[i],
-                    "latency": -1,
-                    "testing": false
-                });
-            }
+            for (let index = 0; index < names.length; ++index)
+                append({ name: names[index], latency: -1, testing: false });
         }
     }
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 10
-
+        spacing: Theme.space12
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("Choose the fastest available source. Latency results are estimates.")
+            color: Theme.surfaceVariantForeground
+            font.pixelSize: Theme.bodySize
+            wrapMode: Text.WordWrap
+        }
         ListView {
             id: mirrorList
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
+            spacing: Theme.space4
             model: mirrorModel
             delegate: ItemDelegate {
                 id: row
-                width: mirrorList.width
-                // AI-generated: required properties so ComponentBehavior: Bound
-                // does not break the model binding.
                 required property int index
                 required property string name
                 required property int latency
                 required property bool testing
-
-                onClicked: {
-                    Settings.mirrorIndex = row.index;
-                    mirrorPopup.close();
-                }
-
+                width: mirrorList.width
+                height: 64
+                highlighted: Settings.mirrorIndex === index
+                leftPadding: Theme.space16
+                rightPadding: Theme.space16
+                topPadding: 0
+                bottomPadding: 0
+                onClicked: { Settings.mirrorIndex = index; root.close(); }
                 contentItem: RowLayout {
-                    width: parent.width
-                    spacing: 10
-
-                    RadioButton {
-                        checked: Settings.mirrorIndex === row.index
-                        onClicked: {
-                            Settings.mirrorIndex = row.index;
-                            mirrorPopup.close();
+                    spacing: Theme.space12
+                    Item {
+                        Layout.preferredWidth: 24
+                        Layout.fillHeight: true
+                        MdIcon {
+                            anchors.centerIn: parent
+                            name: row.highlighted ? "check" : "public"
+                            color: row.highlighted ? Theme.primary : Theme.surfaceVariantForeground
                         }
-                        text: row.name
-                        font.pixelSize: 18
-                        Layout.fillWidth: true
                     }
-
                     Label {
-                        id: latencyLabel
+                        Layout.fillWidth: true
+                        text: row.name
+                        color: Theme.surfaceForeground
+                        font.pixelSize: Theme.bodyLargeSize
+                        elide: Text.ElideRight
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    RowLayout {
                         Layout.preferredWidth: 120
-                        horizontalAlignment: Text.AlignRight
-                        font.pixelSize: 18
-                        font.bold: true
-                        color: {
-                            if (row.testing) {
-                                return Material.color(Material.Grey);
-                            }
-                            if (row.latency < 0) {
-                                return Material.color(Material.Red);
-                            }
-                            if (row.latency < 300) {
-                                return Material.color(Material.Green);
-                            }
-                            if (row.latency < 1000) {
-                                return Material.color(Material.Orange);
-                            }
-                            return Material.color(Material.Red);
+                        Layout.alignment: Qt.AlignVCenter
+                        spacing: Theme.space8
+                        Label {
+                            Layout.fillWidth: true
+                            text: row.testing ? qsTr("Testing latency…")
+                                  : row.latency < 0 ? qsTr("Timed out") : row.latency + " " + qsTr("ms")
+                            color: row.latency >= 0 && row.latency < 300 ? Theme.primary : Theme.surfaceVariantForeground
+                            font.pixelSize: Theme.labelSize
+                            horizontalAlignment: Text.AlignRight
+                            elide: Text.ElideRight
                         }
-                        text: {
-                            if (row.testing) {
-                                return qsTr("testing...");
-                            }
-                            if (row.latency < 0) {
-                                return qsTr("timeout");
-                            }
-                            return row.latency + " " + qsTr("ms");
-                        }
-
                         BusyIndicator {
-                            anchors.verticalCenter: parent.verticalCenter
-                            anchors.left: parent.left
-                            anchors.leftMargin: -28
                             visible: row.testing
                             running: row.testing
-                            implicitWidth: 18
-                            implicitHeight: 18
+                            implicitWidth: 20
+                            implicitHeight: 20
                         }
                     }
+                }
+                background: Rectangle {
+                    radius: Theme.radiusMedium
+                    color: row.highlighted ? Theme.secondaryContainer : row.hovered ? Theme.surfaceContainerHighest : "transparent"
                 }
             }
         }
-
-        Button {
-            id: testButton
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 50
-            font.pixelSize: 18
-            Material.roundedScale: Material.MediumScale
-            highlighted: enabled
-            text: qsTr("Test Latency")
-            enabled: mirrorPopup.pendingTests === 0
-            onClicked: {
-                mirrorPopup.pendingTests = mirrorModel.count;
-                for (let i = 0; i < mirrorModel.count; ++i) {
-                    mirrorModel.setProperty(i, "testing", true);
-                    mirrorModel.setProperty(i, "latency", -1);
-                }
-                MirrorSource.test_all_latency(true);
+        RowLayout {
+            Layout.fillWidth: true
+            MdButton { text: qsTr("Close"); variant: "text"; onClicked: root.close() }
+            Item { Layout.fillWidth: true }
+            MdButton {
+                text: qsTr("Test Latency")
+                iconName: "refresh"
+                enabled: root.pendingTests === 0
+                onClicked: root.testMirrors(true)
             }
         }
     }
 
-    // AI-generated: probes in flight, gates the Test Latency button.
-    property int pendingTests: 0
-
     Connections {
         target: MirrorSource
         function onLatencyReady(index, ms) {
-            if (index < 0 || index >= mirrorModel.count) {
+            if (index < 0 || index >= mirrorModel.count)
                 return;
-            }
             mirrorModel.setProperty(index, "testing", false);
             mirrorModel.setProperty(index, "latency", Number(ms));
-            mirrorPopup.pendingTests = Math.max(0, mirrorPopup.pendingTests - 1);
+            root.pendingTests = Math.max(0, root.pendingTests - 1);
         }
     }
 }
