@@ -48,14 +48,38 @@ MdDialog {
                 width: serverList.width
                 height: 68
                 highlighted: Settings.easytierPublicServerIndex === index
+                leftPadding: Theme.space16
+                rightPadding: Theme.space16
+                topPadding: 0
+                bottomPadding: 0
                 onClicked: { Settings.easytierPublicServerIndex = index; root.close(); }
                 contentItem: RowLayout {
-                    MdIcon { name: row.highlighted ? "check" : "public"; color: row.highlighted ? Theme.primary : Theme.surfaceVariantForeground }
-                    ColumnLayout {
+                    spacing: Theme.space12
+                    Item {
+                        Layout.preferredWidth: 24
+                        Layout.fillHeight: true
+                        MdIcon {
+                            anchors.centerIn: parent
+                            name: row.highlighted ? "check" : "public"
+                            color: row.highlighted ? Theme.primary : Theme.surfaceVariantForeground
+                        }
+                    }
+                    Label {
+                        Layout.preferredWidth: 160
+                        text: row.name
+                        color: Theme.surfaceForeground
+                        font.pixelSize: Theme.bodyLargeSize
+                        elide: Text.ElideRight
+                        verticalAlignment: Text.AlignVCenter
+                    }
+                    Label {
                         Layout.fillWidth: true
-                        spacing: 2
-                        Label { text: row.name; color: Theme.surfaceForeground; font.pixelSize: Theme.bodyLargeSize }
-                        Label { text: row.address; color: Theme.surfaceVariantForeground; font.family: "Monospace"; font.pixelSize: Theme.labelSize }
+                        text: row.address
+                        color: Theme.surfaceVariantForeground
+                        font.family: "Monospace"
+                        font.pixelSize: Theme.labelSize
+                        elide: Text.ElideMiddle
+                        verticalAlignment: Text.AlignVCenter
                     }
                 }
                 background: Rectangle {
