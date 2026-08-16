@@ -70,7 +70,7 @@ PageScaffold {
                             radius: 16
                             color: paletteButton.modelData.color
                             border.width: Settings.themePalette === paletteButton.modelData.id ? 3 : 1
-                            border.color: Settings.themePalette === paletteButton.modelData.id ? Theme.onSurface : Theme.outline
+                            border.color: Settings.themePalette === paletteButton.modelData.id ? Theme.surfaceForeground : Theme.outline
                             MdIcon {
                                 visible: Settings.themePalette === paletteButton.modelData.id
                                 anchors.centerIn: parent
@@ -158,12 +158,12 @@ PageScaffold {
                 RowLayout {
                     anchors.fill: parent
                     anchors.margins: Theme.space16
-                    MdIcon { name: "folder"; color: Theme.onSurfaceVariant }
+                    MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
                     Label {
                         id: identityPath
                         Layout.fillWidth: true
                         text: IdentityManager.identityPath
-                        color: Theme.onSurfaceVariant
+                        color: Theme.surfaceVariantForeground
                         font.pixelSize: Theme.labelSize
                         wrapMode: Text.WrapAnywhere
                     }
@@ -325,7 +325,7 @@ PageScaffold {
         }
     }
 
-    Dialog {
+    MdDialog {
         id: clearCacheDialog
         parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
@@ -333,13 +333,13 @@ PageScaffold {
         modal: true
         title: qsTr("Clear Cache")
         standardButtons: Dialog.Ok | Dialog.Cancel
-        palette.text: Theme.onSurface
+        palette.text: Theme.surfaceForeground
         background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
         onAccepted: Settings.clear_cache()
         Label {
             width: parent.width
             text: qsTr("Clear all cached release and mirror data?")
-            color: Theme.onSurface
+            color: Theme.surfaceForeground
             wrapMode: Text.WordWrap
         }
     }
@@ -368,7 +368,7 @@ PageScaffold {
         }
     }
 
-    Dialog {
+    MdDialog {
         id: confirmIdentityImportDialog
         parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
@@ -377,7 +377,7 @@ PageScaffold {
         closePolicy: Popup.CloseOnEscape
         title: qsTr("Replace Player Identity?")
         standardButtons: Dialog.Ok | Dialog.Cancel
-        palette.text: Theme.onSurface
+        palette.text: Theme.surfaceForeground
         background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
         onAccepted: {
             identityResultDialog.importOperation = true;
@@ -391,7 +391,7 @@ PageScaffold {
         }
     }
 
-    Dialog {
+    MdDialog {
         id: identityResultDialog
         property bool importOperation: true
         property bool succeeded: false
@@ -401,7 +401,7 @@ PageScaffold {
         modal: true
         title: succeeded ? qsTr("Identity File Updated") : qsTr("Identity File Operation Failed")
         standardButtons: Dialog.Ok
-        palette.text: Theme.onSurface
+        palette.text: Theme.surfaceForeground
         background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
         InfoBanner {
             width: parent.width

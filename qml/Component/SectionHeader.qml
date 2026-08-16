@@ -14,14 +14,14 @@ RowLayout {
         spacing: 2
         Label {
             text: root.title
-            color: Theme.onSurface
+            color: Theme.surfaceForeground
             font.pixelSize: Theme.titleSize
             font.weight: Font.DemiBold
         }
         Label {
             visible: root.subtitle.length > 0
             text: root.subtitle
-            color: Theme.onSurfaceVariant
+            color: Theme.surfaceVariantForeground
             font.pixelSize: Theme.labelSize
             wrapMode: Text.WordWrap
             Layout.fillWidth: true

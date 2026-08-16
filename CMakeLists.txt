@@ -80,6 +80,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Component/MdComboBox.qml
         qml/Component/MdSwitch.qml
         qml/Component/MdProgressBar.qml
+        qml/Component/MdDialog.qml
         qml/Component/StatusChip.qml
         qml/Component/InfoBanner.qml
         qml/Component/SettingRow.qml

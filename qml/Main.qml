@@ -20,7 +20,7 @@ ApplicationWindow {
     Material.primary: Theme.primary
     Material.accent: Theme.primary
     Material.background: Theme.surface
-    Material.foreground: Theme.onSurface
+    Material.foreground: Theme.surfaceForeground
     Material.roundedScale: Material.MediumScale
 
     Sidebar { anchors.fill: parent; appVersion: launcherWindow.appVersion }

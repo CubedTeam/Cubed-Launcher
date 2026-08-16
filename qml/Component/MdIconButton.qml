@@ -14,8 +14,8 @@ Button {
         anchors.centerIn: parent
         name: root.iconName
         iconSize: 22
-        color: root.variant === "filled" ? Theme.onPrimary
-             : root.variant === "danger" ? Theme.error : Theme.onSurfaceVariant
+        color: root.variant === "filled" ? Theme.primaryForeground
+             : root.variant === "danger" ? Theme.error : Theme.surfaceVariantForeground
     }
     background: Rectangle {
         radius: width / 2

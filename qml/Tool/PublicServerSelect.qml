@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import CubedLauncher
 
-Dialog {
+MdDialog {
     id: root
     anchors.centerIn: Overlay.overlay
     width: Math.min(520, Overlay.overlay.width - 48)
@@ -13,7 +13,7 @@ Dialog {
     title: qsTr("Select Public Server")
     standardButtons: Dialog.NoButton
     padding: Theme.space16
-    palette.text: Theme.onSurface
+    palette.text: Theme.surfaceForeground
     background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
 
     ListModel {
@@ -30,7 +30,7 @@ Dialog {
         Label {
             Layout.fillWidth: true
             text: qsTr("Select a community relay for the EasyTier room.")
-            color: Theme.onSurfaceVariant
+            color: Theme.surfaceVariantForeground
             font.pixelSize: Theme.bodySize
         }
         ListView {
@@ -50,12 +50,12 @@ Dialog {
                 highlighted: Settings.easytierPublicServerIndex === index
                 onClicked: { Settings.easytierPublicServerIndex = index; root.close(); }
                 contentItem: RowLayout {
-                    MdIcon { name: row.highlighted ? "check" : "public"; color: row.highlighted ? Theme.primary : Theme.onSurfaceVariant }
+                    MdIcon { name: row.highlighted ? "check" : "public"; color: row.highlighted ? Theme.primary : Theme.surfaceVariantForeground }
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 2
-                        Label { text: row.name; color: Theme.onSurface; font.pixelSize: Theme.bodyLargeSize }
-                        Label { text: row.address; color: Theme.onSurfaceVariant; font.family: "Monospace"; font.pixelSize: Theme.labelSize }
+                        Label { text: row.name; color: Theme.surfaceForeground; font.pixelSize: Theme.bodyLargeSize }
+                        Label { text: row.address; color: Theme.surfaceVariantForeground; font.family: "Monospace"; font.pixelSize: Theme.labelSize }
                     }
                 }
                 background: Rectangle {

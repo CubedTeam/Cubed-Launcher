@@ -40,7 +40,7 @@ Item {
             text: root.manager.state === 1 ? qsTr("Checking for updates…")
                 : root.manager.state === 2 ? qsTr("Downloading…")
                 : root.manager.state === 3 ? qsTr("Extracting…") : qsTr("Working…")
-            color: Theme.onSurfaceVariant
+            color: Theme.surfaceVariantForeground
             font.pixelSize: Theme.bodySize
         }
         MdProgressBar {

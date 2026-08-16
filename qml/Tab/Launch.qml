@@ -52,7 +52,7 @@ PageScaffold {
                     Layout.fillWidth: true
                     Label {
                         text: qsTr("Game status")
-                        color: Theme.onSurfaceVariant
+                        color: Theme.surfaceVariantForeground
                         font.pixelSize: Theme.bodySize
                         Layout.fillWidth: true
                     }
@@ -71,13 +71,13 @@ PageScaffold {
                     Layout.fillWidth: true
                     Label {
                         text: qsTr("Installed version")
-                        color: Theme.onSurfaceVariant
+                        color: Theme.surfaceVariantForeground
                         font.pixelSize: Theme.bodySize
                         Layout.fillWidth: true
                     }
                     Label {
                         text: CubedGame.installed ? CubedGame.version : qsTr("—")
-                        color: Theme.onSurface
+                        color: Theme.surfaceForeground
                         font.pixelSize: Theme.bodyLargeSize
                         font.weight: Font.DemiBold
                     }
@@ -111,13 +111,13 @@ PageScaffold {
                 }
                 Label {
                     text: qsTr("Launch game")
-                    color: Theme.onSurface
+                    color: Theme.surfaceForeground
                     font.pixelSize: Theme.titleSize
                     font.weight: Font.DemiBold
                 }
                 Label {
                     text: qsTr("Choose the player name used by Cubed.")
-                    color: Theme.onSurfaceVariant
+                    color: Theme.surfaceVariantForeground
                     font.pixelSize: Theme.bodySize
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true

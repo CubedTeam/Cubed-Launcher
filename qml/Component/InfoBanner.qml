@@ -22,13 +22,13 @@ Rectangle {
         spacing: Theme.space12
         MdIcon {
             name: root.iconName
-            color: root.tone === "error" ? Theme.onErrorContainer
-                 : root.tone === "warning" ? Theme.onTertiaryContainer : Theme.onSecondaryContainer
+            color: root.tone === "error" ? Theme.errorContainerForeground
+                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
         }
         Label {
             text: root.text
-            color: root.tone === "error" ? Theme.onErrorContainer
-                 : root.tone === "warning" ? Theme.onTertiaryContainer : Theme.onSecondaryContainer
+            color: root.tone === "error" ? Theme.errorContainerForeground
+                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
             font.pixelSize: Theme.bodySize
             wrapMode: Text.WordWrap
             Layout.fillWidth: true

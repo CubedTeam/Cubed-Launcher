@@ -26,7 +26,7 @@ Card {
                 spacing: 2
                 Label {
                     text: CubedGame.installed ? qsTr("Update Cubed") : qsTr("Install Cubed")
-                    color: Theme.onSurface
+                    color: Theme.surfaceForeground
                     font.pixelSize: Theme.titleSize
                     font.weight: Font.DemiBold
                 }
@@ -34,7 +34,7 @@ Card {
                     text: CubedGame.installed
                         ? qsTr("Installed version: %1").arg(CubedGame.version)
                         : qsTr("The game has not been installed on this device.")
-                    color: Theme.onSurfaceVariant
+                    color: Theme.surfaceVariantForeground
                     font.pixelSize: Theme.bodySize
                 }
             }
@@ -60,7 +60,7 @@ Card {
                 spacing: Theme.space12
                 Label {
                     text: qsTr("Download source")
-                    color: Theme.onSurface
+                    color: Theme.surfaceForeground
                     font.pixelSize: Theme.bodyLargeSize
                     font.weight: Font.DemiBold
                 }
@@ -92,7 +92,7 @@ Card {
                 spacing: Theme.space12
                 Label {
                     text: qsTr("Install location")
-                    color: Theme.onSurface
+                    color: Theme.surfaceForeground
                     font.pixelSize: Theme.bodyLargeSize
                     font.weight: Font.DemiBold
                 }
@@ -105,13 +105,13 @@ Card {
                         anchors.fill: parent
                         anchors.margins: Theme.space16
                         spacing: Theme.space12
-                        MdIcon { name: "folder"; color: Theme.onSurfaceVariant }
+                        MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
                         Label {
                             id: pathLabel
                             Layout.fillWidth: true
                             text: GameUpdate.gameInstallPath.length > 0
                                 ? GameUpdate.gameInstallPath : SystemInfo.defaultGameInstallDir
-                            color: Theme.onSurfaceVariant
+                            color: Theme.surfaceVariantForeground
                             font.pixelSize: Theme.labelSize
                             wrapMode: Text.WrapAnywhere
                         }

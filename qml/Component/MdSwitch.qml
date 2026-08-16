@@ -5,7 +5,7 @@ Switch {
     id: root
     spacing: Theme.space12
     font.pixelSize: Theme.bodySize
-    palette.text: Theme.onSurface
+    palette.text: Theme.surfaceForeground
 
     indicator: Rectangle {
         implicitWidth: 52
@@ -23,7 +23,7 @@ Switch {
             width: root.checked ? 24 : 16
             height: width
             radius: width / 2
-            color: root.checked ? Theme.onPrimary : Theme.outline
+            color: root.checked ? Theme.primaryForeground : Theme.outline
             Behavior on x { NumberAnimation { duration: Theme.motionFast } }
             Behavior on width { NumberAnimation { duration: Theme.motionFast } }
         }

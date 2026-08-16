@@ -31,13 +31,13 @@ PageScaffold {
                 spacing: Theme.space4
                 Label {
                     text: "Cubed Launcher"
-                    color: Theme.onPrimaryContainer
+                    color: Theme.primaryContainerForeground
                     font.pixelSize: Theme.headlineSize
                     font.weight: Font.Bold
                 }
                 Label {
                     text: qsTr("A lightweight launcher and multiplayer companion for Cubed.")
-                    color: Theme.onPrimaryContainer
+                    color: Theme.primaryContainerForeground
                     opacity: 0.8
                     font.pixelSize: Theme.bodySize
                     wrapMode: Text.WordWrap
@@ -77,8 +77,8 @@ PageScaffold {
                         id: appInfoRow
                         required property var modelData
                         Layout.fillWidth: true
-                        Label { text: appInfoRow.modelData.label; color: Theme.onSurfaceVariant; font.pixelSize: Theme.bodySize; Layout.fillWidth: true }
-                        Label { text: appInfoRow.modelData.value; color: Theme.onSurface; font.pixelSize: Theme.bodySize; font.weight: Font.DemiBold }
+                        Label { text: appInfoRow.modelData.label; color: Theme.surfaceVariantForeground; font.pixelSize: Theme.bodySize; Layout.fillWidth: true }
+                        Label { text: appInfoRow.modelData.value; color: Theme.surfaceForeground; font.pixelSize: Theme.bodySize; font.weight: Font.DemiBold }
                     }
                 }
                 Item { Layout.fillHeight: true }
@@ -117,10 +117,10 @@ PageScaffold {
                         id: systemInfoRow
                         required property var modelData
                         Layout.fillWidth: true
-                        Label { text: systemInfoRow.modelData.label; color: Theme.onSurfaceVariant; font.pixelSize: Theme.bodySize; Layout.fillWidth: true }
+                        Label { text: systemInfoRow.modelData.label; color: Theme.surfaceVariantForeground; font.pixelSize: Theme.bodySize; Layout.fillWidth: true }
                         Label {
                             text: systemInfoRow.modelData.value.length > 0 ? systemInfoRow.modelData.value : qsTr("Unknown")
-                            color: Theme.onSurface
+                            color: Theme.surfaceForeground
                             font.pixelSize: Theme.bodySize
                             font.weight: Font.DemiBold
                             elide: Text.ElideRight

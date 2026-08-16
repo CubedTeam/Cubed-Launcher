@@ -5,7 +5,7 @@ import QtQuick.Dialogs
 import QtQuick.Layouts
 import CubedLauncher
 
-Dialog {
+MdDialog {
     id: root
     parent: Overlay.overlay
     anchors.centerIn: Overlay.overlay
@@ -34,14 +34,14 @@ Dialog {
         }
         Label {
             text: qsTr("Welcome to Cubed Launcher")
-            color: Theme.onSurface
+            color: Theme.surfaceForeground
             font.pixelSize: Theme.headlineSize
             font.weight: Font.Bold
             Layout.alignment: Qt.AlignHCenter
         }
         Label {
             text: qsTr("Choose where to install Cubed game files. You can change this later in Settings.")
-            color: Theme.onSurfaceVariant
+            color: Theme.surfaceVariantForeground
             font.pixelSize: Theme.bodySize
             wrapMode: Text.WordWrap
             horizontalAlignment: Text.AlignHCenter
@@ -55,12 +55,12 @@ Dialog {
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: Theme.space16
-                MdIcon { name: "folder"; color: Theme.onSurfaceVariant }
+                MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
                 Label {
                     id: pathLabel
                     Layout.fillWidth: true
                     text: SystemInfo.defaultGameInstallDir
-                    color: Theme.onSurfaceVariant
+                    color: Theme.surfaceVariantForeground
                     font.pixelSize: Theme.labelSize
                     wrapMode: Text.WrapAnywhere
                 }

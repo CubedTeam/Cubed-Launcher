@@ -10,7 +10,7 @@ MdButton {
     variant: "tonal"
     onClicked: creditsDialog.open()
 
-    Dialog {
+    MdDialog {
         id: creditsDialog
         parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
@@ -18,7 +18,7 @@ MdButton {
         modal: true
         title: qsTr("Special Thanks")
         standardButtons: Dialog.Close
-        palette.text: Theme.onSurface
+        palette.text: Theme.surfaceForeground
         background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
 
         ColumnLayout {
@@ -27,7 +27,7 @@ MdButton {
             MdIcon { name: "badge"; color: Theme.primary; iconSize: 40; Layout.alignment: Qt.AlignHCenter }
             Label {
                 text: qsTr("Thanks to everyone who helped Cubed Launcher grow.")
-                color: Theme.onSurfaceVariant
+                color: Theme.surfaceVariantForeground
                 font.pixelSize: Theme.bodySize
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.WordWrap

@@ -6,10 +6,10 @@ TextField {
     implicitHeight: 48
     leftPadding: 16
     rightPadding: 16
-    color: Theme.onSurface
-    placeholderTextColor: Theme.onSurfaceVariant
+    color: Theme.surfaceForeground
+    placeholderTextColor: Theme.surfaceVariantForeground
     selectionColor: Theme.primaryContainer
-    selectedTextColor: Theme.onPrimaryContainer
+    selectedTextColor: Theme.primaryContainerForeground
     font.pixelSize: Theme.bodySize
     background: Rectangle {
         radius: Theme.radiusSmall

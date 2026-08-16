@@ -4,7 +4,7 @@ import QtQuick.Shapes
 Item {
     id: root
     property string name
-    property color color: Theme.onSurface
+    property color color: Theme.surfaceForeground
     property real iconSize: 24
     implicitWidth: iconSize
     implicitHeight: iconSize

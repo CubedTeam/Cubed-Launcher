@@ -17,20 +17,20 @@ Item {
         anchors.leftMargin: Theme.space16
         anchors.rightMargin: Theme.space16
         spacing: Theme.space16
-        MdIcon { name: root.iconName; color: Theme.onSurfaceVariant }
+        MdIcon { name: root.iconName; color: Theme.surfaceVariantForeground }
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 2
             Label {
                 text: root.title
-                color: Theme.onSurface
+                color: Theme.surfaceForeground
                 font.pixelSize: Theme.bodyLargeSize
                 Layout.fillWidth: true
             }
             Label {
                 visible: root.description.length > 0
                 text: root.description
-                color: Theme.onSurfaceVariant
+                color: Theme.surfaceVariantForeground
                 font.pixelSize: Theme.labelSize
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true

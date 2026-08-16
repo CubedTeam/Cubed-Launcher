@@ -21,7 +21,7 @@ Item {
         onActionClicked: updatePopup.open()
     }
 
-    Dialog {
+    MdDialog {
         id: updatePopup
         parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
@@ -47,7 +47,7 @@ Item {
 
             Label {
                 text: LauncherUpdate.localVersion + " → " + LauncherUpdate.remoteVersion
-                color: Theme.onSurface
+                color: Theme.surfaceForeground
                 font.pixelSize: Theme.titleSize
                 font.weight: Font.DemiBold
                 Layout.alignment: Qt.AlignHCenter

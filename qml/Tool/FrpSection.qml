@@ -137,7 +137,7 @@ Item {
         }
     }
 
-    Dialog {
+    MdDialog {
         id: tomlDialog
         parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
@@ -146,7 +146,7 @@ Item {
         modal: true
         title: qsTr("Edit frpc.toml")
         standardButtons: Dialog.Save | Dialog.Cancel
-        palette.text: Theme.onSurface
+        palette.text: Theme.surfaceForeground
         background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
         onOpened: tomlEditor.text = FrpManager.read_toml()
         onAccepted: FrpManager.save_toml(tomlEditor.text)
@@ -154,9 +154,9 @@ Item {
             anchors.fill: parent
             TextArea {
                 id: tomlEditor
-                color: Theme.onSurface
+                color: Theme.surfaceForeground
                 selectionColor: Theme.primaryContainer
-                selectedTextColor: Theme.onPrimaryContainer
+                selectedTextColor: Theme.primaryContainerForeground
                 font.family: "Monospace"
                 font.pixelSize: Theme.bodySize
                 wrapMode: TextArea.NoWrap

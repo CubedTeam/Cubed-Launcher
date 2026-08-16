@@ -19,15 +19,15 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: Theme.space16
         spacing: Theme.space12
-        MdIcon { name: "folder"; color: Theme.onSurfaceVariant }
+        MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 2
-            Label { text: root.pathTitle; color: Theme.onSurface; font.pixelSize: Theme.bodySize; font.weight: Font.DemiBold }
+            Label { text: root.pathTitle; color: Theme.surfaceForeground; font.pixelSize: Theme.bodySize; font.weight: Font.DemiBold }
             Label {
                 Layout.fillWidth: true
                 text: root.manager.installPath
-                color: Theme.onSurfaceVariant
+                color: Theme.surfaceVariantForeground
                 font.pixelSize: Theme.labelSize
                 wrapMode: Text.WrapAnywhere
             }

@@ -21,17 +21,17 @@ Rectangle {
         MdIcon {
             name: root.iconName
             iconSize: 16
-            color: root.tone === "success" ? Theme.onPrimaryContainer
-                 : root.tone === "error" ? Theme.onErrorContainer
-                 : root.tone === "warning" ? Theme.onTertiaryContainer : Theme.onSecondaryContainer
+            color: root.tone === "success" ? Theme.primaryContainerForeground
+                 : root.tone === "error" ? Theme.errorContainerForeground
+                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
         }
         Label {
             text: root.text
             font.pixelSize: Theme.labelSize
             font.weight: Font.DemiBold
-            color: root.tone === "success" ? Theme.onPrimaryContainer
-                 : root.tone === "error" ? Theme.onErrorContainer
-                 : root.tone === "warning" ? Theme.onTertiaryContainer : Theme.onSecondaryContainer
+            color: root.tone === "success" ? Theme.primaryContainerForeground
+                 : root.tone === "error" ? Theme.errorContainerForeground
+                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
         }
     }
 }

@@ -12,7 +12,7 @@ QtObject {
 
     readonly property var palettes: ({
         cubed: {
-            light: { primary: "#496A0A", onPrimary: "#FFFFFF", primaryContainer: "#C9F283", onPrimaryContainer: "#142000", secondary: "#586249", onSecondary: "#FFFFFF", secondaryContainer: "#DCE7C8", onSecondaryContainer: "#161E0B", tertiary: "#8C4F2B", onTertiary: "#FFFFFF", tertiaryContainer: "#FFDBCA", onTertiaryContainer: "#351000" },
+            light: { primary: "#4B8003", onPrimary: "#FFFFFF", primaryContainer: "#C9F283", onPrimaryContainer: "#142000", secondary: "#586249", onSecondary: "#FFFFFF", secondaryContainer: "#DCE7C8", onSecondaryContainer: "#161E0B", tertiary: "#8C4F2B", onTertiary: "#FFFFFF", tertiaryContainer: "#FFDBCA", onTertiaryContainer: "#351000" },
             dark: { primary: "#AED066", onPrimary: "#233600", primaryContainer: "#344F00", onPrimaryContainer: "#C9F283", secondary: "#C0CBAE", onSecondary: "#2B331F", secondaryContainer: "#414A34", onSecondaryContainer: "#DCE7C8", tertiary: "#FFB692", onTertiary: "#542104", tertiaryContainer: "#713719", onTertiaryContainer: "#FFDBCA" }
         },
         blue: {
@@ -37,29 +37,29 @@ QtObject {
     readonly property var scheme: resolvedDark ? activePalette.dark : activePalette.light
 
     readonly property color primary: scheme.primary
-    readonly property color onPrimary: scheme.onPrimary
+    readonly property color primaryForeground: scheme.onPrimary
     readonly property color primaryContainer: scheme.primaryContainer
-    readonly property color onPrimaryContainer: scheme.onPrimaryContainer
+    readonly property color primaryContainerForeground: scheme.onPrimaryContainer
     readonly property color secondary: scheme.secondary
-    readonly property color onSecondary: scheme.onSecondary
+    readonly property color secondaryForeground: scheme.onSecondary
     readonly property color secondaryContainer: scheme.secondaryContainer
-    readonly property color onSecondaryContainer: scheme.onSecondaryContainer
+    readonly property color secondaryContainerForeground: scheme.onSecondaryContainer
     readonly property color tertiary: scheme.tertiary
-    readonly property color onTertiary: scheme.onTertiary
+    readonly property color tertiaryForeground: scheme.onTertiary
     readonly property color tertiaryContainer: scheme.tertiaryContainer
-    readonly property color onTertiaryContainer: scheme.onTertiaryContainer
+    readonly property color tertiaryContainerForeground: scheme.onTertiaryContainer
 
     readonly property color error: resolvedDark ? "#FFB4AB" : "#BA1A1A"
-    readonly property color onError: resolvedDark ? "#690005" : "#FFFFFF"
+    readonly property color errorForeground: resolvedDark ? "#690005" : "#FFFFFF"
     readonly property color errorContainer: resolvedDark ? "#93000A" : "#FFDAD6"
-    readonly property color onErrorContainer: resolvedDark ? "#FFDAD6" : "#410002"
+    readonly property color errorContainerForeground: resolvedDark ? "#FFDAD6" : "#410002"
     readonly property color surface: resolvedDark ? "#11140E" : "#FBFDF5"
     readonly property color surfaceContainerLow: resolvedDark ? "#1A1C17" : "#F5F7EF"
     readonly property color surfaceContainer: resolvedDark ? "#1E201B" : "#EFF1E9"
     readonly property color surfaceContainerHigh: resolvedDark ? "#282A25" : "#E9EBE3"
     readonly property color surfaceContainerHighest: resolvedDark ? "#333530" : "#E3E5DD"
-    readonly property color onSurface: resolvedDark ? "#E3E4DD" : "#1A1C18"
-    readonly property color onSurfaceVariant: resolvedDark ? "#C5C8BE" : "#45483F"
+    readonly property color surfaceForeground: resolvedDark ? "#E3E4DD" : "#1A1C18"
+    readonly property color surfaceVariantForeground: resolvedDark ? "#C5C8BE" : "#45483F"
     readonly property color outline: resolvedDark ? "#8F9289" : "#75786F"
     readonly property color outlineVariant: resolvedDark ? "#45483F" : "#C5C8BE"
     readonly property color scrim: "#000000"

@@ -30,7 +30,7 @@ Item {
                 spacing: Theme.space4
                 Label {
                     text: root.title
-                    color: Theme.onSurface
+                    color: Theme.surfaceForeground
                     font.pixelSize: Theme.headlineSize
                     font.weight: Font.DemiBold
                     Layout.fillWidth: true
@@ -38,7 +38,7 @@ Item {
                 Label {
                     visible: root.subtitle.length > 0
                     text: root.subtitle
-                    color: Theme.onSurfaceVariant
+                    color: Theme.surfaceVariantForeground
                     font.pixelSize: Theme.bodySize
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true

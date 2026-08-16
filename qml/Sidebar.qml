@@ -48,13 +48,13 @@ Item {
                             spacing: 0
                             Label {
                                 text: "Cubed"
-                                color: Theme.onSurface
+                                color: Theme.surfaceForeground
                                 font.pixelSize: Theme.titleSize
                                 font.weight: Font.Bold
                             }
                             Label {
                                 text: qsTr("Launcher")
-                                color: Theme.onSurfaceVariant
+                                color: Theme.surfaceVariantForeground
                                 font.pixelSize: Theme.labelSize
                             }
                         }
@@ -100,13 +100,13 @@ Item {
                             MdIcon {
                                 Layout.alignment: Qt.AlignCenter
                                 name: navDelegate.modelData.icon
-                                color: navDelegate.highlighted ? Theme.onSecondaryContainer : Theme.onSurfaceVariant
+                                color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
                             }
                             Label {
                                 visible: root.expanded
                                 Layout.fillWidth: true
                                 text: navList.labelFor(navDelegate.modelData.key)
-                                color: navDelegate.highlighted ? Theme.onSecondaryContainer : Theme.onSurfaceVariant
+                                color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
                                 font.pixelSize: Theme.bodySize
                                 font.weight: navDelegate.highlighted ? Font.DemiBold : Font.Normal
                             }

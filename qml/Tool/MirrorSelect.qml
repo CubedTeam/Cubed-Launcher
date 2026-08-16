@@ -4,7 +4,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import CubedLauncher
 
-Dialog {
+MdDialog {
     id: root
     anchors.centerIn: Overlay.overlay
     width: Math.min(560, Overlay.overlay.width - 48)
@@ -14,7 +14,7 @@ Dialog {
     standardButtons: Dialog.NoButton
     padding: Theme.space16
     property int pendingTests: 0
-    palette.text: Theme.onSurface
+    palette.text: Theme.surfaceForeground
     background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
 
     function testMirrors(force) {
@@ -42,7 +42,7 @@ Dialog {
         Label {
             Layout.fillWidth: true
             text: qsTr("Choose the fastest available source. Latency results are estimates.")
-            color: Theme.onSurfaceVariant
+            color: Theme.surfaceVariantForeground
             font.pixelSize: Theme.bodySize
             wrapMode: Text.WordWrap
         }
@@ -64,15 +64,15 @@ Dialog {
                 highlighted: Settings.mirrorIndex === index
                 onClicked: { Settings.mirrorIndex = index; root.close(); }
                 contentItem: RowLayout {
-                    MdIcon { name: row.highlighted ? "check" : "public"; color: row.highlighted ? Theme.primary : Theme.onSurfaceVariant }
+                    MdIcon { name: row.highlighted ? "check" : "public"; color: row.highlighted ? Theme.primary : Theme.surfaceVariantForeground }
                     ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 2
-                        Label { text: row.name; color: Theme.onSurface; font.pixelSize: Theme.bodyLargeSize }
+                        Label { text: row.name; color: Theme.surfaceForeground; font.pixelSize: Theme.bodyLargeSize }
                         Label {
                             text: row.testing ? qsTr("Testing latency…")
                                   : row.latency < 0 ? qsTr("Timed out") : row.latency + " " + qsTr("ms")
-                            color: row.latency >= 0 && row.latency < 300 ? Theme.primary : Theme.onSurfaceVariant
+                            color: row.latency >= 0 && row.latency < 300 ? Theme.primary : Theme.surfaceVariantForeground
                             font.pixelSize: Theme.labelSize
                         }
                     }

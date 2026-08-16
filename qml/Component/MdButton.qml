@@ -15,19 +15,19 @@ Button {
 
     function foregroundColor() {
         if (!enabled)
-            return Theme.alpha(Theme.onSurface, 0.38);
+            return Theme.alpha(Theme.surfaceForeground, 0.38);
         if (variant === "filled")
-            return Theme.onPrimary;
+            return Theme.primaryForeground;
         if (variant === "tonal")
-            return Theme.onSecondaryContainer;
+            return Theme.secondaryContainerForeground;
         if (variant === "danger")
-            return Theme.onError;
-        return variant === "outlined" || variant === "text" ? Theme.primary : Theme.onSurface;
+            return Theme.errorForeground;
+        return variant === "outlined" || variant === "text" ? Theme.primary : Theme.surfaceForeground;
     }
 
     function backgroundColor() {
         if (!enabled)
-            return variant === "text" || variant === "outlined" ? "transparent" : Theme.alpha(Theme.onSurface, 0.12);
+            return variant === "text" || variant === "outlined" ? "transparent" : Theme.alpha(Theme.surfaceForeground, 0.12);
         if (variant === "filled")
             return Theme.primary;
         if (variant === "tonal")

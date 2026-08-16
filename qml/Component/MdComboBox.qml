@@ -11,14 +11,14 @@ ComboBox {
 
     contentItem: Text {
         text: root.displayText
-        color: Theme.onSurface
+        color: Theme.surfaceForeground
         font: root.font
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
     }
     indicator: MdIcon {
         name: "expand_more"
-        color: Theme.onSurfaceVariant
+        color: Theme.surfaceVariantForeground
         iconSize: 20
         x: root.width - width - 14
         anchors.verticalCenter: parent.verticalCenter
@@ -36,7 +36,7 @@ ComboBox {
         width: ListView.view.width
         text: root.textRole.length > 0 ? modelData[root.textRole] : modelData
         highlighted: root.highlightedIndex === index
-        palette.text: Theme.onSurface
+        palette.text: Theme.surfaceForeground
         background: Rectangle {
             color: comboDelegate.highlighted ? Theme.secondaryContainer : Theme.surfaceContainerHigh
         }

@@ -138,7 +138,7 @@ Item {
                     spacing: Theme.space12
                     Label {
                         text: qsTr("Relay server")
-                        color: Theme.onSurface
+                        color: Theme.surfaceForeground
                         font.pixelSize: Theme.bodyLargeSize
                         font.weight: Font.DemiBold
                         Layout.fillWidth: true
@@ -183,7 +183,7 @@ Item {
                         spacing: Theme.space12
                         Label {
                             text: root.roomMode === 0 ? qsTr("Room code") : qsTr("Enter room code")
-                            color: Theme.onPrimaryContainer
+                            color: Theme.primaryContainerForeground
                             font.pixelSize: Theme.bodySize
                             font.weight: Font.DemiBold
                         }
@@ -193,7 +193,7 @@ Item {
                                 visible: root.roomMode === 0
                                 Layout.fillWidth: true
                                 text: root.roomCode
-                                color: Theme.onPrimaryContainer
+                                color: Theme.primaryContainerForeground
                                 font.family: "Monospace"
                                 font.pixelSize: Theme.headlineSize
                                 font.weight: Font.Bold
@@ -285,10 +285,10 @@ Item {
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: 2
-                    Label { text: qsTr("Virtual IP"); color: Theme.onSurfaceVariant; font.pixelSize: Theme.labelSize }
+                    Label { text: qsTr("Virtual IP"); color: Theme.surfaceVariantForeground; font.pixelSize: Theme.labelSize }
                     Label {
                         text: EasyTierManager.virtualIp.length > 0 ? EasyTierManager.virtualIp : qsTr("Waiting for address…")
-                        color: Theme.onSurface
+                        color: Theme.surfaceForeground
                         font.family: "Monospace"
                         font.pixelSize: Theme.titleSize
                         font.weight: Font.DemiBold
@@ -340,13 +340,13 @@ Item {
                     spacing: Theme.space8
                     Label {
                         text: qsTr("Manual network identity")
-                        color: Theme.onSurface
+                        color: Theme.surfaceForeground
                         font.pixelSize: Theme.bodyLargeSize
                         font.weight: Font.DemiBold
                     }
                     Label {
                         text: qsTr("When both fields are filled, they override the room code.")
-                        color: Theme.onSurfaceVariant
+                        color: Theme.surfaceVariantForeground
                         font.pixelSize: Theme.labelSize
                     }
                     RowLayout {
