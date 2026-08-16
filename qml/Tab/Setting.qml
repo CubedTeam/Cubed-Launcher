@@ -3,6 +3,8 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls.Material
 import QtQuick.Controls
+import QtQuick.Dialogs
+import QtCore
 
 import CubedLauncher
 import QtQuick.Layouts
@@ -11,6 +13,7 @@ Item {
     id: settingTab
     Layout.fillHeight: true
     Layout.fillWidth: true
+    property url pendingIdentityImport
 
     Flickable {
         id: settingScroll
@@ -125,6 +128,72 @@ Item {
                         Settings.prereleaseUpdates = checked;
                         LauncherUpdate.check_update("CubedTeam", "Cubed-Launcher");
                         GameUpdate.check_update(CubedGame.installed ? CubedGame.version : "");
+                    }
+                }
+            }
+
+            // AI-generated: Manage the player's authentication identity.
+            Card {
+                Layout.preferredHeight: identityLayout.implicitHeight + 24
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                ColumnLayout {
+                    id: identityLayout
+                    anchors.centerIn: parent
+                    width: parent.width - 30
+                    spacing: settingLayout.spacing
+                    Label {
+                        text: qsTr("Player Identity")
+                        font.pixelSize: 20
+                        Layout.alignment: Qt.AlignCenter
+                    }
+                    Label {
+                        text: IdentityManager.identityPath
+                        font.pixelSize: 12
+                        color: Material.color(Material.Grey)
+                        wrapMode: Text.WrapAnywhere
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillWidth: true
+                    }
+                    Label {
+                        text: qsTr("identity.json contains your player authentication credentials. Do not share it with anyone or upload it publicly.")
+                        font.pixelSize: 14
+                        font.bold: true
+                        color: Material.color(Material.DeepOrange, Material.Shade700)
+                        wrapMode: Text.WordWrap
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillWidth: true
+                    }
+                    RowLayout {
+                        Layout.alignment: Qt.AlignCenter
+                        spacing: 10
+                        Button {
+                            Layout.preferredWidth: 200
+                            Layout.preferredHeight: 50
+                            font.pixelSize: 16
+                            Material.roundedScale: Material.MediumScale
+                            text: qsTr("Import Identity File")
+                            enabled: !CubedGame.running
+                            onClicked: importIdentityDialog.open()
+                        }
+                        Button {
+                            Layout.preferredWidth: 200
+                            Layout.preferredHeight: 50
+                            font.pixelSize: 16
+                            Material.roundedScale: Material.MediumScale
+                            text: qsTr("Export Identity File")
+                            enabled: !CubedGame.running
+                            onClicked: exportIdentityDialog.open()
+                        }
+                    }
+                    Label {
+                        visible: CubedGame.running
+                        text: qsTr("Exit Cubed before importing or exporting the identity file.")
+                        font.pixelSize: 13
+                        color: Material.color(Material.Red, Material.Shade700)
+                        wrapMode: Text.WordWrap
+                        horizontalAlignment: Text.AlignHCenter
+                        Layout.fillWidth: true
                     }
                 }
             }
@@ -341,5 +410,77 @@ Item {
         title: qsTr("Clear Cache")
         standardButtons: Dialog.Ok | Dialog.Cancel
         onAccepted: Settings.clear_cache()
+    }
+
+    FileDialog {
+        id: importIdentityDialog
+        title: qsTr("Select Identity File")
+        fileMode: FileDialog.OpenFile
+        nameFilters: [qsTr("JSON files (*.json)"), qsTr("All files (*)")]
+        onAccepted: {
+            settingTab.pendingIdentityImport = selectedFile;
+            confirmIdentityImportDialog.open();
+        }
+    }
+
+    FileDialog {
+        id: exportIdentityDialog
+        title: qsTr("Export Identity File")
+        fileMode: FileDialog.SaveFile
+        currentFile: StandardPaths.writableLocation(StandardPaths.DocumentsLocation) + "/identity.json"
+        defaultSuffix: "json"
+        nameFilters: [qsTr("JSON files (*.json)"), qsTr("All files (*)")]
+        onAccepted: {
+            identityResultDialog.importOperation = false;
+            identityResultDialog.succeeded = IdentityManager.export_identity(selectedFile);
+            identityResultDialog.open();
+        }
+    }
+
+    Dialog {
+        id: confirmIdentityImportDialog
+        anchors.centerIn: Overlay.overlay
+        width: 460
+        modal: true
+        focus: true
+        closePolicy: Popup.CloseOnEscape
+        title: qsTr("Replace Player Identity?")
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        onAccepted: {
+            identityResultDialog.importOperation = true;
+            identityResultDialog.succeeded = IdentityManager.import_identity(settingTab.pendingIdentityImport);
+            identityResultDialog.open();
+        }
+
+        Label {
+            width: parent.width
+            text: qsTr("Importing this file will replace your current player identity and authentication credentials. Continue?")
+            wrapMode: Text.WordWrap
+        }
+    }
+
+    Dialog {
+        id: identityResultDialog
+        property bool importOperation: true
+        property bool succeeded: false
+        anchors.centerIn: Overlay.overlay
+        width: 420
+        modal: true
+        focus: true
+        title: succeeded ? qsTr("Identity File Updated") : qsTr("Identity File Operation Failed")
+        standardButtons: Dialog.Ok
+
+        Label {
+            width: parent.width
+            text: {
+                if (!identityResultDialog.succeeded) {
+                    return qsTr("The identity file operation failed: %1").arg(IdentityManager.errorMessage);
+                }
+                return identityResultDialog.importOperation
+                    ? qsTr("The player identity was imported. It will take effect the next time Cubed starts.")
+                    : qsTr("The player identity was exported successfully.");
+            }
+            wrapMode: Text.WordWrap
+        }
     }
 }

@@ -621,6 +621,57 @@
     </message>
 </context>
 <context>
+    <name>IdentityManager</name>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="30"/>
+        <source>Cannot determine the Cubed data directory: %1</source>
+        <translation>无法确定 Cubed 数据目录：%1</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="45"/>
+        <location filename="../src/tool/identity_manager.cpp" line="77"/>
+        <source>The selected path is not a local file.</source>
+        <translation>所选路径不是本地文件。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="58"/>
+        <source>The selected file is not a valid identity JSON object.</source>
+        <translation>所选文件不是有效的身份 JSON 对象。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="64"/>
+        <source>Cannot create the Cubed data directory.</source>
+        <translation>无法创建 Cubed 数据目录。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="93"/>
+        <source>The Cubed identity path is unavailable.</source>
+        <translation>Cubed 身份文件路径不可用。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="100"/>
+        <source>The identity file does not exist or is not a regular file.</source>
+        <translation>身份文件不存在或不是常规文件。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="108"/>
+        <location filename="../src/tool/identity_manager.cpp" line="115"/>
+        <source>Cannot read the identity file: %1</source>
+        <translation>无法读取身份文件：%1</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="127"/>
+        <location filename="../src/tool/identity_manager.cpp" line="134"/>
+        <source>Cannot write the identity file: %1</source>
+        <translation>无法写入身份文件：%1</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/identity_manager.cpp" line="140"/>
+        <source>Cannot finish writing the identity file: %1</source>
+        <translation>无法完成身份文件写入：%1</translation>
+    </message>
+</context>
+<context>
     <name>InstallPathCard</name>
     <message>
         <location filename="../qml/Component/InstallPathCard.qml" line="14"/>
@@ -915,105 +966,183 @@
 <context>
     <name>Setting</name>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="42"/>
+        <location filename="../qml/Tab/Setting.qml" line="45"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="69"/>
+        <location filename="../qml/Tab/Setting.qml" line="72"/>
         <source>Theme Color</source>
         <translation>主题颜色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="140"/>
+        <location filename="../qml/Tab/Setting.qml" line="209"/>
         <source>Advanced Setting</source>
         <translation>高级设置</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="108"/>
+        <location filename="../qml/Tab/Setting.qml" line="111"/>
         <source>Colorful Card Border</source>
         <translation>彩色卡片边框</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="122"/>
+        <location filename="../qml/Tab/Setting.qml" line="125"/>
         <source>Receive Pre-release Updates</source>
         <translation>接收预发布版本更新</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="155"/>
-        <location filename="../qml/Tab/Setting.qml" line="163"/>
+        <location filename="../qml/Tab/Setting.qml" line="146"/>
+        <source>Player Identity</source>
+        <translation>玩家身份</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="159"/>
+        <source>identity.json contains your player authentication credentials. Do not share it with anyone or upload it publicly.</source>
+        <translation>identity.json 包含你的玩家认证凭据。请勿将其提供给他人或上传到公开位置。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="175"/>
+        <source>Import Identity File</source>
+        <translation>导入身份文件</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="184"/>
+        <location filename="../qml/Tab/Setting.qml" line="428"/>
+        <source>Export Identity File</source>
+        <translation>导出身份文件</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="191"/>
+        <source>Exit Cubed before importing or exporting the identity file.</source>
+        <translation>请先退出 Cubed，再导入或导出身份文件。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="224"/>
+        <location filename="../qml/Tab/Setting.qml" line="232"/>
         <source>Wrapper Command</source>
         <translation>包装器命令</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="182"/>
+        <location filename="../qml/Tab/Setting.qml" line="251"/>
         <source>Log</source>
         <translation>日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="194"/>
+        <location filename="../qml/Tab/Setting.qml" line="263"/>
         <source>On</source>
         <translation>开启</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="194"/>
+        <location filename="../qml/Tab/Setting.qml" line="263"/>
         <source>Off</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="281"/>
+        <location filename="../qml/Tab/Setting.qml" line="350"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="290"/>
+        <location filename="../qml/Tab/Setting.qml" line="359"/>
         <source>Host</source>
         <translation>主机</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="290"/>
+        <location filename="../qml/Tab/Setting.qml" line="359"/>
         <source>Client</source>
         <translation>客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="301"/>
-        <location filename="../qml/Tab/Setting.qml" line="322"/>
+        <location filename="../qml/Tab/Setting.qml" line="370"/>
+        <location filename="../qml/Tab/Setting.qml" line="391"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="314"/>
+        <location filename="../qml/Tab/Setting.qml" line="383"/>
         <source>Ip</source>
         <translation>IP 地址</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="209"/>
+        <location filename="../qml/Tab/Setting.qml" line="417"/>
+        <source>Select Identity File</source>
+        <translation>选择身份文件</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="419"/>
+        <location filename="../qml/Tab/Setting.qml" line="432"/>
+        <source>JSON files (*.json)</source>
+        <translation>JSON 文件 (*.json)</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="419"/>
+        <location filename="../qml/Tab/Setting.qml" line="432"/>
+        <source>All files (*)</source>
+        <translation>所有文件 (*)</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="447"/>
+        <source>Replace Player Identity?</source>
+        <translation>替换玩家身份？</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="457"/>
+        <source>Importing this file will replace your current player identity and authentication credentials. Continue?</source>
+        <translation>导入此文件将替换当前的玩家身份和认证凭据。是否继续？</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="470"/>
+        <source>Identity File Updated</source>
+        <translation>身份文件已更新</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="470"/>
+        <source>Identity File Operation Failed</source>
+        <translation>身份文件操作失败</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="477"/>
+        <source>The identity file operation failed: %1</source>
+        <translation>身份文件操作失败：%1</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="480"/>
+        <source>The player identity was imported. It will take effect the next time Cubed starts.</source>
+        <translation>玩家身份已导入，将在下次启动 Cubed 时生效。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="481"/>
+        <source>The player identity was exported successfully.</source>
+        <translation>玩家身份已成功导出。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="278"/>
         <source>Cache</source>
         <translation>缓存</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="219"/>
-        <location filename="../qml/Tab/Setting.qml" line="341"/>
+        <location filename="../qml/Tab/Setting.qml" line="288"/>
+        <location filename="../qml/Tab/Setting.qml" line="410"/>
         <source>Clear Cache</source>
         <translation>清理缓存</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="235"/>
+        <location filename="../qml/Tab/Setting.qml" line="304"/>
         <source>GitHub Token</source>
         <translation>GitHub Token</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="244"/>
+        <location filename="../qml/Tab/Setting.qml" line="313"/>
         <source>Enter GitHub Token</source>
         <translation>输入 GitHub Token</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="251"/>
+        <location filename="../qml/Tab/Setting.qml" line="320"/>
         <source>Token stored in system keyring. Environment variable takes precedence.</source>
         <translation>Token 保存在系统密钥环中,环境变量优先。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="265"/>
+        <location filename="../qml/Tab/Setting.qml" line="334"/>
         <source>Remove Token</source>
         <translation>移除 Token</translation>
     </message>

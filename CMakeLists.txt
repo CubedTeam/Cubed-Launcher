@@ -117,6 +117,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/github_auth.cpp
         src/tool/secret_store.hpp
         src/tool/secret_store.cpp
+        src/tool/identity_manager.hpp
+        src/tool/identity_manager.cpp
         src/multiplayer/frp_manager.hpp
         src/multiplayer/frp_manager.cpp
         src/multiplayer/easytier_manager.hpp
@@ -176,6 +178,21 @@ if (BUILD_TESTING)
         Qt6::Test
     )
     add_test(NAME GithubReleaseSelectorTest COMMAND GithubReleaseSelectorTest)
+
+    qt_add_executable(IdentityManagerTest
+        tests/identity_manager_test.cpp
+        src/tool/identity_manager.cpp
+        src/tool/identity_manager.hpp
+    )
+    target_include_directories(IdentityManagerTest PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_link_libraries(IdentityManagerTest PRIVATE
+        Qt6::Core
+        Qt6::Qml
+        Qt6::Test
+    )
+    add_test(NAME IdentityManagerTest COMMAND IdentityManagerTest)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
