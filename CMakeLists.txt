@@ -36,6 +36,20 @@ find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2 Network Lingu
 
 qt_standard_project_setup(REQUIRES 6.8)
 
+add_library(CubedSemanticVersion STATIC
+    src/tool/semantic_version.cpp
+    src/tool/semantic_version.hpp
+)
+target_include_directories(CubedSemanticVersion PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_link_libraries(CubedSemanticVersion PUBLIC Qt6::Core)
+
+add_library(CubedReleaseSelection STATIC
+    src/tool/github_release_selector.cpp
+    src/tool/github_release_selector.hpp
+)
+target_include_directories(CubedReleaseSelection PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_link_libraries(CubedReleaseSelection PUBLIC CubedSemanticVersion Qt6::Core)
+
 qt_add_executable(${PROJECT_NAME}
     src/main.cpp
 )
@@ -130,6 +144,8 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE 
+    CubedSemanticVersion
+    CubedReleaseSelection
     Qt6::Quick
     Qt6::QuickControls2
     Qt6::Network
@@ -138,6 +154,28 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 if (WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE Crypt32 shell32)
+endif()
+
+include(CTest)
+if (BUILD_TESTING)
+    find_package(Qt6 6.8 REQUIRED COMPONENTS Test)
+    qt_add_executable(SemanticVersionTest
+        tests/semantic_version_test.cpp
+    )
+    target_link_libraries(SemanticVersionTest PRIVATE
+        CubedSemanticVersion
+        Qt6::Test
+    )
+    add_test(NAME SemanticVersionTest COMMAND SemanticVersionTest)
+
+    qt_add_executable(GithubReleaseSelectorTest
+        tests/github_release_selector_test.cpp
+    )
+    target_link_libraries(GithubReleaseSelectorTest PRIVATE
+        CubedReleaseSelection
+        Qt6::Test
+    )
+    add_test(NAME GithubReleaseSelectorTest COMMAND GithubReleaseSelectorTest)
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")

@@ -1,11 +1,12 @@
 #pragma once
 #include "tool/file_downloader.hpp"
 #include "tool/github_release.hpp"
+#include "tool/semantic_version.hpp"
 
 #include <QNetworkAccessManager>
 #include <QObject>
 #include <QQmlEngine>
-#include <QVersionNumber>
+#include <optional>
 #include <qtmetamacros.h>
 class GameUpdate : public QObject {
     Q_OBJECT
@@ -74,8 +75,8 @@ private:
     FileDownloader m_downloader;
 
     QString m_download_url;
-    QVersionNumber m_local_version;
-    QVersionNumber m_remote_version;
+    std::optional<SemanticVersion> m_local_version;
+    std::optional<SemanticVersion> m_remote_version;
 
     bool m_new_version{false};
     bool m_checking_update = false;

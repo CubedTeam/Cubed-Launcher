@@ -220,6 +220,15 @@ Item {
                 }
 
                 Label {
+                    text: qsTr("A new game version is available")
+                    visible: GameUpdate.hasNewVersion && !GameUpdate.checkingUpdate && !GameUpdate.hasError
+                    Layout.alignment: Qt.AlignCenter
+                    font.pixelSize: 24
+                    font.bold: true
+                    color: Material.accent
+                }
+
+                Label {
                     text: GameUpdate.errorMessage
                     visible: GameUpdate.hasError
                     enabled: GameUpdate.hasError

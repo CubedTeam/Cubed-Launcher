@@ -112,6 +112,24 @@ Item {
             }
 
             Card {
+                Layout.preferredHeight: prereleaseUpdates.implicitHeight + 20
+                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
+                Switch {
+                    id: prereleaseUpdates
+                    anchors.centerIn: parent
+                    font.pixelSize: 20
+                    text: qsTr("Receive Pre-release Updates")
+                    checked: Settings.prereleaseUpdates
+                    onToggled: {
+                        Settings.prereleaseUpdates = checked;
+                        LauncherUpdate.check_update("CubedTeam", "Cubed-Launcher");
+                        GameUpdate.check_update(CubedGame.installed ? CubedGame.version : "");
+                    }
+                }
+            }
+
+            Card {
                 Layout.preferredHeight: advancedSetting.implicitHeight + 20
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignCenter

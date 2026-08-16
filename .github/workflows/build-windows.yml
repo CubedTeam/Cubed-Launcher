@@ -6,6 +6,9 @@ on:
       version:
         required: true
         type: string
+      core_version:
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -49,7 +52,7 @@ jobs:
       - name: Build Installer
         shell: cmd
         run: |
-          iscc /DCubedLauncherVersion=${{ inputs.version }} installer\installer.iss
+          iscc /DCubedLauncherVersion=${{ inputs.version }} /DCubedLauncherFileVersion=${{ inputs.core_version }}.0 installer\installer.iss
 
       - name: Create Portable Zip
         shell: pwsh

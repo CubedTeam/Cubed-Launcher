@@ -1,5 +1,6 @@
 #include "game/game_update.hpp"
 
+#include "settings.hpp"
 #include "tool/log.hpp"
 #include "tool/mirror.hpp"
 #include "tool/path_tools.hpp"
@@ -30,18 +31,17 @@ GameUpdate::GameUpdate()
 }
 
 Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
-    if (std::exchange(m_checking_update, true)) {
+    if (!std::exchange(m_checking_update, true)) {
         Q_EMIT checking_update_changed();
-        return;
     }
     Logger::debug("Local Version: {}", local_version.toStdString());
     const bool installed = !local_version.isEmpty();
-    if (local_version == "dev") {
-        m_local_version = QVersionNumber::fromString("0.0.1");
-    } else {
-        m_local_version = QVersionNumber::fromString(local_version);
-    }
     m_downloader.clear_error_state();
+    m_new_version = false;
+    m_remote_version.reset();
+    m_download_url.clear();
+    Q_EMIT new_version_changed();
+    Q_EMIT remote_version_changed();
 
     auto finish_check = [this]() {
         m_checking_update = false;
@@ -54,22 +54,33 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
         finish_check();
     };
 
+    m_local_version = SemanticVersion::parse(local_version == "dev"
+                                                 ? QStringView(u"0.0.1")
+                                                 : QStringView(local_version));
+    if (installed && !m_local_version) {
+        report_failure("Failed to parse local version: " + local_version);
+        return;
+    }
+
+    const Settings* settings = Settings::instance();
+    const bool includePrereleases = settings && settings->prerelease_updates();
+
     m_fetcher.fetch(
         "CubedTeam", "Cubed",
-        QRegularExpression(R"(Cubed-.*-windows-x64\.zip)"),
+        QRegularExpression(R"(Cubed-.*-windows-x64\.zip)"), includePrereleases,
         [this, installed, report_failure,
          finish_check](GithubReleaseFetcher::Result r) {
             if (!r.ok) {
                 report_failure(r.errorMessage);
                 return;
             }
-            m_remote_version = QVersionNumber::fromString(r.version);
-            if (m_remote_version.isNull()) {
-                report_failure("Failed to parse remote version:" + r.version);
+            m_remote_version = SemanticVersion::parse(r.version);
+            if (!m_remote_version) {
+                report_failure("Failed to parse remote version: " + r.version);
                 return;
             }
             if (installed) {
-                m_new_version = m_remote_version > m_local_version;
+                m_new_version = *m_remote_version > *m_local_version;
             } else {
                 m_new_version = true;
             }
@@ -147,9 +158,11 @@ QString GameUpdate::game_install_path() const { return m_game_install_path; }
 bool GameUpdate::has_new_version() const { return m_new_version; }
 bool GameUpdate::checking_update() const { return m_checking_update; }
 bool GameUpdate::downloading() const { return m_downloader.downloading(); }
-QString GameUpdate::local_version() const { return m_local_version.toString(); }
+QString GameUpdate::local_version() const {
+    return m_local_version ? m_local_version->toString() : QString();
+}
 QString GameUpdate::remote_version() const {
-    return m_remote_version.toString();
+    return m_remote_version ? m_remote_version->toString() : QString();
 }
 float GameUpdate::download_progress() const { return m_downloader.progress(); }
 

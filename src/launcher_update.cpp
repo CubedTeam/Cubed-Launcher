@@ -1,5 +1,6 @@
 #include "launcher_update.hpp"
 
+#include "settings.hpp"
 #include "tool/log.hpp"
 #include "tool/mirror.hpp"
 #include "version.hpp"
@@ -12,10 +13,13 @@ LauncherUpdate::LauncherUpdate()
     : m_fetcher(&m_manager, QStringLiteral("CubedLauncher"), this),
       m_downloader(&m_manager, this) {
 
-    if (QString(APP_VERSION) == "dev") {
-        m_local_version = QVersionNumber::fromString("0.0.1");
-    } else {
-        m_local_version = QVersionNumber::fromString(APP_VERSION);
+    const QString appVersion(APP_VERSION);
+    m_local_version = SemanticVersion::parse(
+        appVersion == "dev" ? QStringView(u"0.0.1") : QStringView(appVersion));
+    if (!m_local_version) {
+        m_downloader.set_error_state("Failed to parse local version: " +
+                                     appVersion);
+    } else if (appVersion != "dev") {
         check_update("CubedTeam", "Cubed-Launcher");
     }
     connect(&m_downloader, &FileDownloader::progress_changed, this,
@@ -42,10 +46,10 @@ float LauncherUpdate::download_progress() const {
 bool LauncherUpdate::downloading() const { return m_downloader.downloading(); }
 
 QString LauncherUpdate::local_version() const {
-    return m_local_version.toString();
+    return m_local_version ? m_local_version->toString() : QString();
 }
 QString LauncherUpdate::remote_version() const {
-    return m_remote_version.toString();
+    return m_remote_version ? m_remote_version->toString() : QString();
 }
 
 QString LauncherUpdate::error_message() const {
@@ -55,21 +59,34 @@ bool LauncherUpdate::has_error() const { return m_downloader.has_error(); }
 
 Q_INVOKABLE void LauncherUpdate::check_update(const QString& owner,
                                               const QString& repo) {
+    m_downloader.clear_error_state();
+    m_new_version = false;
+    m_remote_version.reset();
+    m_latest_launcher_link.clear();
+    Q_EMIT new_version_changed();
+    Q_EMIT remote_version_changed();
+    if (!m_local_version) {
+        m_downloader.set_error_state("Failed to parse local version: " +
+                                     QString(APP_VERSION));
+        return;
+    }
+    const Settings* settings = Settings::instance();
+    const bool includePrereleases = settings && settings->prerelease_updates();
     m_fetcher.fetch(
         owner, repo,
         QRegularExpression(R"(CubedLauncher-.*-windows-x64-setup\.exe)"),
-        [this](GithubReleaseFetcher::Result r) {
+        includePrereleases, [this](GithubReleaseFetcher::Result r) {
             if (!r.ok) {
                 m_downloader.set_error_state(r.errorMessage);
                 return;
             }
-            m_remote_version = QVersionNumber::fromString(r.version);
-            if (m_remote_version.isNull()) {
-                m_downloader.set_error_state("Failed to parse remote version:" +
-                                             r.version);
+            m_remote_version = SemanticVersion::parse(r.version);
+            if (!m_remote_version) {
+                m_downloader.set_error_state(
+                    "Failed to parse remote version: " + r.version);
                 return;
             }
-            m_new_version = m_remote_version > m_local_version;
+            m_new_version = *m_remote_version > *m_local_version;
             m_latest_launcher_link = r.downloadUrl;
             Q_EMIT remote_version_changed();
             Q_EMIT new_version_changed();
