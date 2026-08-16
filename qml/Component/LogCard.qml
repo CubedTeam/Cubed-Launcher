@@ -1,69 +1,44 @@
-// AI-generated: log viewer card. Used by the multiplayer service sections
-// (frp / easytier) and bound to a JS array of log lines.
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
 import QtQuick.Layouts
 
 Card {
     id: root
     property var logLines: []
-    property bool showLog: true
+    property bool showLog: false
     property string title: qsTr("Logs")
-
-    implicitWidth: logLayout.implicitWidth + 20
-    implicitHeight: logLayout.implicitHeight + 20
+    implicitHeight: logColumn.implicitHeight + Theme.space32 * 2
 
     ColumnLayout {
-        id: logLayout
+        id: logColumn
         anchors.fill: parent
-        anchors.margins: 10
-        spacing: 8
-
-        RowLayout {
-            Layout.fillWidth: true
-            Label {
-                text: root.title
-                font.pixelSize: 18
-                font.bold: true
-                Layout.alignment: Qt.AlignLeft
-            }
-            Item {
-                Layout.fillWidth: true
-            }
-            Switch {
-                id: logToggle
-                font.pixelSize: 14
-                text: qsTr("ShowLog")
-                checked: root.showLog
-                onCheckedChanged: root.showLog = checked
-            }
+        anchors.margins: Theme.space24
+        spacing: Theme.space12
+        SettingRow {
+            title: root.title
+            description: qsTr("Show the latest service output.")
+            iconName: "terminal"
+            MdSwitch { checked: root.showLog; onToggled: root.showLog = checked }
         }
-
         Rectangle {
-            Layout.fillWidth: true
-            Layout.preferredHeight: 300
-            color: "#101418"
             visible: root.showLog
-            radius: 8
-            border.color: Qt.rgba(0, 0, 0, 0.12)
-            border.width: 1
+            Layout.fillWidth: true
+            Layout.preferredHeight: 260
+            color: "#101418"
+            radius: Theme.radiusMedium
             clip: true
-
             ScrollView {
                 anchors.fill: parent
-                anchors.margins: 8
+                anchors.margins: Theme.space8
                 clip: true
-
                 TextArea {
                     id: logArea
                     readOnly: true
                     wrapMode: TextArea.NoWrap
-                    color: "#9CDCFE"
+                    color: "#B8E8FF"
                     background: null
-                    font.family: root.showLog ? "Monospace" : "Sans"
-                    font.pixelSize: root.showLog ? 13 : 14
+                    font.family: "Monospace"
+                    font.pixelSize: 13
                     selectByMouse: true
                     text: root.logLines.join("\n")
                     onTextChanged: cursorPosition = length

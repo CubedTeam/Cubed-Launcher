@@ -1,84 +1,69 @@
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
 import QtQuick.Layouts
+import CubedLauncher
 
-// AI-generated: public EasyTier community server picker dialog. Mirrors
-// MirrorSelect.qml in shape but stays simpler: no latency probing, since
-// reachability is best verified by actually launching easytier-core.
 Dialog {
-    id: publicServerPopup
+    id: root
     anchors.centerIn: Overlay.overlay
-    width: 480
-    height: 380
+    width: Math.min(520, Overlay.overlay.width - 48)
+    height: Math.min(440, Overlay.overlay.height - 48)
     modal: true
-    focus: true
-    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     title: qsTr("Select Public Server")
     standardButtons: Dialog.NoButton
+    padding: Theme.space16
+    palette.text: Theme.onSurface
+    background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
 
     ListModel {
         id: serverModel
         Component.onCompleted: {
             const names = EasyTierManager.publicServerNames;
-            for (let i = 0; i < names.length; ++i) {
-                serverModel.append({
-                    "name": names[i],
-                    "address": EasyTierManager.public_server_address(i)
-                });
-            }
+            for (let index = 0; index < names.length; ++index)
+                append({ name: names[index], address: EasyTierManager.public_server_address(index) });
         }
     }
-
     ColumnLayout {
         anchors.fill: parent
-        spacing: 8
-
+        spacing: Theme.space12
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("Select a community relay for the EasyTier room.")
+            color: Theme.onSurfaceVariant
+            font.pixelSize: Theme.bodySize
+        }
         ListView {
             id: serverList
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
+            spacing: Theme.space4
             model: serverModel
             delegate: ItemDelegate {
                 id: row
-                width: serverList.width
                 required property int index
                 required property string name
                 required property string address
-
-                onClicked: {
-                    Settings.easytierPublicServerIndex = row.index;
-                    publicServerPopup.close();
+                width: serverList.width
+                height: 68
+                highlighted: Settings.easytierPublicServerIndex === index
+                onClicked: { Settings.easytierPublicServerIndex = index; root.close(); }
+                contentItem: RowLayout {
+                    MdIcon { name: row.highlighted ? "check" : "public"; color: row.highlighted ? Theme.primary : Theme.onSurfaceVariant }
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 2
+                        Label { text: row.name; color: Theme.onSurface; font.pixelSize: Theme.bodyLargeSize }
+                        Label { text: row.address; color: Theme.onSurfaceVariant; font.family: "Monospace"; font.pixelSize: Theme.labelSize }
+                    }
                 }
-
-                contentItem: ColumnLayout {
-                    spacing: 2
-                    width: parent.width
-
-                    RadioButton {
-                        checked: Settings.easytierPublicServerIndex === row.index
-                        onClicked: {
-                            Settings.easytierPublicServerIndex = row.index;
-                            publicServerPopup.close();
-                        }
-                        text: row.name
-                        font.pixelSize: 18
-                        Layout.fillWidth: true
-                    }
-
-                    Label {
-                        text: row.address
-                        font.pixelSize: 12
-                        font.family: "Monospace"
-                        color: Material.color(Material.Grey)
-                        Layout.fillWidth: true
-                        leftPadding: 32
-                    }
+                background: Rectangle {
+                    radius: Theme.radiusMedium
+                    color: row.highlighted ? Theme.secondaryContainer : row.hovered ? Theme.surfaceContainerHighest : "transparent"
                 }
             }
         }
+        MdButton { Layout.alignment: Qt.AlignRight; text: qsTr("Close"); variant: "text"; onClicked: root.close() }
     }
 }

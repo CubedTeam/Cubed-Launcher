@@ -1,128 +1,124 @@
 // @checkPropertyInstance Settings C++
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
 import QtQuick.Dialogs
-import QtCore
-
-import CubedLauncher
 import QtQuick.Layouts
+import QtCore
+import CubedLauncher
 
-Item {
+PageScaffold {
     id: settingTab
-    Layout.fillHeight: true
-    Layout.fillWidth: true
     property url pendingIdentityImport
+    title: qsTr("Settings")
+    subtitle: qsTr("Personalize the launcher and manage game, identity, and network preferences.")
 
-    Flickable {
-        id: settingScroll
-        anchors.fill: parent
-        contentWidth: width
-        contentHeight: settingLayout.implicitHeight + 40
-        clip: true
-        boundsMovement: Flickable.StopAtBounds
-
-        ScrollBar.vertical: ScrollBar {}
-
+    Card {
+        Layout.fillWidth: true
+        implicitHeight: appearanceColumn.implicitHeight + Theme.space32 * 2
         ColumnLayout {
-            id: settingLayout
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 20
-            width: 500
-            spacing: 10
-
-            Card {
-                Layout.preferredHeight: languageLayout.implicitHeight + 20
+            id: appearanceColumn
+            anchors.fill: parent
+            anchors.margins: Theme.space24
+            spacing: Theme.space8
+            SectionHeader {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                ColumnLayout {
-                    id: languageLayout
-                    anchors.centerIn: parent
-                    spacing: settingLayout.spacing
-                    Label {
-                        text: qsTr("Language")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    ComboBox {
-                        id: languageCombo
-                        model: ["简体中文", "English"]
-                        currentIndex: Settings.language === "en" ? 1 : 0
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 300
-                        onActivated: {
-                            Settings.language = currentIndex === 1 ? "en" : "zh_CN";
-                        }
+                title: qsTr("Appearance")
+                subtitle: qsTr("Choose how Cubed Launcher looks on this device.")
+                iconName: "palette"
+            }
+            SettingRow {
+                title: qsTr("Theme mode")
+                description: qsTr("Follow the system or select a fixed light or dark theme.")
+                iconName: Settings.themeMode === 2 ? "dark_mode" : Settings.themeMode === 1 ? "light_mode" : "desktop"
+                Repeater {
+                    model: [qsTr("System"), qsTr("Light"), qsTr("Dark")]
+                    delegate: MdButton {
+                        required property int index
+                        required property string modelData
+                        text: modelData
+                        variant: Settings.themeMode === index ? "tonal" : "text"
+                        onClicked: Settings.themeMode = index
                     }
                 }
             }
-
-            Card {
-                Layout.preferredHeight: colorLayout.implicitHeight + 20
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                ColumnLayout {
-                    id: colorLayout
-                    anchors.centerIn: parent
-                    spacing: settingLayout.spacing
-                    Label {
-                        text: qsTr("Theme Color")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    RowLayout {
-
-                        spacing: 12
-
-                        Repeater {
-                            model: [Material.Red, Material.Pink, Material.Purple, Material.Indigo, Material.Blue, Material.Cyan, Material.Teal, Material.Green, Material.Orange, Material.DeepOrange]
-
-                            delegate: Rectangle {
-                                id: colorRect
-                                required property int modelData
-                                width: 32
-                                height: 32
-                                radius: 16
-                                color: Qt.lighter(Material.color(modelData), 1.2)
-                                border.width: Settings.accentColor === Qt.lighter(Material.color(modelData), 1.2) ? 3 : 0
-                                border.color: Material.color(Material.Grey, Material.Shade700)
-
-                                MouseArea {
-                                    anchors.fill: parent
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: Settings.accentColor = Qt.lighter(Material.color(colorRect.modelData), 1.2)
-                                }
+            Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            SettingRow {
+                title: qsTr("Color palette")
+                description: qsTr("Each palette includes accessible light and dark color roles.")
+                iconName: "palette"
+                Repeater {
+                    model: [
+                        { id: "cubed", color: "#4B8003", label: qsTr("Cubed") },
+                        { id: "blue", color: "#0B57D0", label: qsTr("Blue") },
+                        { id: "violet", color: "#6750A4", label: qsTr("Violet") },
+                        { id: "teal", color: "#006A6A", label: qsTr("Teal") },
+                        { id: "orange", color: "#C25A00", label: qsTr("Orange") }
+                    ]
+                    delegate: Button {
+                        id: paletteButton
+                        required property var modelData
+                        implicitWidth: 40
+                        implicitHeight: 40
+                        hoverEnabled: true
+                        Accessible.name: modelData.label
+                        contentItem: Item {}
+                        background: Rectangle {
+                            anchors.centerIn: parent
+                            width: 32
+                            height: 32
+                            radius: 16
+                            color: paletteButton.modelData.color
+                            border.width: Settings.themePalette === paletteButton.modelData.id ? 3 : 1
+                            border.color: Settings.themePalette === paletteButton.modelData.id ? Theme.onSurface : Theme.outline
+                            MdIcon {
+                                visible: Settings.themePalette === paletteButton.modelData.id
+                                anchors.centerIn: parent
+                                name: "check"
+                                iconSize: 17
+                                color: "white"
                             }
                         }
+                        ToolTip.visible: hovered
+                        ToolTip.text: modelData.label
+                        onClicked: Settings.themePalette = modelData.id
                     }
                 }
             }
-            Card {
-                Layout.preferredHeight: colorfulBorder.implicitHeight + 20
+        }
+    }
+
+    Card {
+        Layout.fillWidth: true
+        implicitHeight: generalColumn.implicitHeight + Theme.space32 * 2
+        ColumnLayout {
+            id: generalColumn
+            anchors.fill: parent
+            anchors.margins: Theme.space24
+            spacing: Theme.space8
+            SectionHeader {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                Switch {
-                    id: colorfulBorder
-                    anchors.centerIn: parent
-                    font.pixelSize: 20
-                    text: qsTr("Colorful Card Border")
-                    checked: Settings.cardColorfulBorder
-                    onCheckedChanged: Settings.cardColorfulBorder = checked
+                title: qsTr("General")
+                subtitle: qsTr("Language and update preferences.")
+                iconName: "settings"
+            }
+            SettingRow {
+                title: qsTr("Language")
+                description: qsTr("The interface updates immediately after selection.")
+                iconName: "translate"
+                MdComboBox {
+                    model: ["简体中文", "English"]
+                    currentIndex: Settings.language === "en" ? 1 : 0
+                    implicitWidth: 180
+                    onActivated: Settings.language = currentIndex === 1 ? "en" : "zh_CN"
                 }
             }
-
-            Card {
-                Layout.preferredHeight: prereleaseUpdates.implicitHeight + 20
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                Switch {
-                    id: prereleaseUpdates
-                    anchors.centerIn: parent
-                    font.pixelSize: 20
-                    text: qsTr("Receive Pre-release Updates")
+            Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            SettingRow {
+                title: qsTr("Receive pre-release updates")
+                description: qsTr("Include preview releases when checking for launcher and game updates.")
+                iconName: "update"
+                MdSwitch {
                     checked: Settings.prereleaseUpdates
                     onToggled: {
                         Settings.prereleaseUpdates = checked;
@@ -131,269 +127,199 @@ Item {
                     }
                 }
             }
+        }
+    }
 
-            // AI-generated: Manage the player's authentication identity.
-            Card {
-                Layout.preferredHeight: identityLayout.implicitHeight + 24
+    Card {
+        Layout.fillWidth: true
+        implicitHeight: identityColumn.implicitHeight + Theme.space32 * 2
+        ColumnLayout {
+            id: identityColumn
+            anchors.fill: parent
+            anchors.margins: Theme.space24
+            spacing: Theme.space16
+            SectionHeader {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                ColumnLayout {
-                    id: identityLayout
-                    anchors.centerIn: parent
-                    width: parent.width - 30
-                    spacing: settingLayout.spacing
+                title: qsTr("Identity & security")
+                subtitle: qsTr("Protect and transfer your Cubed player identity.")
+                iconName: "badge"
+            }
+            InfoBanner {
+                Layout.fillWidth: true
+                tone: "warning"
+                iconName: "key"
+                text: qsTr("identity.json contains authentication credentials. Never share it or upload it publicly.")
+            }
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: identityPath.implicitHeight + Theme.space16 * 2
+                radius: Theme.radiusMedium
+                color: Theme.surfaceContainer
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.margins: Theme.space16
+                    MdIcon { name: "folder"; color: Theme.onSurfaceVariant }
                     Label {
-                        text: qsTr("Player Identity")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    Label {
+                        id: identityPath
+                        Layout.fillWidth: true
                         text: IdentityManager.identityPath
-                        font.pixelSize: 12
-                        color: Material.color(Material.Grey)
+                        color: Theme.onSurfaceVariant
+                        font.pixelSize: Theme.labelSize
                         wrapMode: Text.WrapAnywhere
-                        horizontalAlignment: Text.AlignHCenter
-                        Layout.fillWidth: true
-                    }
-                    Label {
-                        text: qsTr("identity.json contains your player authentication credentials. Do not share it with anyone or upload it publicly.")
-                        font.pixelSize: 14
-                        font.bold: true
-                        color: Material.color(Material.DeepOrange, Material.Shade700)
-                        wrapMode: Text.WordWrap
-                        horizontalAlignment: Text.AlignHCenter
-                        Layout.fillWidth: true
-                    }
-                    RowLayout {
-                        Layout.alignment: Qt.AlignCenter
-                        spacing: 10
-                        Button {
-                            Layout.preferredWidth: 200
-                            Layout.preferredHeight: 50
-                            font.pixelSize: 16
-                            Material.roundedScale: Material.MediumScale
-                            text: qsTr("Import Identity File")
-                            enabled: !CubedGame.running
-                            onClicked: importIdentityDialog.open()
-                        }
-                        Button {
-                            Layout.preferredWidth: 200
-                            Layout.preferredHeight: 50
-                            font.pixelSize: 16
-                            Material.roundedScale: Material.MediumScale
-                            text: qsTr("Export Identity File")
-                            enabled: !CubedGame.running
-                            onClicked: exportIdentityDialog.open()
-                        }
-                    }
-                    Label {
-                        visible: CubedGame.running
-                        text: qsTr("Exit Cubed before importing or exporting the identity file.")
-                        font.pixelSize: 13
-                        color: Material.color(Material.Red, Material.Shade700)
-                        wrapMode: Text.WordWrap
-                        horizontalAlignment: Text.AlignHCenter
-                        Layout.fillWidth: true
                     }
                 }
             }
-
-            Card {
-                Layout.preferredHeight: advancedSetting.implicitHeight + 20
+            InfoBanner {
+                visible: CubedGame.running
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                Switch {
-                    id: advancedSetting
-                    anchors.centerIn: parent
-                    font.pixelSize: 20
-                    text: qsTr("Advanced Setting")
-                    checked: false
+                tone: "error"
+                text: qsTr("Exit Cubed before importing or exporting the identity file.")
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                Item { Layout.fillWidth: true }
+                MdButton {
+                    text: qsTr("Import Identity")
+                    iconName: "download"
+                    variant: "outlined"
+                    enabled: !CubedGame.running
+                    onClicked: importIdentityDialog.open()
+                }
+                MdButton {
+                    text: qsTr("Export Identity")
+                    iconName: "folder"
+                    variant: "tonal"
+                    enabled: !CubedGame.running
+                    onClicked: exportIdentityDialog.open()
                 }
             }
+        }
+    }
 
-            Card {
-                Layout.preferredHeight: wrapperLayout.implicitHeight + 20
+    Card {
+        Layout.fillWidth: true
+        implicitHeight: advancedColumn.implicitHeight + Theme.space32 * 2
+        ColumnLayout {
+            id: advancedColumn
+            anchors.fill: parent
+            anchors.margins: Theme.space24
+            spacing: Theme.space8
+            SectionHeader {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
+                title: qsTr("Advanced")
+                subtitle: qsTr("Developer options, cache, and GitHub authentication.")
+                iconName: "terminal"
+            }
+            SettingRow {
+                title: qsTr("Show advanced options")
+                description: qsTr("These settings are intended for troubleshooting and custom setups.")
+                iconName: "settings"
+                MdSwitch { id: advancedSetting }
+            }
+            Rectangle { visible: advancedSetting.checked; Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            SettingRow {
                 visible: advancedSetting.checked
-                ColumnLayout {
-                    id: wrapperLayout
-                    anchors.centerIn: parent
-                    spacing: settingLayout.spacing
-                    Label {
-                        text: qsTr("Wrapper Command")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    TextField {
-                        id: wrapperCommand
-                        Layout.preferredWidth: 300
-                        Layout.alignment: Qt.AlignCenter
-                        placeholderText: qsTr("Wrapper Command")
-                        text: Settings.wrapperCommand
-                        onEditingFinished: {
-                            Settings.wrapperCommand = wrapperCommand.text;
-                        }
-                    }
+                title: qsTr("Wrapper command")
+                description: qsTr("Run Cubed through a custom wrapper command.")
+                iconName: "terminal"
+                MdTextField {
+                    implicitWidth: 300
+                    placeholderText: qsTr("Wrapper Command")
+                    text: Settings.wrapperCommand
+                    onEditingFinished: Settings.wrapperCommand = text
                 }
             }
-
-            Card {
-                Layout.preferredHeight: logLayout.implicitHeight + 20
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
+            SettingRow {
                 visible: advancedSetting.checked
-                ColumnLayout {
-                    id: logLayout
-                    anchors.centerIn: parent
-                    spacing: settingLayout.spacing
-                    Label {
-                        text: qsTr("Log")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    Switch {
-                        id: logStatus
-                        checked: false
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                        onCheckedChanged: {
-                            CubedGame.logOn = logStatus.checked;
-                        }
-                        text: checked ? qsTr("On") : qsTr("Off")
-                    }
+                title: qsTr("Game log")
+                description: qsTr("Enable additional launcher logging for Cubed.")
+                iconName: "terminal"
+                MdSwitch {
+                    checked: CubedGame.logOn
+                    onToggled: CubedGame.logOn = checked
                 }
             }
-
-            Card {
-                Layout.preferredHeight: cacheLayout.implicitHeight + 20
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
+            SettingRow {
                 visible: advancedSetting.checked
-                ColumnLayout {
-                    id: cacheLayout
-                    anchors.centerIn: parent
-                    spacing: settingLayout.spacing
-                    Label {
-                        text: qsTr("Cache")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    Button {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 18
-                        Material.roundedScale: Material.MediumScale
-                        text: qsTr("Clear Cache")
-                        onClicked: clearCacheDialog.open()
-                    }
+                title: qsTr("Cached network data")
+                description: qsTr("Clear cached release and mirror responses.")
+                iconName: "storage"
+                MdButton {
+                    text: qsTr("Clear Cache")
+                    iconName: "delete"
+                    variant: "outlined"
+                    onClicked: clearCacheDialog.open()
                 }
             }
-
-            Card {
-                Layout.preferredHeight: tokenLayout.implicitHeight + 20
-                Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
+            SettingRow {
                 visible: advancedSetting.checked
-                ColumnLayout {
-                    id: tokenLayout
-                    anchors.centerIn: parent
-                    spacing: settingLayout.spacing
-                    Label {
-                        text: qsTr("GitHub Token")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    TextField {
-                        id: githubTokenField
-                        Layout.preferredWidth: 300
-                        Layout.alignment: Qt.AlignCenter
-                        echoMode: TextInput.Password
-                        placeholderText: qsTr("Enter GitHub Token")
-                        text: Settings.githubToken
-                        onEditingFinished: {
-                            Settings.githubToken = githubTokenField.text;
-                        }
-                    }
-                    Label {
-                        text: qsTr("Token stored in system keyring. Environment variable takes precedence.")
-                        font.pixelSize: 12
-                        Layout.alignment: Qt.AlignCenter
-                        color: Material.color(Material.Grey)
-                        wrapMode: Text.WordWrap
-                        Layout.maximumWidth: 320
-                    }
-                    Button {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 250
-                        Layout.preferredHeight: 40
-                        font.pixelSize: 16
-                        Material.roundedScale: Material.MediumScale
-                        visible: Settings.githubToken.length > 0
-                        text: qsTr("Remove Token")
-                        onClicked: Settings.githubToken = ""
-                    }
+                title: qsTr("GitHub token")
+                description: qsTr("Stored in the system keyring; environment variables take precedence.")
+                iconName: "key"
+                MdTextField {
+                    id: githubTokenField
+                    implicitWidth: 260
+                    echoMode: TextInput.Password
+                    placeholderText: qsTr("Enter GitHub Token")
+                    text: Settings.githubToken
+                    onEditingFinished: Settings.githubToken = text
+                }
+                MdIconButton {
+                    visible: Settings.githubToken.length > 0
+                    iconName: "delete"
+                    variant: "danger"
+                    toolTip: qsTr("Remove token")
+                    onClicked: Settings.githubToken = ""
                 }
             }
+        }
+    }
 
-            Card {
-                Layout.preferredHeight: networkLayout.implicitHeight + 20
+    Card {
+        Layout.fillWidth: true
+        implicitHeight: networkColumn.implicitHeight + Theme.space32 * 2
+        ColumnLayout {
+            id: networkColumn
+            anchors.fill: parent
+            anchors.margins: Theme.space24
+            spacing: Theme.space16
+            SectionHeader {
                 Layout.fillWidth: true
-                Layout.alignment: Qt.AlignCenter
-                visible: advancedSetting.checked
-                ColumnLayout {
-                    id: networkLayout
-                    anchors.centerIn: parent
-                    spacing: settingLayout.spacing
-                    Label {
-                        text: qsTr("Network")
-                        font.pixelSize: 20
-                        Layout.alignment: Qt.AlignCenter
-                    }
-                    ComboBox {
-                        id: peerMode
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 300
-                        font.pixelSize: 20
-                        model: [qsTr("Host"), qsTr("Client")]
-                        currentIndex: 0
-                        onCurrentIndexChanged: {
-                            CubedGame.set_peer(peerMode.currentIndex);
-                        }
-                    }
-                    TextField {
-                        id: hostPort
-                        visible: peerMode.currentIndex == 0
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 300
-                        placeholderText: qsTr("Port")
-                        onEditingFinished: {
-                            CubedGame.set_port(hostPort.text);
-                        }
-                    }
-                    RowLayout {
-                        visible: peerMode.currentIndex == 1
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: 300
-                        spacing: 10
-                        TextField {
-                            id: serverIp
-                            Layout.fillWidth: true
-                            placeholderText: qsTr("Ip")
-                            onEditingFinished: {
-                                CubedGame.set_ip(serverIp.text);
-                            }
-                        }
-                        TextField {
-                            id: serverPort
-                            Layout.fillWidth: true
-                            placeholderText: qsTr("Port")
-                            onEditingFinished: {
-                                CubedGame.set_port(serverPort.text);
-                            }
-                        }
-                    }
+                title: qsTr("Network")
+                subtitle: qsTr("Configure direct host or client mode for Cubed.")
+                iconName: "network"
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Theme.space12
+                MdComboBox {
+                    id: peerMode
+                    implicitWidth: 180
+                    model: [qsTr("Host"), qsTr("Client")]
+                    onCurrentIndexChanged: CubedGame.set_peer(currentIndex)
+                }
+                MdTextField {
+                    id: hostPort
+                    visible: peerMode.currentIndex === 0
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("Port")
+                    inputMethodHints: Qt.ImhDigitsOnly
+                    onEditingFinished: CubedGame.set_port(text)
+                }
+                MdTextField {
+                    id: serverIp
+                    visible: peerMode.currentIndex === 1
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("IP address")
+                    onEditingFinished: CubedGame.set_ip(text)
+                }
+                MdTextField {
+                    id: serverPort
+                    visible: peerMode.currentIndex === 1
+                    Layout.preferredWidth: 150
+                    placeholderText: qsTr("Port")
+                    inputMethodHints: Qt.ImhDigitsOnly
+                    onEditingFinished: CubedGame.set_port(text)
                 }
             }
         }
@@ -401,15 +327,21 @@ Item {
 
     Dialog {
         id: clearCacheDialog
+        parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
-        width: 250
-        height: 150
+        width: 360
         modal: true
-        focus: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         title: qsTr("Clear Cache")
         standardButtons: Dialog.Ok | Dialog.Cancel
+        palette.text: Theme.onSurface
+        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
         onAccepted: Settings.clear_cache()
+        Label {
+            width: parent.width
+            text: qsTr("Clear all cached release and mirror data?")
+            color: Theme.onSurface
+            wrapMode: Text.WordWrap
+        }
     }
 
     FileDialog {
@@ -422,7 +354,6 @@ Item {
             confirmIdentityImportDialog.open();
         }
     }
-
     FileDialog {
         id: exportIdentityDialog
         title: qsTr("Export Identity File")
@@ -439,23 +370,24 @@ Item {
 
     Dialog {
         id: confirmIdentityImportDialog
+        parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
-        width: 460
+        width: Math.min(480, Overlay.overlay.width - 48)
         modal: true
-        focus: true
         closePolicy: Popup.CloseOnEscape
         title: qsTr("Replace Player Identity?")
         standardButtons: Dialog.Ok | Dialog.Cancel
+        palette.text: Theme.onSurface
+        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
         onAccepted: {
             identityResultDialog.importOperation = true;
             identityResultDialog.succeeded = IdentityManager.import_identity(settingTab.pendingIdentityImport);
             identityResultDialog.open();
         }
-
-        Label {
+        InfoBanner {
             width: parent.width
-            text: qsTr("Importing this file will replace your current player identity and authentication credentials. Continue?")
-            wrapMode: Text.WordWrap
+            tone: "warning"
+            text: qsTr("Importing this file replaces your current player identity and authentication credentials.")
         }
     }
 
@@ -463,24 +395,25 @@ Item {
         id: identityResultDialog
         property bool importOperation: true
         property bool succeeded: false
+        parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
-        width: 420
+        width: Math.min(440, Overlay.overlay.width - 48)
         modal: true
-        focus: true
         title: succeeded ? qsTr("Identity File Updated") : qsTr("Identity File Operation Failed")
         standardButtons: Dialog.Ok
-
-        Label {
+        palette.text: Theme.onSurface
+        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+        InfoBanner {
             width: parent.width
+            tone: identityResultDialog.succeeded ? "info" : "error"
+            iconName: identityResultDialog.succeeded ? "check" : "warning"
             text: {
-                if (!identityResultDialog.succeeded) {
+                if (!identityResultDialog.succeeded)
                     return qsTr("The identity file operation failed: %1").arg(IdentityManager.errorMessage);
-                }
                 return identityResultDialog.importOperation
-                    ? qsTr("The player identity was imported. It will take effect the next time Cubed starts.")
+                    ? qsTr("The player identity was imported and will be used next time Cubed starts.")
                     : qsTr("The player identity was exported successfully.");
             }
-            wrapMode: Text.WordWrap
         }
     }
 }

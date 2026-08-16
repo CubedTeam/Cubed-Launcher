@@ -1,159 +1,108 @@
-// AI-generated: shared install/management card for FrpManager and
-// EasyTierManager. Parameterised on the manager instance and a few labels
-// so the same UI can render either service.
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
 import QtQuick.Layouts
+import CubedLauncher
 
 Item {
     id: root
     property var manager
     property string title: ""
-    // Some services want to advertise the installed version inside the
-    // install card;
     property bool showInstalledVersion: true
-    // When true, the primary action button is also disabled while the
-    // service is running
     property bool blockWhileRunning: true
-
-    implicitWidth: installLayout.implicitWidth
-    implicitHeight: installLayout.implicitHeight
-    width: installLayout.width
-    height: installLayout.implicitHeight
+    implicitHeight: installColumn.implicitHeight
 
     ColumnLayout {
-        id: installLayout
-        width: 560
-        spacing: 10
-
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: root.title
-            font.pixelSize: 18
-            font.bold: true
-        }
-
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("Not Installed")
-            visible: !root.manager.installed && !root.manager.busy
-            font.pixelSize: 18
-            color: Material.color(Material.Orange)
-        }
-
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("Installed: %1").arg(root.manager.version)
-            visible: root.showInstalledVersion && root.manager.installed && !root.manager.busy
-            font.pixelSize: 18
-            color: Material.color(Material.Green)
-        }
-
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            visible: root.manager.busy
-            text: {
-                // BinaryServiceBase::State values: NotInstalled=0, Checking=1,
-                // Downloading=2, Extracting=3. Compared as integers because
-                // the manager is bound through a `var` property and QML
-                // cannot resolve Q_ENUM values from `var`.
-                const s = root.manager.state;
-                if (s === 1)
-                    return qsTr("Checking for updates...");
-                if (s === 2)
-                    return qsTr("Downloading...");
-                if (s === 3)
-                    return qsTr("Extracting...");
-                return qsTr("Working...");
-            }
-            font.pixelSize: 18
-        }
-
-        ProgressBar {
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 400
-            from: 0.0
-            to: 1.0
-            value: root.manager.downloadProgress
-            visible: root.manager.state === 2
-        }
-
-        Label {
-            Layout.alignment: Qt.AlignCenter
-            visible: root.manager.hasError
-            text: root.manager.errorMessage
-            wrapMode: Text.WordWrap
+        id: installColumn
+        width: parent.width
+        spacing: Theme.space16
+        RowLayout {
             Layout.fillWidth: true
-            horizontalAlignment: Text.AlignHCenter
-            color: Material.color(Material.Red)
-            font.pixelSize: 16
+            SectionHeader {
+                Layout.fillWidth: true
+                title: root.title
+                subtitle: root.manager.installed
+                    ? qsTr("Installed version: %1").arg(root.manager.version)
+                    : qsTr("Download and install this multiplayer service.")
+                iconName: "download"
+            }
+            StatusChip {
+                text: root.manager.busy ? qsTr("Working")
+                      : root.manager.installed ? qsTr("Installed") : qsTr("Not installed")
+                iconName: root.manager.busy ? "update" : root.manager.installed ? "check" : "download"
+                tone: root.manager.installed ? "success" : "neutral"
+            }
         }
-        Switch {
-            id: customDowlaodSwitch
-            checked: false
-            font.pixelSize: 14
-            Layout.alignment: Qt.AlignCenter
-            text: qsTr("Custom Link")
+
+        Label {
+            visible: root.manager.busy
+            Layout.fillWidth: true
+            text: root.manager.state === 1 ? qsTr("Checking for updates…")
+                : root.manager.state === 2 ? qsTr("Downloading…")
+                : root.manager.state === 3 ? qsTr("Extracting…") : qsTr("Working…")
+            color: Theme.onSurfaceVariant
+            font.pixelSize: Theme.bodySize
         }
-        Button {
-            id: mirrorButton
-            visible: !customDowlaodSwitch.checked
-            enabled: visible
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 50
-            Material.roundedScale: Material.MediumScale
-            highlighted: true
-            font.pixelSize: 18
+        MdProgressBar {
+            visible: root.manager.state === 2
+            Layout.fillWidth: true
+            from: 0
+            to: 1
+            value: root.manager.downloadProgress
+        }
+        InfoBanner {
+            visible: root.manager.hasError
+            Layout.fillWidth: true
+            tone: "error"
+            text: root.manager.errorMessage
+        }
+
+        MdSwitch {
+            id: customDownloadSwitch
+            text: qsTr("Use custom download link")
+            enabled: !root.manager.busy
+        }
+        MdButton {
+            visible: !customDownloadSwitch.checked
+            Layout.fillWidth: true
+            variant: "outlined"
+            iconName: "public"
             text: {
-                const idx = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
-                return qsTr("Mirror: ") + MirrorSource.names[idx];
+                const index = Settings.mirrorIndex >= 0 ? Settings.mirrorIndex : (SystemInfo.isInChina ? 1 : 0);
+                return qsTr("Mirror: ") + MirrorSource.names[index];
             }
             onClicked: mirrorPopup.open()
         }
-        TextField {
+        MdTextField {
             id: customLinkText
-            visible: customDowlaodSwitch.checked
-            enabled: visible
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 50
+            visible: customDownloadSwitch.checked
+            Layout.fillWidth: true
             placeholderText: qsTr("Download Link")
         }
-        Button {
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 50
-            font.pixelSize: 18
-            Material.roundedScale: Material.MediumScale
-            highlighted: true
-            enabled: !root.manager.busy && (!root.blockWhileRunning || !root.manager.running)
-            text: root.manager.installed ? qsTr("Reinstall") : qsTr("Download && Install")
-            onClicked: {
-                if (customDowlaodSwitch.checked) {
-                    root.manager.install_from_url(customLinkText.text);
-                } else {
-                    root.manager.check_and_install(Settings.mirrorIndex);
+
+        RowLayout {
+            Layout.fillWidth: true
+            MdButton {
+                visible: root.manager.installed && !root.manager.busy
+                text: qsTr("Uninstall")
+                iconName: "delete"
+                variant: "outlined"
+                enabled: !root.manager.running
+                onClicked: root.manager.reset_install()
+            }
+            Item { Layout.fillWidth: true }
+            MdButton {
+                text: root.manager.installed ? qsTr("Reinstall") : qsTr("Download & Install")
+                iconName: "download"
+                enabled: !root.manager.busy && (!root.blockWhileRunning || !root.manager.running)
+                onClicked: {
+                    if (customDownloadSwitch.checked)
+                        root.manager.install_from_url(customLinkText.text);
+                    else
+                        root.manager.check_and_install(Settings.mirrorIndex);
                 }
             }
         }
-
-        Button {
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredWidth: 250
-            Layout.preferredHeight: 50
-            font.pixelSize: 16
-            Material.roundedScale: Material.MediumScale
-            visible: root.manager.installed && !root.manager.busy
-            text: qsTr("Uninstall")
-            onClicked: root.manager.reset_install()
-        }
     }
-    MirrorSelect {
-        id: mirrorPopup
-        parent: Overlay.overlay
-    }
+    MirrorSelect { id: mirrorPopup; parent: Overlay.overlay }
 }

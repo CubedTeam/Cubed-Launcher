@@ -168,6 +168,12 @@ bool CubedGame::game_path_select() const {
     return !m_game_install_dir.isEmpty();
 }
 bool CubedGame::installed() const { return m_installed; }
-void CubedGame::set_log_statue(bool status) { m_log_on = status; }
+void CubedGame::set_log_statue(bool status) {
+    if (m_log_on == status) {
+        return;
+    }
+    m_log_on = status;
+    Q_EMIT log_on_changed();
+}
 QString CubedGame::version() const { return m_version; }
 bool CubedGame::log_on() const { return m_log_on; }

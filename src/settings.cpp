@@ -5,9 +5,37 @@
 #include "tool/secret_store.hpp"
 
 #include <QFileInfo>
+#include <QHash>
+#include <limits>
 
 namespace {
 constexpr QLatin1StringView kGithubTokenKey("github_token");
+
+const QHash<QString, QColor>& theme_seeds() {
+    static const QHash<QString, QColor> seeds{
+        {"cubed", QColor("#4B8003")},  {"blue", QColor("#0B57D0")},
+        {"violet", QColor("#6750A4")}, {"teal", QColor("#006A6A")},
+        {"orange", QColor("#C25A00")},
+    };
+    return seeds;
+}
+
+// AI-generated: map legacy accent colors to MD3 palettes.
+QString closest_palette(const QColor& color) {
+    QString closest = QStringLiteral("cubed");
+    qint64 closest_distance = std::numeric_limits<qint64>::max();
+    for (auto it = theme_seeds().cbegin(); it != theme_seeds().cend(); ++it) {
+        const qint64 red = color.red() - it.value().red();
+        const qint64 green = color.green() - it.value().green();
+        const qint64 blue = color.blue() - it.value().blue();
+        const qint64 distance = red * red + green * green + blue * blue;
+        if (distance < closest_distance) {
+            closest_distance = distance;
+            closest = it.key();
+        }
+    }
+    return closest;
+}
 } // namespace
 
 Settings* Settings::s_instance = nullptr;
@@ -29,6 +57,8 @@ int Settings::mirror_index() const { return m_mirror_index; }
 QString Settings::language() const { return m_language; }
 
 QColor Settings::accent_color() const { return m_accent_color; }
+Settings::ThemeMode Settings::theme_mode() const { return m_theme_mode; }
+QString Settings::theme_palette() const { return m_theme_palette; }
 bool Settings::card_colorful_border() const { return m_card_colorful_border; }
 QString Settings::wrapper_command() const { return m_wrapper_command; }
 QString Settings::frp_install_path() const { return m_frp_install_path; }
@@ -87,13 +117,38 @@ void Settings::set_language(const QString& lang) {
 }
 
 void Settings::set_accent_color(const QColor& color) {
-    if (m_accent_color == color) {
+    set_theme_palette(closest_palette(color));
+}
+
+void Settings::set_theme_mode(ThemeMode mode) {
+    if (!update_value(m_theme_mode, mode, "theme_mode")) {
+        return;
+    }
+    Q_EMIT theme_mode_changed();
+}
+
+void Settings::set_theme_palette(const QString& palette) {
+    if (!theme_seeds().contains(palette)) {
         return;
     }
 
-    m_accent_color = color;
-    m_settings.setValue("accent_color", color.name());
-    Q_EMIT accent_color_changed();
+    const QColor seed = theme_seeds().value(palette);
+    const bool palette_changed = m_theme_palette != palette;
+    const bool accent_changed = m_accent_color != seed;
+    if (!palette_changed && !accent_changed) {
+        return;
+    }
+
+    m_theme_palette = palette;
+    m_accent_color = seed;
+    m_settings.setValue("theme_palette", palette);
+    m_settings.setValue("accent_color", seed.name());
+    if (palette_changed) {
+        Q_EMIT theme_palette_changed();
+    }
+    if (accent_changed) {
+        Q_EMIT accent_color_changed();
+    }
 }
 
 void Settings::set_card_colorful_border(bool enabled) {
@@ -203,8 +258,21 @@ void Settings::load() {
     m_mirror_index = m_settings.value("mirror_index", -1).toInt();
 
     m_language = m_settings.value("language").toString();
-    m_accent_color = QColor(
-        m_settings.value("accent_color", QColor("#2196F3").name()).toString());
+    const QColor legacy_accent(
+        m_settings.value("accent_color", QColor("#4B8003").name()).toString());
+    m_theme_palette = m_settings.value("theme_palette").toString();
+    if (!theme_seeds().contains(m_theme_palette)) {
+        m_theme_palette = closest_palette(legacy_accent);
+        m_settings.setValue("theme_palette", m_theme_palette);
+    }
+    m_accent_color = theme_seeds().value(m_theme_palette);
+    m_settings.setValue("accent_color", m_accent_color.name());
+
+    const int theme_mode = m_settings.value("theme_mode", 0).toInt();
+    if (theme_mode >= static_cast<int>(ThemeMode::System) &&
+        theme_mode <= static_cast<int>(ThemeMode::Dark)) {
+        m_theme_mode = static_cast<ThemeMode>(theme_mode);
+    }
     m_card_colorful_border =
         m_settings.value("card_colorful_border", true).toBool();
     m_wrapper_command = m_settings.value("wrapper_command").toString();

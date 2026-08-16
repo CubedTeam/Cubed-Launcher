@@ -1,59 +1,38 @@
-// AI-generated: install path card shared by frp / easytier sections. The
-// caller wires up the actual folder dialog and reset action via signals,
-// so the card only owns the static layout.
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
 import QtQuick.Layouts
 
-Card {
+Rectangle {
     id: root
     property var manager
     property string pathTitle
     property string setButtonText: qsTr("Set Folder")
     property string resetButtonText: qsTr("Reset Path")
-
     signal setClicked()
     signal resetClicked()
+    implicitHeight: pathRow.implicitHeight + Theme.space16 * 2
+    radius: Theme.radiusMedium
+    color: Theme.surfaceContainer
 
-    implicitWidth: pathLayout.implicitWidth + 20
-    implicitHeight: pathLayout.implicitHeight + 20
-
-    ColumnLayout {
-        id: pathLayout
+    RowLayout {
+        id: pathRow
         anchors.fill: parent
-        anchors.margins: 10
-        spacing: 12
-
-        Label {
-            text: root.pathTitle + ": " + root.manager.installPath
-            font.pixelSize: 16
-            Layout.alignment: Qt.AlignCenter
-            wrapMode: Text.WrapAnywhere
-            Layout.preferredWidth: 500
-            horizontalAlignment: Text.AlignHCenter
-        }
-        RowLayout {
-            Layout.alignment: Qt.AlignCenter
-            spacing: 10
-            Button {
-                Material.roundedScale: Material.MediumScale
-                Layout.preferredWidth: 250
-                Layout.preferredHeight: 50
-                font.pixelSize: 20
-                highlighted: true
-                text: root.setButtonText
-                onClicked: root.setClicked()
-            }
-            Button {
-                Material.roundedScale: Material.MediumScale
-                Layout.preferredWidth: 250
-                Layout.preferredHeight: 50
-                font.pixelSize: 20
-                text: root.resetButtonText
-                onClicked: root.resetClicked()
+        anchors.margins: Theme.space16
+        spacing: Theme.space12
+        MdIcon { name: "folder"; color: Theme.onSurfaceVariant }
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 2
+            Label { text: root.pathTitle; color: Theme.onSurface; font.pixelSize: Theme.bodySize; font.weight: Font.DemiBold }
+            Label {
+                Layout.fillWidth: true
+                text: root.manager.installPath
+                color: Theme.onSurfaceVariant
+                font.pixelSize: Theme.labelSize
+                wrapMode: Text.WrapAnywhere
             }
         }
+        MdButton { text: root.setButtonText; iconName: "folder"; variant: "outlined"; onClicked: root.setClicked() }
+        MdIconButton { iconName: "refresh"; toolTip: root.resetButtonText; onClicked: root.resetClicked() }
     }
 }

@@ -1,206 +1,170 @@
-// AI-generated: frp multiplayer section. Self-contained: install card,
-// control card, logs, advanced toggle, path setting, toml dialog and
-// folder dialog. Sourced from Multiplayer.qml to keep the multiplayer tab
-// file itself thin.
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
-import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Layouts
+import CubedLauncher
 
 Item {
-    id: frpSection
-    implicitWidth: frpLayout.implicitWidth
-    implicitHeight: frpLayout.implicitHeight
-    width: frpLayout.width
-    height: frpLayout.implicitHeight
-
+    id: root
+    implicitHeight: content.implicitHeight
     property var logLines: []
-    property bool showLog: true
 
     Component.onCompleted: {
-        if (Settings.frpInstallPath && Settings.frpInstallPath.length > 0) {
+        if (Settings.frpInstallPath.length > 0)
             FrpManager.set_install_path(Settings.frpInstallPath);
-        }
     }
-
     Connections {
         target: Settings
-        function onFrp_install_path_changed() {
-            FrpManager.set_install_path(Settings.frpInstallPath);
-        }
+        function onFrp_install_path_changed() { FrpManager.set_install_path(Settings.frpInstallPath); }
     }
-
     Connections {
         target: FrpManager
         function onLog_line(line) {
-            const lines = frpSection.logLines.slice();
+            const lines = root.logLines.slice();
             lines.push(line);
-            if (lines.length > 2000) {
+            if (lines.length > 2000)
                 lines.splice(0, lines.length - 2000);
-            }
-            frpSection.logLines = lines;
+            root.logLines = lines;
         }
     }
 
     ColumnLayout {
-        id: frpLayout
-        width: 560
-        spacing: 12
+        id: content
+        width: parent.width
+        spacing: Theme.space24
 
         Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: installLayout.implicitHeight + 20
             visible: !FrpManager.installed || FrpManager.busy
+            Layout.fillWidth: true
+            implicitHeight: installer.implicitHeight + Theme.space32 * 2
             FrpManagement {
-                id: installLayout
-                width: parent.width
-                anchors.centerIn: parent
+                id: installer
+                anchors.fill: parent
+                anchors.margins: Theme.space24
             }
         }
-        // frp control
+
         Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: controlLayout.implicitHeight + 20
             visible: FrpManager.installed
+            Layout.fillWidth: true
+            implicitHeight: controlColumn.implicitHeight + Theme.space32 * 2
             ColumnLayout {
-                id: controlLayout
+                id: controlColumn
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 10
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Frp Client")
-                    font.pixelSize: 18
-                    font.bold: true
-                }
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Status: %1").arg(FrpManager.running ? qsTr("Running") : qsTr("Stopped"))
-                    font.pixelSize: 16
-                    color: FrpManager.running ? Material.color(Material.Green) : Material.color(Material.Grey)
-                }
-
+                anchors.margins: Theme.space24
+                spacing: Theme.space16
                 RowLayout {
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 12
-                    Button {
-                        id: startButton
-                        Layout.preferredWidth: 160
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 18
-                        Material.roundedScale: Material.MediumScale
-                        highlighted: true
-                        enabled: FrpManager.installed && !FrpManager.running
+                    Layout.fillWidth: true
+                    SectionHeader {
+                        Layout.fillWidth: true
+                        title: qsTr("Frp client")
+                        subtitle: qsTr("Connect through a configured Frp server without elevated privileges.")
+                        iconName: "network"
+                    }
+                    StatusChip {
+                        text: FrpManager.running ? qsTr("Running") : qsTr("Stopped")
+                        iconName: FrpManager.running ? "play_arrow" : "stop"
+                        tone: FrpManager.running ? "success" : "neutral"
+                    }
+                }
+                RowLayout {
+                    Layout.fillWidth: true
+                    MdButton {
+                        text: qsTr("Edit frpc.toml")
+                        iconName: "edit"
+                        variant: "outlined"
+                        enabled: !FrpManager.running
+                        onClicked: tomlDialog.open()
+                    }
+                    Item { Layout.fillWidth: true }
+                    MdButton {
+                        visible: !FrpManager.running
                         text: qsTr("Start")
+                        iconName: "play_arrow"
+                        enabled: FrpManager.installed
                         onClicked: FrpManager.start()
                     }
-                    Button {
-                        id: stopButton
-                        Layout.preferredWidth: 160
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 18
-                        Material.roundedScale: Material.MediumScale
-                        Material.background: Material.color(Material.Red)
-                        enabled: FrpManager.running
+                    MdButton {
+                        visible: FrpManager.running
                         text: qsTr("Stop")
+                        iconName: "stop"
+                        variant: "danger"
                         onClicked: FrpManager.stop()
                     }
                 }
-
-                Button {
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: 250
-                    Layout.preferredHeight: 50
-                    font.pixelSize: 16
-                    Material.roundedScale: Material.MediumScale
-                    text: qsTr("Edit frpc.toml")
-                    onClicked: tomlDialog.open()
-                }
             }
         }
-        // log card
+
         LogCard {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: implicitHeight
             visible: FrpManager.installed
-            logLines: frpSection.logLines
-            showLog: frpSection.showLog
-        }
-        Card {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: advancedButton.implicitHeight + 20
+            logLines: root.logLines
+            title: qsTr("Frp logs")
+        }
 
-            Switch {
-                id: advancedButton
-                font.pixelSize: 14
-                anchors.centerIn: parent
-                text: qsTr("Advanced")
-                checked: false
-            }
-        }
         Card {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: advancedSetting.implicitHeight + 20
-            visible: advancedButton.checked && FrpManager.installed
-            FrpManagement {
-                id: advancedSetting
-                width: parent.width
-                anchors.centerIn: parent
-            }
-        }
-        InstallPathCard {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: implicitHeight
-            visible: advancedButton.checked
-            manager: FrpManager
-            pathTitle: qsTr("Frp Install Directory")
-            setButtonText: qsTr("Set Frp Folder")
-            onSetClicked: frpFolderDialog.open()
-            onResetClicked: {
-                Settings.frpInstallPath = SystemInfo.defaultFrpInstallDir;
-                FrpManager.set_install_path(SystemInfo.defaultFrpInstallDir);
+            implicitHeight: advancedColumn.implicitHeight + Theme.space32 * 2
+            ColumnLayout {
+                id: advancedColumn
+                anchors.fill: parent
+                anchors.margins: Theme.space24
+                spacing: Theme.space16
+                SettingRow {
+                    title: qsTr("Advanced Frp options")
+                    description: qsTr("Reinstall the service or change its installation folder.")
+                    iconName: "settings"
+                    MdSwitch { id: advancedToggle }
+                }
+                FrpManagement {
+                    visible: advancedToggle.checked && FrpManager.installed
+                    Layout.fillWidth: true
+                }
+                InstallPathCard {
+                    visible: advancedToggle.checked
+                    Layout.fillWidth: true
+                    manager: FrpManager
+                    pathTitle: qsTr("Frp Install Directory")
+                    setButtonText: qsTr("Set Frp Folder")
+                    onSetClicked: frpFolderDialog.open()
+                    onResetClicked: {
+                        Settings.frpInstallPath = SystemInfo.defaultFrpInstallDir;
+                        FrpManager.set_install_path(SystemInfo.defaultFrpInstallDir);
+                    }
+                }
             }
         }
     }
 
     Dialog {
         id: tomlDialog
+        parent: Overlay.overlay
         anchors.centerIn: Overlay.overlay
-        width: Math.min(parent.width - 60, 800)
-        height: Math.min(parent.height - 60, 600)
+        width: Math.min(800, Overlay.overlay.width - 64)
+        height: Math.min(600, Overlay.overlay.height - 64)
         modal: true
-        focus: true
-        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
         title: qsTr("Edit frpc.toml")
         standardButtons: Dialog.Save | Dialog.Cancel
-
+        palette.text: Theme.onSurface
+        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
         onOpened: tomlEditor.text = FrpManager.read_toml()
-
         onAccepted: FrpManager.save_toml(tomlEditor.text)
-
         ScrollView {
             anchors.fill: parent
             TextArea {
                 id: tomlEditor
+                color: Theme.onSurface
+                selectionColor: Theme.primaryContainer
+                selectedTextColor: Theme.onPrimaryContainer
                 font.family: "Monospace"
-                font.pixelSize: 14
+                font.pixelSize: Theme.bodySize
                 wrapMode: TextArea.NoWrap
                 selectByMouse: true
+                background: Rectangle { color: Theme.surfaceContainer; radius: Theme.radiusMedium }
             }
         }
     }
-
     FolderDialog {
         id: frpFolderDialog
         title: qsTr("Select Frp Folder")

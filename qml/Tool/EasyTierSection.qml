@@ -1,591 +1,388 @@
-// AI-generated: easytier multiplayer section. Self-contained: install card,
-// control card with create-room / join-room mode tab, public/custom server
-// sub-tab, network name / network secret inputs, host virtual IP and
-// port-forward inputs (join mode), start/stop, info card (virtual IP for
-// create, game address for join) with copy-to-clipboard, log card,
-// advanced toggle, install path card and folder dialog. Network identity
-// (name/secret) and the custom peer address are intentionally NOT
-// persisted.
 pragma ComponentBehavior: Bound
 import QtQuick
-import QtQuick.Controls.Material
 import QtQuick.Controls
-import CubedLauncher
-import QtQuick.Layouts
 import QtQuick.Dialogs
+import QtQuick.Layouts
+import CubedLauncher
 
 Item {
-    id: easytierSection
-    implicitWidth: easytierLayout.implicitWidth
-    implicitHeight: easytierLayout.implicitHeight
-    width: easytierLayout.width
-    height: easytierLayout.implicitHeight
-
+    id: root
+    implicitHeight: content.implicitHeight
     property var logLines: []
-    property bool showLog: true
-    // 0 = create room (host), 1 = join room (client via --port-forward).
-    // Local state only, not persisted.
     property int roomMode: 0
-    // 0 = public server (chosen from hardcoded list), 1 = custom address.
-    // Local state only, not persisted: the persisted signal is the public
-    // server index alone.
     property int serverMode: 0
-    // AI-generated: room code generated on host side; player side stores the
-    // entered code. Both are upper-cased; the actual network name / secret
-    // are derived from whichever code is active.
     property string roomCode: ""
     property string joinCode: ""
     property bool joinCodeValid: false
 
     Component.onCompleted: {
-        if (Settings.easytierInstallPath && Settings.easytierInstallPath.length > 0) {
+        if (Settings.easytierInstallPath.length > 0)
             EasyTierManager.set_install_path(Settings.easytierInstallPath);
-        }
-        if (easytierSection.roomMode === 0) {
-            easytierSection.regenerateRoomCode();
-        }
+        regenerateRoomCode();
     }
-
     Connections {
         target: Settings
-        function onEasytier_install_path_changed() {
-            EasyTierManager.set_install_path(Settings.easytierInstallPath);
-        }
+        function onEasytier_install_path_changed() { EasyTierManager.set_install_path(Settings.easytierInstallPath); }
     }
-
     Connections {
         target: EasyTierManager
         function onLog_line(line) {
-            const lines = easytierSection.logLines.slice();
+            const lines = root.logLines.slice();
             lines.push(line);
-            if (lines.length > 2000) {
+            if (lines.length > 2000)
                 lines.splice(0, lines.length - 2000);
-            }
-            easytierSection.logLines = lines;
+            root.logLines = lines;
         }
     }
 
-    // AI-generated: resolve the peer address that Start will use, based on
-    // the current server mode and the persisted public server index.
     function resolvedPeerAddress() {
-        if (easytierSection.serverMode === 0) {
-            const idx = Settings.easytierPublicServerIndex >= 0 ? Settings.easytierPublicServerIndex : 0;
-            return EasyTierManager.public_server_address(idx);
+        if (serverMode === 0) {
+            const index = Settings.easytierPublicServerIndex >= 0 ? Settings.easytierPublicServerIndex : 0;
+            return EasyTierManager.public_server_address(index);
         }
         return customPeerField.text;
     }
-
     function publicServerLabel() {
         const names = EasyTierManager.publicServerNames;
-        const idx = Settings.easytierPublicServerIndex >= 0 ? Settings.easytierPublicServerIndex : 0;
-        if (idx < 0 || idx >= names.length) {
-            return qsTr("Select...");
-        }
-        return names[idx];
+        const index = Settings.easytierPublicServerIndex >= 0 ? Settings.easytierPublicServerIndex : 0;
+        return index >= 0 && index < names.length ? names[index] : qsTr("Select…");
     }
-
-    function parsePort(text) {
-        const n = parseInt(text);
-        if (isNaN(n) || n <= 0 || n > 65535) {
-            return -1;
-        }
-        return n;
-    }
-
-    // AI-generated: produce a fresh room code from the C++ helper. Called
-    // on entering Create Room mode and from the Regenerate button.
-    function regenerateRoomCode() {
-        easytierSection.roomCode = EasyTierManager.generate_room_code();
-    }
-
-    // AI-generated: Advanced fields, when both filled, override the room
-    // code derived credentials. Otherwise derive network name + secret
-    // from the active room code (host: roomCode, join: joinCode).
+    function regenerateRoomCode() { roomCode = EasyTierManager.generate_room_code(); }
     function resolvedCredentials() {
-        if (advancedButton.checked &&
-            networkNameField.text.length > 0 &&
-            networkSecretField.text.length > 0) {
+        if (advancedToggle.checked && networkNameField.text.length > 0 && networkSecretField.text.length > 0)
             return { name: networkNameField.text, secret: networkSecretField.text };
-        }
-        const code = (easytierSection.roomMode === 0)
-                         ? easytierSection.roomCode
-                         : easytierSection.joinCode;
-        if (code.length === 0) {
+        const code = roomMode === 0 ? roomCode : joinCode;
+        if (code.length === 0)
             return { name: "", secret: "" };
-        }
-        const creds = EasyTierManager.credentials_for_code(code);
-        return { name: creds.name, secret: creds.secret };
+        const credentials = EasyTierManager.credentials_for_code(code);
+        return { name: credentials.name, secret: credentials.secret };
     }
-
     function canStart() {
-        if (!EasyTierManager.installed || EasyTierManager.running) {
+        if (!EasyTierManager.installed || EasyTierManager.running || resolvedPeerAddress().length === 0)
             return false;
-        }
-        if (easytierSection.resolvedPeerAddress().length === 0) {
+        const credentials = resolvedCredentials();
+        if (credentials.name.length === 0 || credentials.secret.length === 0)
             return false;
-        }
-        const c = easytierSection.resolvedCredentials();
-        if (c.name.length === 0 || c.secret.length === 0) {
-            return false;
-        }
-        // AI-generated: join mode additionally requires a syntactically
-        // valid room code, unless Advanced fields override it.
-        if (easytierSection.roomMode === 1) {
-            if (advancedButton.checked &&
-                networkNameField.text.length > 0 &&
-                networkSecretField.text.length > 0) {
-                return true;
-            }
-            return easytierSection.joinCodeValid;
-        }
+        if (roomMode === 1 && !(advancedToggle.checked && networkNameField.text.length > 0 && networkSecretField.text.length > 0))
+            return joinCodeValid;
         return true;
     }
 
     ColumnLayout {
-        id: easytierLayout
-        width: 560
-        spacing: 12
+        id: content
+        width: parent.width
+        spacing: Theme.space24
 
         Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: easytierInstall.implicitHeight + 20
             visible: !EasyTierManager.installed || EasyTierManager.busy
+            Layout.fillWidth: true
+            implicitHeight: installer.implicitHeight + Theme.space32 * 2
             EasyTierManagement {
-                id: easytierInstall
-                width: parent.width
-                anchors.centerIn: parent
+                id: installer
+                anchors.fill: parent
+                anchors.margins: Theme.space24
             }
         }
 
         Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: controlLayout.implicitHeight + 20
             visible: EasyTierManager.installed
+            Layout.fillWidth: true
+            implicitHeight: controlColumn.implicitHeight + Theme.space32 * 2
             ColumnLayout {
-                id: controlLayout
+                id: controlColumn
                 anchors.fill: parent
+                anchors.margins: Theme.space24
+                spacing: Theme.space16
 
-                spacing: 10
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("EasyTier Client")
-                    font.pixelSize: 18
-                    font.bold: true
-                }
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Status: %1").arg(EasyTierManager.running ? qsTr("Running") : qsTr("Stopped"))
-                    font.pixelSize: 16
-                    color: EasyTierManager.running ? Material.color(Material.Green) : Material.color(Material.Grey)
-                }
-
-                TabBar {
-                    id: roomModeBar
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredHeight: 36
-                    currentIndex: easytierSection.roomMode
-                    onCurrentIndexChanged: easytierSection.roomMode = currentIndex
-                    Material.elevation: 0
-                    Material.background: "white"
-
-                    TabButton {
-                        text: qsTr("Create Room")
-                        font.pixelSize: 14
-                        width: implicitWidth
+                RowLayout {
+                    Layout.fillWidth: true
+                    SectionHeader {
+                        Layout.fillWidth: true
+                        title: qsTr("EasyTier client")
+                        subtitle: qsTr("Share a room code to create a private virtual network.")
+                        iconName: "hub"
                     }
-                    TabButton {
-                        text: qsTr("Join Room")
-                        font.pixelSize: 14
-                        width: implicitWidth
+                    StatusChip {
+                        text: EasyTierManager.running ? qsTr("Running") : qsTr("Stopped")
+                        iconName: EasyTierManager.running ? "play_arrow" : "stop"
+                        tone: EasyTierManager.running ? "success" : "neutral"
                     }
                 }
 
-                TabBar {
-                    id: serverModeBar
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredHeight: 32
-                    currentIndex: easytierSection.serverMode
-                    onCurrentIndexChanged: easytierSection.serverMode = currentIndex
-                    Material.elevation: 0
-                    Material.background: "white"
-
-                    TabButton {
-                        text: qsTr("Public")
-                        font.pixelSize: 12
-                        width: implicitWidth
-                    }
-                    TabButton {
-                        text: qsTr("Custom")
-                        font.pixelSize: 12
-                        width: implicitWidth
-                    }
-                }
-
-                ColumnLayout {
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 8
-
-                    Button {
-                        id: publicServerButton
-                        visible: easytierSection.serverMode === 0
-                        Layout.preferredWidth: 400
-                        Layout.preferredHeight: 40
-                        font.pixelSize: 13
-                        Material.roundedScale: Material.MediumScale
-                        highlighted: true
-                        enabled: !EasyTierManager.running
-                        text: qsTr("Public Server: ") + easytierSection.publicServerLabel()
-                        onClicked: publicServerPopup.open()
-                    }
-
-                    TextField {
-                        id: customPeerField
-                        visible: easytierSection.serverMode === 1
-                        Layout.preferredWidth: 400
-                        Layout.preferredHeight: 40
-                        font.pixelSize: 13
-                        placeholderText: qsTr("Peer address (e.g. tcp://1.2.3.4:1010)")
-                        enabled: !EasyTierManager.running
-                    }
-
-                    // AI-generated: host view shows the generated room code
-                    // and lets the host copy / regenerate it.
+                Rectangle {
+                    Layout.alignment: Qt.AlignHCenter
+                    implicitWidth: roomModeRow.implicitWidth + Theme.space8
+                    implicitHeight: 52
+                    radius: 26
+                    color: Theme.surfaceContainer
                     RowLayout {
-                        Layout.alignment: Qt.AlignCenter
-                        spacing: 8
-                        visible: easytierSection.roomMode === 0
-
-                        Label {
-                            text: qsTr("Room Code:")
-                            font.pixelSize: 14
+                        id: roomModeRow
+                        anchors.fill: parent
+                        anchors.margins: Theme.space4
+                        spacing: Theme.space4
+                        MdButton {
+                            text: qsTr("Create Room")
+                            variant: root.roomMode === 0 ? "tonal" : "text"
+                            onClicked: { root.roomMode = 0; if (root.roomCode.length === 0) root.regenerateRoomCode(); }
                         }
-                        Label {
-                            Layout.preferredWidth: 140
-                            text: easytierSection.roomCode
-                            font.family: "Monospace"
-                            font.pixelSize: 18
-                            font.bold: true
-                            horizontalAlignment: Text.AlignHCenter
-                            color: Material.color(Material.Indigo)
-                        }
-                        Button {
-                            Layout.preferredHeight: 36
-                            Layout.preferredWidth: 80
-                            font.pixelSize: 13
-                            Material.roundedScale: Material.MediumScale
-                            enabled: easytierSection.roomCode.length > 0
-                            text: qsTr("Copy")
-                            onClicked: EasyTierManager.copy_to_clipboard(easytierSection.roomCode)
-                        }
-                        Button {
-                            Layout.preferredHeight: 36
-                            Layout.preferredWidth: 100
-                            font.pixelSize: 13
-                            Material.roundedScale: Material.MediumScale
-                            enabled: !EasyTierManager.running
-                            text: qsTr("Regenerate")
-                            onClicked: easytierSection.regenerateRoomCode()
+                        MdButton {
+                            text: qsTr("Join Room")
+                            variant: root.roomMode === 1 ? "tonal" : "text"
+                            onClicked: root.roomMode = 1
                         }
                     }
-
-                    // AI-generated: join view accepts the 6-char code and
-                    // surfaces validation feedback inline.
-                    ColumnLayout {
-                        Layout.alignment: Qt.AlignCenter
-                        spacing: 4
-                        visible: easytierSection.roomMode === 1
-
-                        RowLayout {
-                            Layout.alignment: Qt.AlignCenter
-                            spacing: 8
-                            Label {
-                                text: qsTr("Room Code:")
-                                font.pixelSize: 14
-                            }
-                            TextField {
-                                id: joinCodeField
-                                Layout.preferredWidth: 200
-                                Layout.preferredHeight: 40
-                                font.family: "Monospace"
-                                font.pixelSize: 16
-                                placeholderText: qsTr("6-char code")
-                                enabled: !EasyTierManager.running
-                                maximumLength: 6
-                                onTextChanged: {
-                                    easytierSection.joinCode = text.toUpperCase();
-                                    easytierSection.joinCodeValid =
-                                        EasyTierManager.is_valid_room_code(easytierSection.joinCode);
-                                }
-                            }
-                        }
-                        Label {
-                            Layout.alignment: Qt.AlignCenter
-                            text: qsTr("Invalid room code")
-                            font.pixelSize: 11
-                            color: Material.color(Material.Red)
-                            visible: easytierSection.joinCode.length > 0 &&
-                                !easytierSection.joinCodeValid
-                        }
-                    }
-                }
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: 480
-                    visible: easytierSection.roomMode === 1
-                    text: qsTr("Enter the room code from the host above, then click Start.")
-                    font.pixelSize: 12
-                    color: Material.color(Material.Grey)
-                    wrapMode: Text.WordWrap
-                    horizontalAlignment: Text.AlignHCenter
                 }
 
                 RowLayout {
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 12
-                    Button {
-                        id: startButton
-                        Layout.preferredWidth: 160
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 18
-                        Material.roundedScale: Material.MediumScale
-                        highlighted: true
-                        enabled: easytierSection.canStart()
-                        text: qsTr("Start")
-                        onClicked: {
-                            const c = easytierSection.resolvedCredentials();
-                            if (easytierSection.roomMode === 0) {
-                                EasyTierManager.start(c.name, c.secret, easytierSection.resolvedPeerAddress());
-                            } else {
-                                EasyTierManager.start_join(c.name, c.secret, easytierSection.resolvedPeerAddress());
+                    Layout.fillWidth: true
+                    spacing: Theme.space12
+                    Label {
+                        text: qsTr("Relay server")
+                        color: Theme.onSurface
+                        font.pixelSize: Theme.bodyLargeSize
+                        font.weight: Font.DemiBold
+                        Layout.fillWidth: true
+                    }
+                    MdButton {
+                        text: qsTr("Public")
+                        variant: root.serverMode === 0 ? "tonal" : "text"
+                        onClicked: root.serverMode = 0
+                    }
+                    MdButton {
+                        text: qsTr("Custom")
+                        variant: root.serverMode === 1 ? "tonal" : "text"
+                        onClicked: root.serverMode = 1
+                    }
+                }
+                MdButton {
+                    visible: root.serverMode === 0
+                    Layout.fillWidth: true
+                    variant: "outlined"
+                    iconName: "public"
+                    text: qsTr("Public server: %1").arg(root.publicServerLabel())
+                    enabled: !EasyTierManager.running
+                    onClicked: publicServerPopup.open()
+                }
+                MdTextField {
+                    id: customPeerField
+                    visible: root.serverMode === 1
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("Peer address, for example tcp://1.2.3.4:1010")
+                    enabled: !EasyTierManager.running
+                }
+
+                Rectangle {
+                    Layout.fillWidth: true
+                    implicitHeight: roomCodeColumn.implicitHeight + Theme.space16 * 2
+                    radius: Theme.radiusLarge
+                    color: Theme.primaryContainer
+                    ColumnLayout {
+                        id: roomCodeColumn
+                        anchors.fill: parent
+                        anchors.margins: Theme.space16
+                        spacing: Theme.space12
+                        Label {
+                            text: root.roomMode === 0 ? qsTr("Room code") : qsTr("Enter room code")
+                            color: Theme.onPrimaryContainer
+                            font.pixelSize: Theme.bodySize
+                            font.weight: Font.DemiBold
+                        }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Label {
+                                visible: root.roomMode === 0
+                                Layout.fillWidth: true
+                                text: root.roomCode
+                                color: Theme.onPrimaryContainer
+                                font.family: "Monospace"
+                                font.pixelSize: Theme.headlineSize
+                                font.weight: Font.Bold
+                                horizontalAlignment: Text.AlignHCenter
+                                font.letterSpacing: 3
+                            }
+                            MdTextField {
+                                id: joinCodeField
+                                visible: root.roomMode === 1
+                                Layout.fillWidth: true
+                                placeholderText: qsTr("6-character code")
+                                font.family: "Monospace"
+                                maximumLength: 6
+                                enabled: !EasyTierManager.running
+                                onTextChanged: {
+                                    root.joinCode = text.toUpperCase();
+                                    root.joinCodeValid = EasyTierManager.is_valid_room_code(root.joinCode);
+                                }
+                            }
+                            MdIconButton {
+                                visible: root.roomMode === 0
+                                iconName: "copy"
+                                toolTip: qsTr("Copy room code")
+                                enabled: root.roomCode.length > 0
+                                onClicked: EasyTierManager.copy_to_clipboard(root.roomCode)
+                            }
+                            MdIconButton {
+                                visible: root.roomMode === 0
+                                iconName: "refresh"
+                                toolTip: qsTr("Generate a new code")
+                                enabled: !EasyTierManager.running
+                                onClicked: root.regenerateRoomCode()
                             }
                         }
+                        Label {
+                            visible: root.roomMode === 1 && root.joinCode.length > 0 && !root.joinCodeValid
+                            text: qsTr("Enter a valid 6-character room code.")
+                            color: Theme.error
+                            font.pixelSize: Theme.labelSize
+                        }
                     }
-                    Button {
-                        id: stopButton
-                        Layout.preferredWidth: 160
-                        Layout.preferredHeight: 50
-                        font.pixelSize: 18
-                        Material.roundedScale: Material.MediumScale
-                        Material.background: Material.color(Material.Red)
-                        enabled: EasyTierManager.running
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Item { Layout.fillWidth: true }
+                    MdButton {
+                        visible: !EasyTierManager.running
+                        text: qsTr("Start")
+                        iconName: "play_arrow"
+                        enabled: root.canStart()
+                        onClicked: {
+                            const credentials = root.resolvedCredentials();
+                            if (root.roomMode === 0)
+                                EasyTierManager.start(credentials.name, credentials.secret, root.resolvedPeerAddress());
+                            else
+                                EasyTierManager.start_join(credentials.name, credentials.secret, root.resolvedPeerAddress());
+                        }
+                    }
+                    MdButton {
+                        visible: EasyTierManager.running
                         text: qsTr("Stop")
+                        iconName: "stop"
+                        variant: "danger"
                         onClicked: EasyTierManager.stop()
                     }
                 }
             }
         }
-        Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: warningLayout.implicitHeight + 20
+
+        InfoBanner {
             visible: EasyTierManager.installed
-            ColumnLayout {
-                id: warningLayout
-                anchors.fill: parent
-                anchors.margins: 10
-                spacing: 6
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Security Warning")
-                    font.pixelSize: 16
-                    font.bold: true
-                    color: Material.color(Material.Red)
-                }
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: 480
-                    text: qsTr("The Cubed launcher itself does not require administrator or root privileges. However, when starting, easytier-core will request administrator (Windows) or root (Linux) privileges to create a TUN/TAP virtual network interface. With elevated privileges, the easytier-core process can extensively control this machine's network stack. Please confirm you trust this software and have acknowledged the risks and consequences before continuing.")
-                    color: Material.color(Material.Red)
-                    font.pixelSize: 12
-                    wrapMode: Text.WordWrap
-                    horizontalAlignment: Text.AlignHCenter
-                }
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: 480
-                    wrapMode: Text.WordWrap
-                    horizontalAlignment: Text.AlignHCenter
-                    text: qsTr("Recommendation: use frp instead (does not require administrator or root privileges).")
-                    color: Material.color(Material.Red)
-                    font.pixelSize: 12
-                    font.italic: true
-                }
-            }
-        }
-        Card {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: hostInfoLayout.implicitHeight + 20
-            visible: EasyTierManager.installed && easytierSection.roomMode === 0
-            ColumnLayout {
-                id: hostInfoLayout
+            tone: "error"
+            iconName: "warning"
+            text: qsTr("EasyTier requests administrator or root privileges to create a TUN/TAP interface and can control this machine's network stack. Only continue if you trust easytier-core. Frp does not require elevated privileges.")
+        }
+
+        Card {
+            visible: EasyTierManager.installed && root.roomMode === 0
+            Layout.fillWidth: true
+            implicitHeight: virtualIpRow.implicitHeight + Theme.space32 * 2
+            RowLayout {
+                id: virtualIpRow
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Virtual IP")
-                    font.pixelSize: 18
-                    font.bold: true
-                }
-
-                RowLayout {
-                    Layout.alignment: Qt.AlignCenter
-                    spacing: 8
-
+                anchors.margins: Theme.space24
+                spacing: Theme.space12
+                MdIcon { name: "network"; color: Theme.primary; iconSize: 28 }
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: 2
+                    Label { text: qsTr("Virtual IP"); color: Theme.onSurfaceVariant; font.pixelSize: Theme.labelSize }
                     Label {
-                        id: virtualIpLabel
-                        Layout.preferredWidth: 240
-                        font.pixelSize: 20
+                        text: EasyTierManager.virtualIp.length > 0 ? EasyTierManager.virtualIp : qsTr("Waiting for address…")
+                        color: Theme.onSurface
                         font.family: "Monospace"
-                        horizontalAlignment: Text.AlignHCenter
-                        text: EasyTierManager.virtualIp.length > 0 ? EasyTierManager.virtualIp : qsTr("--")
-                        color: EasyTierManager.virtualIp.length > 0 ? Material.color(Material.Green) : Material.color(Material.Grey)
-                    }
-
-                    Button {
-                        Layout.preferredHeight: 40
-                        Layout.preferredWidth: 80
-                        font.pixelSize: 14
-                        Material.roundedScale: Material.MediumScale
-                        enabled: EasyTierManager.virtualIp.length > 0
-                        text: qsTr("Copy")
-                        onClicked: EasyTierManager.copy_to_clipboard(EasyTierManager.virtualIp)
-                    }
-
-                    Button {
-                        Layout.preferredHeight: 40
-                        Layout.preferredWidth: 80
-                        font.pixelSize: 14
-                        Material.roundedScale: Material.MediumScale
-                        enabled: EasyTierManager.running
-                        text: qsTr("Refresh")
-                        onClicked: EasyTierManager.refresh_virtual_ip()
+                        font.pixelSize: Theme.titleSize
+                        font.weight: Font.DemiBold
                     }
                 }
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    visible: EasyTierManager.running && EasyTierManager.virtualIp.length === 0
-                    text: qsTr("Waiting for easytier to assign IP...")
-                    font.pixelSize: 12
-                    color: Material.color(Material.Grey)
+                MdIconButton {
+                    iconName: "copy"
+                    toolTip: qsTr("Copy virtual IP")
+                    enabled: EasyTierManager.virtualIp.length > 0
+                    onClicked: EasyTierManager.copy_to_clipboard(EasyTierManager.virtualIp)
+                }
+                MdIconButton {
+                    iconName: "refresh"
+                    toolTip: qsTr("Refresh virtual IP")
+                    enabled: EasyTierManager.running
+                    onClicked: EasyTierManager.refresh_virtual_ip()
                 }
             }
         }
 
         LogCard {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: implicitHeight
             visible: EasyTierManager.installed
-            logLines: easytierSection.logLines
-            showLog: easytierSection.showLog
+            Layout.fillWidth: true
+            logLines: root.logLines
+            title: qsTr("EasyTier logs")
         }
 
         Card {
             Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: advancedButton.implicitHeight + 20
-
-            Switch {
-                id: advancedButton
-                font.pixelSize: 14
-                anchors.centerIn: parent
-                text: qsTr("Advanced")
-                checked: false
-            }
-        }
-
-        Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: advancedSetting.implicitHeight + 20
-            visible: advancedButton.checked && EasyTierManager.installed
-            EasyTierManagement {
-                id: advancedSetting
-                width: parent.width
-                anchors.centerIn: parent
-            }
-        }
-
-        // AI-generated: Manual network identity override. When both fields
-        // are filled, they win over the room-code-derived credentials.
-        Card {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: identityLayout.implicitHeight + 20
-            visible: advancedButton.checked && EasyTierManager.installed
-
+            implicitHeight: advancedColumn.implicitHeight + Theme.space32 * 2
             ColumnLayout {
-                id: identityLayout
+                id: advancedColumn
                 anchors.fill: parent
-                anchors.margins: 10
-                spacing: 8
-
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    text: qsTr("Manual Network Identity")
-                    font.pixelSize: 14
-                    font.bold: true
+                anchors.margins: Theme.space24
+                spacing: Theme.space16
+                SettingRow {
+                    title: qsTr("Advanced EasyTier options")
+                    description: qsTr("Override network credentials, reinstall the service, or change its folder.")
+                    iconName: "settings"
+                    MdSwitch { id: advancedToggle }
                 }
-                Label {
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredWidth: 480
-                    text: qsTr("When both fields are filled, overrides the room code.")
-                    font.pixelSize: 11
-                    color: Material.color(Material.Grey)
-                    wrapMode: Text.WordWrap
-                    horizontalAlignment: Text.AlignHCenter
+                EasyTierManagement {
+                    visible: advancedToggle.checked && EasyTierManager.installed
+                    Layout.fillWidth: true
                 }
-                TextField {
-                    id: networkNameField
-                    Layout.preferredWidth: 400
-                    Layout.preferredHeight: 40
-                    font.pixelSize: 13
-                    placeholderText: qsTr("Network name")
-                    enabled: !EasyTierManager.running
+                ColumnLayout {
+                    visible: advancedToggle.checked && EasyTierManager.installed
+                    Layout.fillWidth: true
+                    spacing: Theme.space8
+                    Label {
+                        text: qsTr("Manual network identity")
+                        color: Theme.onSurface
+                        font.pixelSize: Theme.bodyLargeSize
+                        font.weight: Font.DemiBold
+                    }
+                    Label {
+                        text: qsTr("When both fields are filled, they override the room code.")
+                        color: Theme.onSurfaceVariant
+                        font.pixelSize: Theme.labelSize
+                    }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        MdTextField {
+                            id: networkNameField
+                            Layout.fillWidth: true
+                            placeholderText: qsTr("Network name")
+                            enabled: !EasyTierManager.running
+                        }
+                        MdTextField {
+                            id: networkSecretField
+                            Layout.fillWidth: true
+                            placeholderText: qsTr("Network secret")
+                            echoMode: TextInput.Password
+                            enabled: !EasyTierManager.running
+                        }
+                    }
                 }
-                TextField {
-                    id: networkSecretField
-                    Layout.preferredWidth: 400
-                    Layout.preferredHeight: 40
-                    font.pixelSize: 13
-                    placeholderText: qsTr("Network secret")
-                    echoMode: TextInput.Password
-                    enabled: !EasyTierManager.running
+                InstallPathCard {
+                    visible: advancedToggle.checked
+                    Layout.fillWidth: true
+                    manager: EasyTierManager
+                    pathTitle: qsTr("EasyTier Install Directory")
+                    setButtonText: qsTr("Set EasyTier Folder")
+                    onSetClicked: easytierFolderDialog.open()
+                    onResetClicked: {
+                        Settings.easytierInstallPath = SystemInfo.defaultEasyTierInstallDir;
+                        EasyTierManager.set_install_path(SystemInfo.defaultEasyTierInstallDir);
+                    }
                 }
-            }
-        }
-
-        InstallPathCard {
-            Layout.fillWidth: true
-            Layout.alignment: Qt.AlignCenter
-            Layout.preferredHeight: implicitHeight
-            visible: advancedButton.checked
-            manager: EasyTierManager
-            pathTitle: qsTr("EasyTier Install Directory")
-            setButtonText: qsTr("Set EasyTier Folder")
-            onSetClicked: easytierFolderDialog.open()
-            onResetClicked: {
-                Settings.easytierInstallPath = SystemInfo.defaultEasyTierInstallDir;
-                EasyTierManager.set_install_path(SystemInfo.defaultEasyTierInstallDir);
             }
         }
     }
 
-    PublicServerSelect {
-        id: publicServerPopup
-        parent: Overlay.overlay
-    }
-
+    PublicServerSelect { id: publicServerPopup; parent: Overlay.overlay }
     FolderDialog {
         id: easytierFolderDialog
         title: qsTr("Select EasyTier Folder")
