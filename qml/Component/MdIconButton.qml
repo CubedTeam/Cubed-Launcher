@@ -24,7 +24,9 @@ Button {
         border.width: root.activeFocus ? 1 : 0
         border.color: Theme.primary
     }
-    ToolTip.visible: hovered && toolTip.length > 0
-    ToolTip.text: toolTip
-    ToolTip.delay: 450
+    MdToolTip {
+        target: root
+        visible: root.hovered && root.toolTip.length > 0
+        text: root.toolTip
+    }
 }

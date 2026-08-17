@@ -79,6 +79,7 @@ qt_add_qml_module(${PROJECT_NAME}
         qml/Component/MdTextField.qml
         qml/Component/MdComboBox.qml
         qml/Component/MdSwitch.qml
+        qml/Component/MdToolTip.qml
         qml/Component/MdProgressBar.qml
         qml/Component/MdDialog.qml
         qml/Component/StatusChip.qml

@@ -79,8 +79,11 @@ PageScaffold {
                                 color: "white"
                             }
                         }
-                        ToolTip.visible: hovered
-                        ToolTip.text: modelData.label
+                        MdToolTip {
+                            target: paletteButton
+                            visible: paletteButton.hovered
+                            text: paletteButton.modelData.label
+                        }
                         onClicked: Settings.themePalette = modelData.id
                     }
                 }
