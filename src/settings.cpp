@@ -71,6 +71,9 @@ int Settings::easytier_public_server_index() const {
 }
 QString Settings::github_token() const { return m_github_token; }
 bool Settings::prerelease_updates() const { return m_prerelease_updates; }
+bool Settings::auto_check_launcher_updates() const {
+    return m_auto_check_launcher_updates;
+}
 
 Settings* Settings::instance() { return s_instance; }
 
@@ -236,6 +239,14 @@ void Settings::set_prerelease_updates(bool enabled) {
     Q_EMIT prerelease_updates_changed();
 }
 
+void Settings::set_auto_check_launcher_updates(bool enabled) {
+    if (!update_value(m_auto_check_launcher_updates, enabled,
+                      "auto_check_launcher_updates")) {
+        return;
+    }
+    Q_EMIT auto_check_launcher_updates_changed();
+}
+
 void Settings::clear_cache() { JsonCache::clear_all(); }
 
 void Settings::load() {
@@ -286,6 +297,8 @@ void Settings::load() {
         m_settings.value("easytier_public_server_index", -1).toInt();
     m_prerelease_updates =
         m_settings.value("prerelease_updates", false).toBool();
+    m_auto_check_launcher_updates =
+        m_settings.value("auto_check_launcher_updates", true).toBool();
 
     // AI-generated: migrate legacy plaintext token to the OS keyring, then
     // drop the old key.
