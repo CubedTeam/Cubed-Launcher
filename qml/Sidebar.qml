@@ -124,9 +124,12 @@ Item {
                             Behavior on color { ColorAnimation { duration: Theme.motionFast } }
                         }
 
-                        ToolTip.visible: !root.expanded && hovered
-                        ToolTip.text: navList.labelFor(navDelegate.modelData.key)
-                        ToolTip.delay: 450
+                        MdToolTip {
+                            target: navDelegate
+                            showOnRight: true
+                            visible: !root.expanded && navDelegate.hovered
+                            text: navList.labelFor(navDelegate.modelData.key)
+                        }
                         onClicked: SideTool.currentIndex = index
                     }
                 }
