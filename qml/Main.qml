@@ -23,8 +23,15 @@ ApplicationWindow {
     Material.foreground: Theme.surfaceForeground
     Material.roundedScale: Material.MediumScale
 
-    Sidebar { anchors.fill: parent; appVersion: launcherWindow.appVersion }
+    Sidebar {
+        anchors.fill: parent
+        appVersion: launcherWindow.appVersion
+    }
     FirstLaunchDialog {}
 
-    Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
+    Behavior on color {
+        ColorAnimation {
+            duration: Theme.motionNormal
+        }
+    }
 }

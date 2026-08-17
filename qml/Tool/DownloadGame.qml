@@ -20,7 +20,11 @@ Card {
         RowLayout {
             Layout.fillWidth: true
             spacing: Theme.space12
-            MdIcon { name: "download"; color: Theme.primary; iconSize: 32 }
+            MdIcon {
+                name: "download"
+                color: Theme.primary
+                iconSize: 32
+            }
             ColumnLayout {
                 Layout.fillWidth: true
                 spacing: 2
@@ -31,23 +35,23 @@ Card {
                     font.weight: Font.DemiBold
                 }
                 Label {
-                    text: CubedGame.installed
-                        ? qsTr("Installed version: %1").arg(CubedGame.version)
-                        : qsTr("The game has not been installed on this device.")
+                    text: CubedGame.installed ? qsTr("Installed version: %1").arg(CubedGame.version) : qsTr("The game has not been installed on this device.")
                     color: Theme.surfaceVariantForeground
                     font.pixelSize: Theme.bodySize
                 }
             }
             StatusChip {
-                text: GameUpdate.downloading ? qsTr("Downloading")
-                      : GameUpdate.checkingUpdate ? qsTr("Checking")
-                      : CubedGame.installed ? qsTr("Installed") : qsTr("Not installed")
+                text: GameUpdate.downloading ? qsTr("Downloading") : GameUpdate.checkingUpdate ? qsTr("Checking") : CubedGame.installed ? qsTr("Installed") : qsTr("Not installed")
                 iconName: GameUpdate.downloading ? "download" : CubedGame.installed ? "check" : "info"
                 tone: CubedGame.installed ? "success" : "neutral"
             }
         }
 
-        Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: 1
+            color: Theme.outlineVariant
+        }
 
         GridLayout {
             Layout.fillWidth: true
@@ -105,12 +109,14 @@ Card {
                         anchors.fill: parent
                         anchors.margins: Theme.space16
                         spacing: Theme.space12
-                        MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
+                        MdIcon {
+                            name: "folder"
+                            color: Theme.surfaceVariantForeground
+                        }
                         Label {
                             id: pathLabel
                             Layout.fillWidth: true
-                            text: GameUpdate.gameInstallPath.length > 0
-                                ? GameUpdate.gameInstallPath : SystemInfo.defaultGameInstallDir
+                            text: GameUpdate.gameInstallPath.length > 0 ? GameUpdate.gameInstallPath : SystemInfo.defaultGameInstallDir
                             color: Theme.surfaceVariantForeground
                             font.pixelSize: Theme.labelSize
                             wrapMode: Text.WrapAnywhere
@@ -176,7 +182,9 @@ Card {
 
         RowLayout {
             Layout.fillWidth: true
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
             MdButton {
                 visible: GameUpdate.downloading
                 variant: "danger"
@@ -209,7 +217,10 @@ Card {
         }
     }
 
-    MirrorSelect { id: mirrorPopup; parent: Overlay.overlay }
+    MirrorSelect {
+        id: mirrorPopup
+        parent: Overlay.overlay
+    }
     FolderDialog {
         id: gameFolderDialog
         title: qsTr("Select Game Folder")

@@ -8,7 +8,11 @@ RowLayout {
     property string subtitle: ""
     property string iconName: "settings"
     spacing: Theme.space12
-    MdIcon { name: root.iconName; iconSize: 28; color: Theme.primary }
+    MdIcon {
+        name: root.iconName
+        iconSize: 28
+        color: Theme.primary
+    }
     ColumnLayout {
         Layout.fillWidth: true
         spacing: 2

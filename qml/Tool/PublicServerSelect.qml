@@ -14,14 +14,20 @@ MdDialog {
     standardButtons: Dialog.NoButton
     padding: Theme.space16
     palette.text: Theme.surfaceForeground
-    background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+    background: Rectangle {
+        color: Theme.surfaceContainerHigh
+        radius: Theme.radiusExtraLarge
+    }
 
     ListModel {
         id: serverModel
         Component.onCompleted: {
             const names = EasyTierManager.publicServerNames;
             for (let index = 0; index < names.length; ++index)
-                append({ name: names[index], address: EasyTierManager.public_server_address(index) });
+                append({
+                    name: names[index],
+                    address: EasyTierManager.public_server_address(index)
+                });
         }
     }
     ColumnLayout {
@@ -52,7 +58,10 @@ MdDialog {
                 rightPadding: Theme.space16
                 topPadding: 0
                 bottomPadding: 0
-                onClicked: { Settings.easytierPublicServerIndex = index; root.close(); }
+                onClicked: {
+                    Settings.easytierPublicServerIndex = index;
+                    root.close();
+                }
                 contentItem: RowLayout {
                     spacing: Theme.space12
                     Item {
@@ -88,6 +97,11 @@ MdDialog {
                 }
             }
         }
-        MdButton { Layout.alignment: Qt.AlignRight; text: qsTr("Close"); variant: "text"; onClicked: root.close() }
+        MdButton {
+            Layout.alignment: Qt.AlignRight
+            text: qsTr("Close")
+            variant: "text"
+            onClicked: root.close()
+        }
     }
 }

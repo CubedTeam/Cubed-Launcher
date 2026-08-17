@@ -18,7 +18,10 @@ Card {
             title: root.title
             description: qsTr("Show the latest service output.")
             iconName: "terminal"
-            MdSwitch { checked: root.showLog; onToggled: root.showLog = checked }
+            MdSwitch {
+                checked: root.showLog
+                onToggled: root.showLog = checked
+            }
         }
         Rectangle {
             visible: root.showLog

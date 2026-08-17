@@ -14,7 +14,10 @@ MdDialog {
     closePolicy: Popup.NoAutoClose
     standardButtons: Dialog.NoButton
     padding: Theme.space32
-    background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+    background: Rectangle {
+        color: Theme.surfaceContainerHigh
+        radius: Theme.radiusExtraLarge
+    }
 
     Component.onCompleted: {
         if (!Settings.pathSetted)
@@ -55,7 +58,10 @@ MdDialog {
             RowLayout {
                 anchors.fill: parent
                 anchors.margins: Theme.space16
-                MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
+                MdIcon {
+                    name: "folder"
+                    color: Theme.surfaceVariantForeground
+                }
                 Label {
                     id: pathLabel
                     Layout.fillWidth: true

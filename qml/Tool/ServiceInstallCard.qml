@@ -21,14 +21,11 @@ Item {
             SectionHeader {
                 Layout.fillWidth: true
                 title: root.title
-                subtitle: root.manager.installed
-                    ? qsTr("Installed version: %1").arg(root.manager.version)
-                    : qsTr("Download and install this multiplayer service.")
+                subtitle: root.manager.installed ? qsTr("Installed version: %1").arg(root.manager.version) : qsTr("Download and install this multiplayer service.")
                 iconName: "download"
             }
             StatusChip {
-                text: root.manager.busy ? qsTr("Working")
-                      : root.manager.installed ? qsTr("Installed") : qsTr("Not installed")
+                text: root.manager.busy ? qsTr("Working") : root.manager.installed ? qsTr("Installed") : qsTr("Not installed")
                 iconName: root.manager.busy ? "update" : root.manager.installed ? "check" : "download"
                 tone: root.manager.installed ? "success" : "neutral"
             }
@@ -37,9 +34,7 @@ Item {
         Label {
             visible: root.manager.busy
             Layout.fillWidth: true
-            text: root.manager.state === 1 ? qsTr("Checking for updates…")
-                : root.manager.state === 2 ? qsTr("Downloading…")
-                : root.manager.state === 3 ? qsTr("Extracting…") : qsTr("Working…")
+            text: root.manager.state === 1 ? qsTr("Checking for updates…") : root.manager.state === 2 ? qsTr("Downloading…") : root.manager.state === 3 ? qsTr("Extracting…") : qsTr("Working…")
             color: Theme.surfaceVariantForeground
             font.pixelSize: Theme.bodySize
         }
@@ -90,7 +85,9 @@ Item {
                 enabled: !root.manager.running
                 onClicked: root.manager.reset_install()
             }
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
             MdButton {
                 text: root.manager.installed ? qsTr("Reinstall") : qsTr("Download & Install")
                 iconName: "download"
@@ -104,5 +101,8 @@ Item {
             }
         }
     }
-    MirrorSelect { id: mirrorPopup; parent: Overlay.overlay }
+    MirrorSelect {
+        id: mirrorPopup
+        parent: Overlay.overlay
+    }
 }

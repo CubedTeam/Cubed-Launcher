@@ -16,7 +16,11 @@ ProgressBar {
             height: parent.height
             radius: 4
             color: Theme.primary
-            Behavior on width { NumberAnimation { duration: Theme.motionFast } }
+            Behavior on width {
+                NumberAnimation {
+                    duration: Theme.motionFast
+                }
+            }
         }
     }
 }

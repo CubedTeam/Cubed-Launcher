@@ -14,9 +14,7 @@ Item {
         anchors.right: parent.right
         tone: LauncherUpdate.hasError ? "error" : "info"
         iconName: LauncherUpdate.hasError ? "warning" : "update"
-        text: LauncherUpdate.hasError
-            ? LauncherUpdate.errorMessage
-            : qsTr("Launcher update available: %1 → %2").arg(LauncherUpdate.localVersion).arg(LauncherUpdate.remoteVersion)
+        text: LauncherUpdate.hasError ? LauncherUpdate.errorMessage : qsTr("Launcher update available: %1 → %2").arg(LauncherUpdate.localVersion).arg(LauncherUpdate.remoteVersion)
         actionText: LauncherUpdate.hasError ? qsTr("Details") : qsTr("Update")
         onActionClicked: updatePopup.open()
     }
@@ -32,7 +30,10 @@ Item {
         title: qsTr("Update Launcher")
         standardButtons: Dialog.NoButton
         padding: Theme.space24
-        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+        background: Rectangle {
+            color: Theme.surfaceContainerHigh
+            radius: Theme.radiusExtraLarge
+        }
 
         ColumnLayout {
             width: parent.width
@@ -100,7 +101,9 @@ Item {
 
             RowLayout {
                 Layout.fillWidth: true
-                Item { Layout.fillWidth: true }
+                Item {
+                    Layout.fillWidth: true
+                }
                 MdButton {
                     text: qsTr("Release page")
                     variant: "text"

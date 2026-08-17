@@ -10,9 +10,13 @@ Rectangle {
     implicitWidth: chipRow.implicitWidth + 20
     implicitHeight: 32
     radius: height / 2
-    color: tone === "success" ? Theme.primaryContainer
-         : tone === "error" ? Theme.errorContainer
-         : tone === "warning" ? Theme.tertiaryContainer : Theme.secondaryContainer
+    color: tone === "success" ? Theme.primaryContainer : tone === "error" ? Theme.errorContainer : tone === "warning" ? Theme.tertiaryContainer : Theme.secondaryContainer
+
+    Behavior on color {
+        ColorAnimation {
+            duration: Theme.motionNormal
+        }
+    }
 
     RowLayout {
         id: chipRow
@@ -21,17 +25,19 @@ Rectangle {
         MdIcon {
             name: root.iconName
             iconSize: 16
-            color: root.tone === "success" ? Theme.primaryContainerForeground
-                 : root.tone === "error" ? Theme.errorContainerForeground
-                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
+            color: root.tone === "success" ? Theme.primaryContainerForeground : root.tone === "error" ? Theme.errorContainerForeground : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
         }
         Label {
             text: root.text
             font.pixelSize: Theme.labelSize
             font.weight: Font.DemiBold
-            color: root.tone === "success" ? Theme.primaryContainerForeground
-                 : root.tone === "error" ? Theme.errorContainerForeground
-                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
+            color: root.tone === "success" ? Theme.primaryContainerForeground : root.tone === "error" ? Theme.errorContainerForeground : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.motionFast
+                }
+            }
         }
     }
 }

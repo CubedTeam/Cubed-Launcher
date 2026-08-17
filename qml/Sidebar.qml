@@ -20,7 +20,10 @@ Item {
             color: Theme.surfaceContainerLow
 
             Behavior on Layout.preferredWidth {
-                NumberAnimation { duration: Theme.motionNormal; easing.type: Easing.OutCubic }
+                NumberAnimation {
+                    duration: Theme.motionNormal
+                    easing.type: Theme.motionEasing
+                }
             }
 
             ColumnLayout {
@@ -43,9 +46,18 @@ Item {
                             smooth: true
                         }
                         ColumnLayout {
-                            visible: root.expanded
+                            opacity: root.expanded ? 1 : 0
+                            visible: opacity > 0
                             Layout.fillWidth: true
                             spacing: 0
+
+                            Behavior on opacity {
+                                NumberAnimation {
+                                    duration: Theme.motionNormal
+                                    easing.type: Theme.motionEasing
+                                }
+                            }
+
                             Label {
                                 text: "Cubed"
                                 color: Theme.surfaceForeground
@@ -69,18 +81,37 @@ Item {
                     clip: true
                     currentIndex: SideTool.currentIndex
                     model: [
-                        { key: "launcher", icon: "sports_esports" },
-                        { key: "manager", icon: "download" },
-                        { key: "multiplayer", icon: "hub" },
-                        { key: "setting", icon: "settings" },
-                        { key: "about", icon: "info" }
+                        {
+                            key: "launcher",
+                            icon: "sports_esports"
+                        },
+                        {
+                            key: "manager",
+                            icon: "download"
+                        },
+                        {
+                            key: "multiplayer",
+                            icon: "hub"
+                        },
+                        {
+                            key: "setting",
+                            icon: "settings"
+                        },
+                        {
+                            key: "about",
+                            icon: "info"
+                        }
                     ]
 
                     function labelFor(key) {
-                        if (key === "launcher") return qsTr("Launcher");
-                        if (key === "manager") return qsTr("Manager");
-                        if (key === "multiplayer") return qsTr("Multiplayer");
-                        if (key === "setting") return qsTr("Setting");
+                        if (key === "launcher")
+                            return qsTr("Launcher");
+                        if (key === "manager")
+                            return qsTr("Manager");
+                        if (key === "multiplayer")
+                            return qsTr("Multiplayer");
+                        if (key === "setting")
+                            return qsTr("Setting");
                         return qsTr("About");
                     }
 
@@ -101,9 +132,17 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 name: navDelegate.modelData.icon
                                 color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
+
+                                Behavior on x {
+                                    NumberAnimation {
+                                        duration: Theme.motionNormal
+                                        easing.type: Theme.motionEasing
+                                    }
+                                }
                             }
                             Label {
-                                visible: root.expanded
+                                opacity: root.expanded ? 1 : 0
+                                visible: opacity > 0
                                 anchors.fill: parent
                                 text: navList.labelFor(navDelegate.modelData.key)
                                 color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
@@ -111,17 +150,26 @@ Item {
                                 font.weight: navDelegate.highlighted ? Font.DemiBold : Font.Normal
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
+
+                                Behavior on opacity {
+                                    NumberAnimation {
+                                        duration: Theme.motionNormal
+                                        easing.type: Theme.motionEasing
+                                    }
+                                }
                             }
                         }
 
                         background: Rectangle {
                             radius: height / 2
-                            color: navDelegate.highlighted ? Theme.secondaryContainer
-                                 : navDelegate.down ? Theme.surfaceContainerHighest
-                                 : navDelegate.hovered ? Theme.surfaceContainerHigh : "transparent"
+                            color: navDelegate.highlighted ? Theme.secondaryContainer : navDelegate.down ? Theme.surfaceContainerHighest : navDelegate.hovered ? Theme.surfaceContainerHigh : "transparent"
                             border.width: navDelegate.activeFocus ? 1 : 0
                             border.color: Theme.primary
-                            Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+                            Behavior on color {
+                                ColorAnimation {
+                                    duration: Theme.motionFast
+                                }
+                            }
                         }
 
                         MdToolTip {
@@ -161,7 +209,9 @@ Item {
                     Manager {}
                     Multiplayer {}
                     Setting {}
-                    About { appVersion: root.appVersion }
+                    About {
+                        appVersion: root.appVersion
+                    }
                 }
             }
         }

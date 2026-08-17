@@ -16,7 +16,9 @@ Item {
     }
     Connections {
         target: Settings
-        function onFrp_install_path_changed() { FrpManager.set_install_path(Settings.frpInstallPath); }
+        function onFrp_install_path_changed() {
+            FrpManager.set_install_path(Settings.frpInstallPath);
+        }
     }
     Connections {
         target: FrpManager
@@ -77,7 +79,9 @@ Item {
                         enabled: !FrpManager.running
                         onClicked: tomlDialog.open()
                     }
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
                     MdButton {
                         visible: !FrpManager.running
                         text: qsTr("Start")
@@ -115,7 +119,9 @@ Item {
                     title: qsTr("Advanced Frp options")
                     description: qsTr("Reinstall the service or change its installation folder.")
                     iconName: "settings"
-                    MdSwitch { id: advancedToggle }
+                    MdSwitch {
+                        id: advancedToggle
+                    }
                 }
                 FrpManagement {
                     visible: advancedToggle.checked && FrpManager.installed
@@ -147,7 +153,10 @@ Item {
         title: qsTr("Edit frpc.toml")
         standardButtons: Dialog.Save | Dialog.Cancel
         palette.text: Theme.surfaceForeground
-        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+        background: Rectangle {
+            color: Theme.surfaceContainerHigh
+            radius: Theme.radiusExtraLarge
+        }
         onOpened: tomlEditor.text = FrpManager.read_toml()
         onAccepted: FrpManager.save_toml(tomlEditor.text)
         ScrollView {
@@ -161,7 +170,10 @@ Item {
                 font.pixelSize: Theme.bodySize
                 wrapMode: TextArea.NoWrap
                 selectByMouse: true
-                background: Rectangle { color: Theme.surfaceContainer; radius: Theme.radiusMedium }
+                background: Rectangle {
+                    color: Theme.surfaceContainer
+                    radius: Theme.radiusMedium
+                }
             }
         }
     }

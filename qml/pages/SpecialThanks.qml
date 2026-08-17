@@ -19,12 +19,20 @@ MdButton {
         title: qsTr("Special Thanks")
         standardButtons: Dialog.Close
         palette.text: Theme.surfaceForeground
-        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+        background: Rectangle {
+            color: Theme.surfaceContainerHigh
+            radius: Theme.radiusExtraLarge
+        }
 
         ColumnLayout {
             width: parent.width
             spacing: Theme.space16
-            MdIcon { name: "badge"; color: Theme.primary; iconSize: 40; Layout.alignment: Qt.AlignHCenter }
+            MdIcon {
+                name: "badge"
+                color: Theme.primary
+                iconSize: 40
+                Layout.alignment: Qt.AlignHCenter
+            }
             Label {
                 text: qsTr("Thanks to everyone who helped Cubed Launcher grow.")
                 color: Theme.surfaceVariantForeground
@@ -33,8 +41,21 @@ MdButton {
                 wrapMode: Text.WordWrap
                 Layout.fillWidth: true
             }
-            StatusChip { text: "克公"; iconName: "badge"; Layout.alignment: Qt.AlignHCenter }
-            StatusChip { text: "阿杰"; iconName: "badge"; Layout.alignment: Qt.AlignHCenter }
+            StatusChip {
+                text: "克公"
+                iconName: "badge"
+                Layout.alignment: Qt.AlignHCenter
+            }
+            StatusChip {
+                text: "阿杰"
+                iconName: "badge"
+                Layout.alignment: Qt.AlignHCenter
+            }
+            StatusChip {
+                text: "游云"
+                iconName: "badge"
+                Layout.alignment: Qt.AlignHCenter
+            }
         }
     }
 }

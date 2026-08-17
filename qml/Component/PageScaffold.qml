@@ -7,7 +7,31 @@ Item {
     property string title
     property string subtitle: ""
     property int contentMaximumWidth: 1040
+    // AI-generated: Replay page entry motion.
+    property bool motionReady: false
     default property alias content: contentColumn.data
+    opacity: motionReady && visible ? 1 : 0
+
+    transform: Translate {
+        id: entranceTranslate
+        y: root.motionReady && root.visible ? 0 : Theme.space12
+
+        Behavior on y {
+            NumberAnimation {
+                duration: Theme.motionEmphasized
+                easing.type: Theme.motionEasing
+            }
+        }
+    }
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: Theme.motionEmphasized
+            easing.type: Theme.motionEasing
+        }
+    }
+
+    Component.onCompleted: motionReady = true
 
     Flickable {
         anchors.fill: parent
