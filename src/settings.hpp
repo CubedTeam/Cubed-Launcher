@@ -51,6 +51,9 @@ private:
     Q_PROPERTY(
         bool prereleaseUpdates READ prerelease_updates WRITE
             set_prerelease_updates NOTIFY prerelease_updates_changed FINAL)
+    Q_PROPERTY(bool autoCheckLauncherUpdates READ auto_check_launcher_updates
+                   WRITE set_auto_check_launcher_updates NOTIFY
+                       auto_check_launcher_updates_changed FINAL)
 public:
     explicit Settings(QObject* parent = nullptr);
     QString game_dir() const;
@@ -68,6 +71,7 @@ public:
     int easytier_public_server_index() const;
     QString github_token() const;
     bool prerelease_updates() const;
+    bool auto_check_launcher_updates() const;
     static Settings* instance();
 public Q_SLOTS:
     void set_game_dir_url(const QUrl& path);
@@ -87,6 +91,7 @@ public Q_SLOTS:
     void set_easytier_public_server_index(int index);
     void set_github_token(const QString& token);
     void set_prerelease_updates(bool enabled);
+    void set_auto_check_launcher_updates(bool enabled);
     void clear_cache();
 Q_SIGNALS:
     void game_dir_changed();
@@ -104,6 +109,7 @@ Q_SIGNALS:
     void easytier_public_server_index_changed();
     void github_token_changed();
     void prerelease_updates_changed();
+    void auto_check_launcher_updates_changed();
 
 private:
     QSettings m_settings;
@@ -117,6 +123,7 @@ private:
     int m_easytier_public_server_index{-1};
     QString m_github_token;
     bool m_prerelease_updates{false};
+    bool m_auto_check_launcher_updates{true};
 
     QColor m_accent_color;
     ThemeMode m_theme_mode{ThemeMode::System};

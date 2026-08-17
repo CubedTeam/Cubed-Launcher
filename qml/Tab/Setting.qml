@@ -115,6 +115,16 @@ PageScaffold {
             }
             Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
             SettingRow {
+                title: qsTr("Automatically check for launcher updates")
+                description: qsTr("Check for a new launcher version when the launcher starts.")
+                iconName: "update"
+                MdSwitch {
+                    checked: Settings.autoCheckLauncherUpdates
+                    onToggled: Settings.autoCheckLauncherUpdates = checked
+                }
+            }
+            Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            SettingRow {
                 title: qsTr("Receive pre-release updates")
                 description: qsTr("Include preview releases when checking for launcher and game updates.")
                 iconName: "update"

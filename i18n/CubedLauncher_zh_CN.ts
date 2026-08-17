@@ -1543,11 +1543,21 @@
     </message>
     <message>
         <location filename="../qml/Tab/Setting.qml" line="118"/>
+        <source>Automatically check for launcher updates</source>
+        <translation>自动检查启动器新版本</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="119"/>
+        <source>Check for a new launcher version when the launcher starts.</source>
+        <translation>启动器启动时检查是否有新版本。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="128"/>
         <source>Receive pre-release updates</source>
         <translation>接收预发布版本更新</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="119"/>
+        <location filename="../qml/Tab/Setting.qml" line="129"/>
         <source>Include preview releases when checking for launcher and game updates.</source>
         <translation>检查启动器和游戏更新时包含预览版本。</translation>
     </message>

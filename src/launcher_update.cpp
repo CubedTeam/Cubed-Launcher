@@ -19,7 +19,8 @@ LauncherUpdate::LauncherUpdate()
     if (!m_local_version) {
         m_downloader.set_error_state("Failed to parse local version: " +
                                      appVersion);
-    } else if (appVersion != "dev") {
+    } else if (appVersion != "dev" && Settings::instance() &&
+               Settings::instance()->auto_check_launcher_updates()) {
         check_update("CubedTeam", "Cubed-Launcher");
     }
     connect(&m_downloader, &FileDownloader::progress_changed, this,
