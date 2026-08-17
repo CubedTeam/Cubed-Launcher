@@ -36,9 +36,35 @@ PageScaffold {
     }
 
     Loader {
+        id: modeLoader
         Layout.fillWidth: true
+        opacity: 0
         source: multiplayerTab.mode === 0
             ? "qrc:/qt/qml/CubedLauncher/qml/Tool/EasyTierSection.qml"
             : "qrc:/qt/qml/CubedLauncher/qml/Tool/FrpSection.qml"
+
+        transform: Translate { id: modeTranslate }
+        onLoaded: modeEnter.restart()
+
+        // AI-generated: Animate newly loaded mode content.
+        ParallelAnimation {
+            id: modeEnter
+            NumberAnimation {
+                target: modeLoader
+                property: "opacity"
+                from: 0
+                to: 1
+                duration: Theme.motionEmphasized
+                easing.type: Theme.motionEasing
+            }
+            NumberAnimation {
+                target: modeTranslate
+                property: "y"
+                from: Theme.space12
+                to: 0
+                duration: Theme.motionEmphasized
+                easing.type: Theme.motionEasing
+            }
+        }
     }
 }

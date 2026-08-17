@@ -15,6 +15,8 @@ Rectangle {
     color: tone === "error" ? Theme.errorContainer
          : tone === "warning" ? Theme.tertiaryContainer : Theme.secondaryContainer
 
+    Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
+
     RowLayout {
         id: bannerRow
         anchors.fill: parent
@@ -32,6 +34,8 @@ Rectangle {
             font.pixelSize: Theme.bodySize
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
+
+            Behavior on color { ColorAnimation { duration: Theme.motionFast } }
         }
         MdButton {
             id: actionButton

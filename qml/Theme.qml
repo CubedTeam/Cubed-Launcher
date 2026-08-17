@@ -80,6 +80,10 @@ QtObject {
     readonly property int headlineSize: 28
     readonly property int labelSize: 13
     readonly property int controlHeight: 44
+    // AI-generated: Centralize motion timing.
     readonly property int motionFast: 150
     readonly property int motionNormal: 220
+    readonly property int motionEmphasized: 300
+    readonly property int motionEasing: Easing.OutCubic
+    readonly property int motionExitEasing: Easing.InCubic
 }

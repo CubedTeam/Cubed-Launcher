@@ -12,9 +12,13 @@ TextField {
     selectedTextColor: Theme.primaryContainerForeground
     font.pixelSize: Theme.bodySize
     background: Rectangle {
+        property color outlineColor: root.activeFocus ? Theme.primary : Theme.outline
         radius: Theme.radiusSmall
         color: Theme.surfaceContainerHighest
         border.width: root.activeFocus ? 2 : 1
-        border.color: root.activeFocus ? Theme.primary : Theme.outline
+        border.color: outlineColor
+
+        Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
+        Behavior on outlineColor { ColorAnimation { duration: Theme.motionFast } }
     }
 }

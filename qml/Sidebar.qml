@@ -20,7 +20,7 @@ Item {
             color: Theme.surfaceContainerLow
 
             Behavior on Layout.preferredWidth {
-                NumberAnimation { duration: Theme.motionNormal; easing.type: Easing.OutCubic }
+                NumberAnimation { duration: Theme.motionNormal; easing.type: Theme.motionEasing }
             }
 
             ColumnLayout {
@@ -43,9 +43,15 @@ Item {
                             smooth: true
                         }
                         ColumnLayout {
-                            visible: root.expanded
+                            opacity: root.expanded ? 1 : 0
+                            visible: opacity > 0
                             Layout.fillWidth: true
                             spacing: 0
+
+                            Behavior on opacity {
+                                NumberAnimation { duration: Theme.motionNormal; easing.type: Theme.motionEasing }
+                            }
+
                             Label {
                                 text: "Cubed"
                                 color: Theme.surfaceForeground
@@ -101,9 +107,14 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 name: navDelegate.modelData.icon
                                 color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
+
+                                Behavior on x {
+                                    NumberAnimation { duration: Theme.motionNormal; easing.type: Theme.motionEasing }
+                                }
                             }
                             Label {
-                                visible: root.expanded
+                                opacity: root.expanded ? 1 : 0
+                                visible: opacity > 0
                                 anchors.fill: parent
                                 text: navList.labelFor(navDelegate.modelData.key)
                                 color: navDelegate.highlighted ? Theme.secondaryContainerForeground : Theme.surfaceVariantForeground
@@ -111,6 +122,10 @@ Item {
                                 font.weight: navDelegate.highlighted ? Font.DemiBold : Font.Normal
                                 horizontalAlignment: Text.AlignHCenter
                                 verticalAlignment: Text.AlignVCenter
+
+                                Behavior on opacity {
+                                    NumberAnimation { duration: Theme.motionNormal; easing.type: Theme.motionEasing }
+                                }
                             }
                         }
 

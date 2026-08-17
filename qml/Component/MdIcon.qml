@@ -9,6 +9,10 @@ Item {
     implicitWidth: iconSize
     implicitHeight: iconSize
 
+    Behavior on color {
+        ColorAnimation { duration: Theme.motionFast }
+    }
+
     function iconPath(iconName) {
         const paths = {
             "sports_esports": "M21.6 16.1 20.5 8.4C20.2 6.4 18.5 5 16.5 5H7.5C5.5 5 3.8 6.4 3.5 8.4L2.4 16.1C2.2 17.6 3.4 19 4.9 19 5.6 19 6.3 18.7 6.8 18.2L9 15H15L17.2 18.2C17.7 18.7 18.4 19 19.1 19 20.6 19 21.8 17.6 21.6 16.1ZM10 11H8V13H6V11H4V9H6V7H8V9H10V11ZM16 13C15.4 13 15 12.6 15 12S15.4 11 16 11 17 11.4 17 12 16.6 13 16 13ZM18 10C17.4 10 17 9.6 17 9S17.4 8 18 8 19 8.4 19 9 18.6 10 18 10Z",

@@ -14,6 +14,8 @@ Rectangle {
          : tone === "error" ? Theme.errorContainer
          : tone === "warning" ? Theme.tertiaryContainer : Theme.secondaryContainer
 
+    Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
+
     RowLayout {
         id: chipRow
         anchors.centerIn: parent
@@ -32,6 +34,8 @@ Rectangle {
             color: root.tone === "success" ? Theme.primaryContainerForeground
                  : root.tone === "error" ? Theme.errorContainerForeground
                  : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
+
+            Behavior on color { ColorAnimation { duration: Theme.motionFast } }
         }
     }
 }

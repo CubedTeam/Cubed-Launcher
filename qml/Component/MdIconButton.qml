@@ -9,6 +9,11 @@ Button {
     implicitWidth: 40
     implicitHeight: 40
     hoverEnabled: true
+    scale: down ? 0.98 : 1
+
+    Behavior on scale {
+        NumberAnimation { duration: Theme.motionFast; easing.type: Theme.motionEasing }
+    }
 
     contentItem: MdIcon {
         anchors.centerIn: parent
@@ -18,11 +23,15 @@ Button {
              : root.variant === "danger" ? Theme.error : Theme.surfaceVariantForeground
     }
     background: Rectangle {
+        property color outlineColor: Theme.primary
         radius: width / 2
         color: root.variant === "filled" ? Theme.primary
              : root.hovered || root.down ? Theme.surfaceContainerHigh : "transparent"
         border.width: root.activeFocus ? 1 : 0
-        border.color: Theme.primary
+        border.color: outlineColor
+
+        Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+        Behavior on outlineColor { ColorAnimation { duration: Theme.motionFast } }
     }
     MdToolTip {
         target: root

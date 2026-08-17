@@ -12,6 +12,11 @@ Button {
     leftPadding: 16
     rightPadding: 16
     hoverEnabled: true
+    scale: down ? 0.98 : 1
+
+    Behavior on scale {
+        NumberAnimation { duration: Theme.motionFast; easing.type: Theme.motionEasing }
+    }
 
     function foregroundColor() {
         if (!enabled)
@@ -60,15 +65,21 @@ Button {
                 verticalAlignment: Text.AlignVCenter
                 Layout.preferredHeight: 20
                 Layout.alignment: Qt.AlignVCenter
+
+                Behavior on color { ColorAnimation { duration: Theme.motionFast } }
             }
         }
     }
 
     background: Rectangle {
+        property color outlineColor: root.activeFocus ? Theme.primary : Theme.outline
         radius: root.height / 2
         color: root.backgroundColor()
         border.width: root.activeFocus || root.variant === "outlined" ? 1 : 0
-        border.color: root.activeFocus ? Theme.primary : Theme.outline
+        border.color: outlineColor
+
+        Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+        Behavior on outlineColor { ColorAnimation { duration: Theme.motionFast } }
 
         Rectangle {
             anchors.fill: parent
