@@ -46,7 +46,9 @@ PageScaffold {
                     Layout.alignment: Qt.AlignHCenter
                 }
 
-                Item { Layout.fillHeight: true }
+                Item {
+                    Layout.fillHeight: true
+                }
 
                 RowLayout {
                     Layout.fillWidth: true
@@ -57,15 +59,17 @@ PageScaffold {
                         Layout.fillWidth: true
                     }
                     StatusChip {
-                        text: CubedGame.running ? qsTr("Running")
-                              : CubedGame.installed ? qsTr("Ready") : qsTr("Not installed")
-                        iconName: CubedGame.running ? "play_arrow"
-                                  : CubedGame.installed ? "check" : "download"
+                        text: CubedGame.running ? qsTr("Running") : CubedGame.installed ? qsTr("Ready") : qsTr("Not installed")
+                        iconName: CubedGame.running ? "play_arrow" : CubedGame.installed ? "check" : "download"
                         tone: CubedGame.running || CubedGame.installed ? "success" : "warning"
                     }
                 }
 
-                Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+                Rectangle {
+                    Layout.fillWidth: true
+                    implicitHeight: 1
+                    color: Theme.outlineVariant
+                }
 
                 RowLayout {
                     Layout.fillWidth: true
@@ -136,7 +140,9 @@ PageScaffold {
                     Component.onCompleted: CubedGame.set_name(text)
                 }
 
-                Item { Layout.fillHeight: true }
+                Item {
+                    Layout.fillHeight: true
+                }
 
                 MdButton {
                     visible: !CubedGame.running

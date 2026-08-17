@@ -10,7 +10,9 @@ Item {
     implicitHeight: iconSize
 
     Behavior on color {
-        ColorAnimation { duration: Theme.motionFast }
+        ColorAnimation {
+            duration: Theme.motionFast
+        }
     }
 
     function iconPath(iconName) {
@@ -44,7 +46,7 @@ Item {
             "chevron_right": "M9.3 6.7 10.7 5.3 17.4 12 10.7 18.7 9.3 17.3 14.6 12 9.3 6.7Z",
             "update": "M21 10.1H14.8L17.3 7.6C14.4 4.7 9.6 4.6 6.7 7.5 3.8 10.4 3.8 15.2 6.7 18.1 9.6 21 14.4 21 17.3 18.1 18.8 16.6 19.5 14.6 19.4 12.7H17.4C17.5 14.1 17 15.6 15.9 16.7 13.8 18.8 10.3 18.8 8.2 16.7 6.1 14.6 6.1 11.1 8.2 9 10.3 6.9 13.8 6.9 15.9 9L13 12H21V10.1Z",
             "public": "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2ZM19 8H16C15.7 6.8 15.2 5.7 14.5 4.7 16.4 5.3 18 6.5 19 8ZM12 4C12.8 5.2 13.4 6.5 13.8 8H10.2C10.6 6.5 11.2 5.2 12 4ZM4.3 14C4.1 13.4 4 12.7 4 12S4.1 10.6 4.3 10H7.7C7.6 10.7 7.5 11.3 7.5 12S7.6 13.3 7.7 14H4.3ZM5 16H8C8.3 17.2 8.8 18.3 9.5 19.3 7.6 18.7 6 17.5 5 16ZM8 12C8 11.3 8.1 10.6 8.2 10H15.8C15.9 10.6 16 11.3 16 12S15.9 13.4 15.8 14H8.2C8.1 13.4 8 12.7 8 12ZM12 20C11.2 18.8 10.6 17.5 10.2 16H13.8C13.4 17.5 12.8 18.8 12 20ZM14.5 19.3C15.2 18.3 15.7 17.2 16 16H19C18 17.5 16.4 18.7 14.5 19.3ZM16.3 14C16.4 13.3 16.5 12.7 16.5 12S16.4 10.7 16.3 10H19.7C19.9 10.6 20 11.3 20 12S19.9 13.4 19.7 14H16.3Z"
-        }
+        };
         return paths[iconName] || paths.info;
     }
 
@@ -59,7 +61,9 @@ Item {
         ShapePath {
             fillColor: root.color
             strokeColor: "transparent"
-            PathSvg { path: root.iconPath(root.name) }
+            PathSvg {
+                path: root.iconPath(root.name)
+            }
         }
     }
 }

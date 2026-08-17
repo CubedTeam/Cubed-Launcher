@@ -15,7 +15,10 @@ Button {
     scale: down ? 0.98 : 1
 
     Behavior on scale {
-        NumberAnimation { duration: Theme.motionFast; easing.type: Theme.motionEasing }
+        NumberAnimation {
+            duration: Theme.motionFast
+            easing.type: Theme.motionEasing
+        }
     }
 
     function foregroundColor() {
@@ -66,7 +69,11 @@ Button {
                 Layout.preferredHeight: 20
                 Layout.alignment: Qt.AlignVCenter
 
-                Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+                Behavior on color {
+                    ColorAnimation {
+                        duration: Theme.motionFast
+                    }
+                }
             }
         }
     }
@@ -78,15 +85,26 @@ Button {
         border.width: root.activeFocus || root.variant === "outlined" ? 1 : 0
         border.color: outlineColor
 
-        Behavior on color { ColorAnimation { duration: Theme.motionFast } }
-        Behavior on outlineColor { ColorAnimation { duration: Theme.motionFast } }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.motionFast
+            }
+        }
+        Behavior on outlineColor {
+            ColorAnimation {
+                duration: Theme.motionFast
+            }
+        }
 
         Rectangle {
             anchors.fill: parent
             radius: parent.radius
-            color: root.down ? Theme.alpha(root.foregroundColor(), 0.12)
-                             : root.hovered ? Theme.alpha(root.foregroundColor(), 0.08) : "transparent"
-            Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+            color: root.down ? Theme.alpha(root.foregroundColor(), 0.12) : root.hovered ? Theme.alpha(root.foregroundColor(), 0.08) : "transparent"
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.motionFast
+                }
+            }
         }
     }
 }

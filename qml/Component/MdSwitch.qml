@@ -17,7 +17,11 @@ Switch {
         border.width: root.checked ? 0 : 2
         border.color: Theme.outline
 
-        Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.motionFast
+            }
+        }
 
         Rectangle {
             x: root.checked ? parent.width - width - 6 : 6
@@ -27,12 +31,22 @@ Switch {
             radius: width / 2
             color: root.checked ? Theme.primaryForeground : Theme.outline
             Behavior on x {
-                NumberAnimation { duration: Theme.motionFast; easing.type: Theme.motionEasing }
+                NumberAnimation {
+                    duration: Theme.motionFast
+                    easing.type: Theme.motionEasing
+                }
             }
             Behavior on width {
-                NumberAnimation { duration: Theme.motionFast; easing.type: Theme.motionEasing }
+                NumberAnimation {
+                    duration: Theme.motionFast
+                    easing.type: Theme.motionEasing
+                }
             }
-            Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.motionFast
+                }
+            }
         }
     }
 }

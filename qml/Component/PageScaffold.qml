@@ -17,12 +17,18 @@ Item {
         y: root.motionReady && root.visible ? 0 : Theme.space12
 
         Behavior on y {
-            NumberAnimation { duration: Theme.motionEmphasized; easing.type: Theme.motionEasing }
+            NumberAnimation {
+                duration: Theme.motionEmphasized
+                easing.type: Theme.motionEasing
+            }
         }
     }
 
     Behavior on opacity {
-        NumberAnimation { duration: Theme.motionEmphasized; easing.type: Theme.motionEasing }
+        NumberAnimation {
+            duration: Theme.motionEmphasized
+            easing.type: Theme.motionEasing
+        }
     }
 
     Component.onCompleted: motionReady = true

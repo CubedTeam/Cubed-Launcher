@@ -22,7 +22,9 @@ Item {
     }
     Connections {
         target: Settings
-        function onEasytier_install_path_changed() { EasyTierManager.set_install_path(Settings.easytierInstallPath); }
+        function onEasytier_install_path_changed() {
+            EasyTierManager.set_install_path(Settings.easytierInstallPath);
+        }
     }
     Connections {
         target: EasyTierManager
@@ -47,15 +49,26 @@ Item {
         const index = Settings.easytierPublicServerIndex >= 0 ? Settings.easytierPublicServerIndex : 0;
         return index >= 0 && index < names.length ? names[index] : qsTr("Select…");
     }
-    function regenerateRoomCode() { roomCode = EasyTierManager.generate_room_code(); }
+    function regenerateRoomCode() {
+        roomCode = EasyTierManager.generate_room_code();
+    }
     function resolvedCredentials() {
         if (advancedToggle.checked && networkNameField.text.length > 0 && networkSecretField.text.length > 0)
-            return { name: networkNameField.text, secret: networkSecretField.text };
+            return {
+                name: networkNameField.text,
+                secret: networkSecretField.text
+            };
         const code = roomMode === 0 ? roomCode : joinCode;
         if (code.length === 0)
-            return { name: "", secret: "" };
+            return {
+                name: "",
+                secret: ""
+            };
         const credentials = EasyTierManager.credentials_for_code(code);
-        return { name: credentials.name, secret: credentials.secret };
+        return {
+            name: credentials.name,
+            secret: credentials.secret
+        };
     }
     function canStart() {
         if (!EasyTierManager.installed || EasyTierManager.running || resolvedPeerAddress().length === 0)
@@ -123,7 +136,11 @@ Item {
                         MdButton {
                             text: qsTr("Create Room")
                             variant: root.roomMode === 0 ? "tonal" : "text"
-                            onClicked: { root.roomMode = 0; if (root.roomCode.length === 0) root.regenerateRoomCode(); }
+                            onClicked: {
+                                root.roomMode = 0;
+                                if (root.roomCode.length === 0)
+                                    root.regenerateRoomCode();
+                            }
                         }
                         MdButton {
                             text: qsTr("Join Room")
@@ -239,7 +256,9 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Item { Layout.fillWidth: true }
+                    Item {
+                        Layout.fillWidth: true
+                    }
                     MdButton {
                         visible: !EasyTierManager.running
                         text: qsTr("Start")
@@ -281,11 +300,19 @@ Item {
                 anchors.fill: parent
                 anchors.margins: Theme.space24
                 spacing: Theme.space12
-                MdIcon { name: "network"; color: Theme.primary; iconSize: 28 }
+                MdIcon {
+                    name: "network"
+                    color: Theme.primary
+                    iconSize: 28
+                }
                 ColumnLayout {
                     Layout.fillWidth: true
                     spacing: 2
-                    Label { text: qsTr("Virtual IP"); color: Theme.surfaceVariantForeground; font.pixelSize: Theme.labelSize }
+                    Label {
+                        text: qsTr("Virtual IP")
+                        color: Theme.surfaceVariantForeground
+                        font.pixelSize: Theme.labelSize
+                    }
                     Label {
                         text: EasyTierManager.virtualIp.length > 0 ? EasyTierManager.virtualIp : qsTr("Waiting for address…")
                         color: Theme.surfaceForeground
@@ -328,7 +355,9 @@ Item {
                     title: qsTr("Advanced EasyTier options")
                     description: qsTr("Override network credentials, reinstall the service, or change its folder.")
                     iconName: "settings"
-                    MdSwitch { id: advancedToggle }
+                    MdSwitch {
+                        id: advancedToggle
+                    }
                 }
                 EasyTierManagement {
                     visible: advancedToggle.checked && EasyTierManager.installed
@@ -382,7 +411,10 @@ Item {
         }
     }
 
-    PublicServerSelect { id: publicServerPopup; parent: Overlay.overlay }
+    PublicServerSelect {
+        id: publicServerPopup
+        parent: Overlay.overlay
+    }
     FolderDialog {
         id: easytierFolderDialog
         title: qsTr("Select EasyTier Folder")

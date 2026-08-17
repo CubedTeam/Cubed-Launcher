@@ -16,7 +16,11 @@ ComboBox {
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
 
-        Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.motionFast
+            }
+        }
     }
     indicator: MdIcon {
         name: "expand_more"
@@ -27,7 +31,10 @@ ComboBox {
         rotation: root.popup.visible ? 180 : 0
 
         Behavior on rotation {
-            NumberAnimation { duration: Theme.motionFast; easing.type: Theme.motionEasing }
+            NumberAnimation {
+                duration: Theme.motionFast
+                easing.type: Theme.motionEasing
+            }
         }
     }
     background: Rectangle {
@@ -37,8 +44,16 @@ ComboBox {
         border.width: root.activeFocus ? 2 : 1
         border.color: outlineColor
 
-        Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
-        Behavior on outlineColor { ColorAnimation { duration: Theme.motionFast } }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.motionNormal
+            }
+        }
+        Behavior on outlineColor {
+            ColorAnimation {
+                duration: Theme.motionFast
+            }
+        }
     }
     delegate: ItemDelegate {
         id: comboDelegate
@@ -103,7 +118,11 @@ ComboBox {
             border.width: 1
             border.color: Theme.outlineVariant
 
-            Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.motionNormal
+                }
+            }
         }
         contentItem: ListView {
             clip: true

@@ -15,7 +15,9 @@ PageScaffold {
         text: qsTr("Automatic game installation is currently available on Windows only.")
     }
 
-    DownloadGame { Layout.fillWidth: true }
+    DownloadGame {
+        Layout.fillWidth: true
+    }
 
     Connections {
         target: CubedGame

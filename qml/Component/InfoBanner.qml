@@ -8,14 +8,17 @@ Rectangle {
     property string iconName: tone === "error" ? "warning" : "info"
     property string tone: "info"
     property alias actionText: actionButton.text
-    signal actionClicked()
+    signal actionClicked
 
     implicitHeight: Math.max(56, bannerRow.implicitHeight + 20)
     radius: Theme.radiusLarge
-    color: tone === "error" ? Theme.errorContainer
-         : tone === "warning" ? Theme.tertiaryContainer : Theme.secondaryContainer
+    color: tone === "error" ? Theme.errorContainer : tone === "warning" ? Theme.tertiaryContainer : Theme.secondaryContainer
 
-    Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
+    Behavior on color {
+        ColorAnimation {
+            duration: Theme.motionNormal
+        }
+    }
 
     RowLayout {
         id: bannerRow
@@ -24,18 +27,20 @@ Rectangle {
         spacing: Theme.space12
         MdIcon {
             name: root.iconName
-            color: root.tone === "error" ? Theme.errorContainerForeground
-                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
+            color: root.tone === "error" ? Theme.errorContainerForeground : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
         }
         Label {
             text: root.text
-            color: root.tone === "error" ? Theme.errorContainerForeground
-                 : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
+            color: root.tone === "error" ? Theme.errorContainerForeground : root.tone === "warning" ? Theme.tertiaryContainerForeground : Theme.secondaryContainerForeground
             font.pixelSize: Theme.bodySize
             wrapMode: Text.WordWrap
             Layout.fillWidth: true
 
-            Behavior on color { ColorAnimation { duration: Theme.motionFast } }
+            Behavior on color {
+                ColorAnimation {
+                    duration: Theme.motionFast
+                }
+            }
         }
         MdButton {
             id: actionButton

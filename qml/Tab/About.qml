@@ -66,22 +66,47 @@ PageScaffold {
                 anchors.fill: parent
                 anchors.margins: Theme.space24
                 spacing: Theme.space12
-                SectionHeader { title: qsTr("Application"); iconName: "sports_esports"; Layout.fillWidth: true }
+                SectionHeader {
+                    title: qsTr("Application")
+                    iconName: "sports_esports"
+                    Layout.fillWidth: true
+                }
                 Repeater {
                     model: [
-                        { label: qsTr("Name"), value: Qt.application.name },
-                        { label: qsTr("Version"), value: aboutTab.appVersion },
-                        { label: qsTr("Qt version"), value: SystemInfo.qtVersion }
+                        {
+                            label: qsTr("Name"),
+                            value: Qt.application.name
+                        },
+                        {
+                            label: qsTr("Version"),
+                            value: aboutTab.appVersion
+                        },
+                        {
+                            label: qsTr("Qt version"),
+                            value: SystemInfo.qtVersion
+                        }
                     ]
                     delegate: RowLayout {
                         id: appInfoRow
                         required property var modelData
                         Layout.fillWidth: true
-                        Label { text: appInfoRow.modelData.label; color: Theme.surfaceVariantForeground; font.pixelSize: Theme.bodySize; Layout.fillWidth: true }
-                        Label { text: appInfoRow.modelData.value; color: Theme.surfaceForeground; font.pixelSize: Theme.bodySize; font.weight: Font.DemiBold }
+                        Label {
+                            text: appInfoRow.modelData.label
+                            color: Theme.surfaceVariantForeground
+                            font.pixelSize: Theme.bodySize
+                            Layout.fillWidth: true
+                        }
+                        Label {
+                            text: appInfoRow.modelData.value
+                            color: Theme.surfaceForeground
+                            font.pixelSize: Theme.bodySize
+                            font.weight: Font.DemiBold
+                        }
                     }
                 }
-                Item { Layout.fillHeight: true }
+                Item {
+                    Layout.fillHeight: true
+                }
                 RowLayout {
                     Layout.fillWidth: true
                     MdButton {
@@ -104,20 +129,44 @@ PageScaffold {
                 anchors.fill: parent
                 anchors.margins: Theme.space24
                 spacing: Theme.space12
-                SectionHeader { title: qsTr("System"); iconName: "desktop"; Layout.fillWidth: true }
+                SectionHeader {
+                    title: qsTr("System")
+                    iconName: "desktop"
+                    Layout.fillWidth: true
+                }
                 Repeater {
                     model: [
-                        { label: qsTr("Platform"), value: Qt.platform.os },
-                        { label: qsTr("Product"), value: SystemInfo.productType },
-                        { label: qsTr("System version"), value: SystemInfo.productVersion },
-                        { label: qsTr("Kernel"), value: SystemInfo.kernelType },
-                        { label: qsTr("Kernel version"), value: SystemInfo.kernelVersion }
+                        {
+                            label: qsTr("Platform"),
+                            value: Qt.platform.os
+                        },
+                        {
+                            label: qsTr("Product"),
+                            value: SystemInfo.productType
+                        },
+                        {
+                            label: qsTr("System version"),
+                            value: SystemInfo.productVersion
+                        },
+                        {
+                            label: qsTr("Kernel"),
+                            value: SystemInfo.kernelType
+                        },
+                        {
+                            label: qsTr("Kernel version"),
+                            value: SystemInfo.kernelVersion
+                        }
                     ]
                     delegate: RowLayout {
                         id: systemInfoRow
                         required property var modelData
                         Layout.fillWidth: true
-                        Label { text: systemInfoRow.modelData.label; color: Theme.surfaceVariantForeground; font.pixelSize: Theme.bodySize; Layout.fillWidth: true }
+                        Label {
+                            text: systemInfoRow.modelData.label
+                            color: Theme.surfaceVariantForeground
+                            font.pixelSize: Theme.bodySize
+                            Layout.fillWidth: true
+                        }
                         Label {
                             text: systemInfoRow.modelData.value.length > 0 ? systemInfoRow.modelData.value : qsTr("Unknown")
                             color: Theme.surfaceForeground

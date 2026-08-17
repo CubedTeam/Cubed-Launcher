@@ -39,11 +39,11 @@ PageScaffold {
         id: modeLoader
         Layout.fillWidth: true
         opacity: 0
-        source: multiplayerTab.mode === 0
-            ? "qrc:/qt/qml/CubedLauncher/qml/Tool/EasyTierSection.qml"
-            : "qrc:/qt/qml/CubedLauncher/qml/Tool/FrpSection.qml"
+        source: multiplayerTab.mode === 0 ? "qrc:/qt/qml/CubedLauncher/qml/Tool/EasyTierSection.qml" : "qrc:/qt/qml/CubedLauncher/qml/Tool/FrpSection.qml"
 
-        transform: Translate { id: modeTranslate }
+        transform: Translate {
+            id: modeTranslate
+        }
         onLoaded: modeEnter.restart()
 
         // AI-generated: Animate newly loaded mode content.

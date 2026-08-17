@@ -17,7 +17,10 @@ Item {
         anchors.leftMargin: Theme.space16
         anchors.rightMargin: Theme.space16
         spacing: Theme.space16
-        MdIcon { name: root.iconName; color: Theme.surfaceVariantForeground }
+        MdIcon {
+            name: root.iconName
+            color: Theme.surfaceVariantForeground
+        }
         ColumnLayout {
             Layout.fillWidth: true
             spacing: 2

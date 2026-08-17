@@ -18,7 +18,15 @@ TextField {
         border.width: root.activeFocus ? 2 : 1
         border.color: outlineColor
 
-        Behavior on color { ColorAnimation { duration: Theme.motionNormal } }
-        Behavior on outlineColor { ColorAnimation { duration: Theme.motionFast } }
+        Behavior on color {
+            ColorAnimation {
+                duration: Theme.motionNormal
+            }
+        }
+        Behavior on outlineColor {
+            ColorAnimation {
+                duration: Theme.motionFast
+            }
+        }
     }
 }

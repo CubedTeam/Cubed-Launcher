@@ -42,18 +42,42 @@ PageScaffold {
                     }
                 }
             }
-            Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: 1
+                color: Theme.outlineVariant
+            }
             SettingRow {
                 title: qsTr("Color palette")
                 description: qsTr("Each palette includes accessible light and dark color roles.")
                 iconName: "palette"
                 Repeater {
                     model: [
-                        { id: "cubed", color: "#4B8003", label: qsTr("Cubed") },
-                        { id: "blue", color: "#0B57D0", label: qsTr("Blue") },
-                        { id: "violet", color: "#6750A4", label: qsTr("Violet") },
-                        { id: "teal", color: "#006A6A", label: qsTr("Teal") },
-                        { id: "orange", color: "#C25A00", label: qsTr("Orange") }
+                        {
+                            id: "cubed",
+                            color: "#4B8003",
+                            label: qsTr("Cubed")
+                        },
+                        {
+                            id: "blue",
+                            color: "#0B57D0",
+                            label: qsTr("Blue")
+                        },
+                        {
+                            id: "violet",
+                            color: "#6750A4",
+                            label: qsTr("Violet")
+                        },
+                        {
+                            id: "teal",
+                            color: "#006A6A",
+                            label: qsTr("Teal")
+                        },
+                        {
+                            id: "orange",
+                            color: "#C25A00",
+                            label: qsTr("Orange")
+                        }
                     ]
                     delegate: Button {
                         id: paletteButton
@@ -116,7 +140,11 @@ PageScaffold {
                     onActivated: Settings.language = currentIndex === 1 ? "en" : "zh_CN"
                 }
             }
-            Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: 1
+                color: Theme.outlineVariant
+            }
             SettingRow {
                 title: qsTr("Automatically check for launcher updates")
                 description: qsTr("Check for a new launcher version when the launcher starts.")
@@ -126,7 +154,11 @@ PageScaffold {
                     onToggled: Settings.autoCheckLauncherUpdates = checked
                 }
             }
-            Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            Rectangle {
+                Layout.fillWidth: true
+                implicitHeight: 1
+                color: Theme.outlineVariant
+            }
             SettingRow {
                 title: qsTr("Receive pre-release updates")
                 description: qsTr("Include preview releases when checking for launcher and game updates.")
@@ -171,7 +203,10 @@ PageScaffold {
                 RowLayout {
                     anchors.fill: parent
                     anchors.margins: Theme.space16
-                    MdIcon { name: "folder"; color: Theme.surfaceVariantForeground }
+                    MdIcon {
+                        name: "folder"
+                        color: Theme.surfaceVariantForeground
+                    }
                     Label {
                         id: identityPath
                         Layout.fillWidth: true
@@ -190,7 +225,9 @@ PageScaffold {
             }
             RowLayout {
                 Layout.fillWidth: true
-                Item { Layout.fillWidth: true }
+                Item {
+                    Layout.fillWidth: true
+                }
                 MdButton {
                     text: qsTr("Import Identity")
                     iconName: "download"
@@ -227,9 +264,16 @@ PageScaffold {
                 title: qsTr("Show advanced options")
                 description: qsTr("These settings are intended for troubleshooting and custom setups.")
                 iconName: "settings"
-                MdSwitch { id: advancedSetting }
+                MdSwitch {
+                    id: advancedSetting
+                }
             }
-            Rectangle { visible: advancedSetting.checked; Layout.fillWidth: true; implicitHeight: 1; color: Theme.outlineVariant }
+            Rectangle {
+                visible: advancedSetting.checked
+                Layout.fillWidth: true
+                implicitHeight: 1
+                color: Theme.outlineVariant
+            }
             SettingRow {
                 visible: advancedSetting.checked
                 title: qsTr("Wrapper command")
@@ -347,7 +391,10 @@ PageScaffold {
         title: qsTr("Clear Cache")
         standardButtons: Dialog.Ok | Dialog.Cancel
         palette.text: Theme.surfaceForeground
-        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+        background: Rectangle {
+            color: Theme.surfaceContainerHigh
+            radius: Theme.radiusExtraLarge
+        }
         onAccepted: Settings.clear_cache()
         Label {
             width: parent.width
@@ -391,7 +438,10 @@ PageScaffold {
         title: qsTr("Replace Player Identity?")
         standardButtons: Dialog.Ok | Dialog.Cancel
         palette.text: Theme.surfaceForeground
-        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+        background: Rectangle {
+            color: Theme.surfaceContainerHigh
+            radius: Theme.radiusExtraLarge
+        }
         onAccepted: {
             identityResultDialog.importOperation = true;
             identityResultDialog.succeeded = IdentityManager.import_identity(settingTab.pendingIdentityImport);
@@ -415,7 +465,10 @@ PageScaffold {
         title: succeeded ? qsTr("Identity File Updated") : qsTr("Identity File Operation Failed")
         standardButtons: Dialog.Ok
         palette.text: Theme.surfaceForeground
-        background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+        background: Rectangle {
+            color: Theme.surfaceContainerHigh
+            radius: Theme.radiusExtraLarge
+        }
         InfoBanner {
             width: parent.width
             tone: identityResultDialog.succeeded ? "info" : "error"
@@ -423,9 +476,7 @@ PageScaffold {
             text: {
                 if (!identityResultDialog.succeeded)
                     return qsTr("The identity file operation failed: %1").arg(IdentityManager.errorMessage);
-                return identityResultDialog.importOperation
-                    ? qsTr("The player identity was imported and will be used next time Cubed starts.")
-                    : qsTr("The player identity was exported successfully.");
+                return identityResultDialog.importOperation ? qsTr("The player identity was imported and will be used next time Cubed starts.") : qsTr("The player identity was exported successfully.");
             }
         }
     }

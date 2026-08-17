@@ -15,7 +15,10 @@ MdDialog {
     padding: Theme.space16
     property int pendingTests: 0
     palette.text: Theme.surfaceForeground
-    background: Rectangle { color: Theme.surfaceContainerHigh; radius: Theme.radiusExtraLarge }
+    background: Rectangle {
+        color: Theme.surfaceContainerHigh
+        radius: Theme.radiusExtraLarge
+    }
 
     function testMirrors(force) {
         pendingTests = mirrorModel.count;
@@ -32,7 +35,11 @@ MdDialog {
         Component.onCompleted: {
             const names = MirrorSource.names;
             for (let index = 0; index < names.length; ++index)
-                append({ name: names[index], latency: -1, testing: false });
+                append({
+                    name: names[index],
+                    latency: -1,
+                    testing: false
+                });
         }
     }
 
@@ -66,7 +73,10 @@ MdDialog {
                 rightPadding: Theme.space16
                 topPadding: 0
                 bottomPadding: 0
-                onClicked: { Settings.mirrorIndex = index; root.close(); }
+                onClicked: {
+                    Settings.mirrorIndex = index;
+                    root.close();
+                }
                 contentItem: RowLayout {
                     spacing: Theme.space12
                     Item {
@@ -92,8 +102,7 @@ MdDialog {
                         spacing: Theme.space8
                         Label {
                             Layout.fillWidth: true
-                            text: row.testing ? qsTr("Testing latency…")
-                                  : row.latency < 0 ? qsTr("Timed out") : row.latency + " " + qsTr("ms")
+                            text: row.testing ? qsTr("Testing latency…") : row.latency < 0 ? qsTr("Timed out") : row.latency + " " + qsTr("ms")
                             color: row.latency >= 0 && row.latency < 300 ? Theme.primary : Theme.surfaceVariantForeground
                             font.pixelSize: Theme.labelSize
                             horizontalAlignment: Text.AlignRight
@@ -115,8 +124,14 @@ MdDialog {
         }
         RowLayout {
             Layout.fillWidth: true
-            MdButton { text: qsTr("Close"); variant: "text"; onClicked: root.close() }
-            Item { Layout.fillWidth: true }
+            MdButton {
+                text: qsTr("Close")
+                variant: "text"
+                onClicked: root.close()
+            }
+            Item {
+                Layout.fillWidth: true
+            }
             MdButton {
                 text: qsTr("Test Latency")
                 iconName: "refresh"
