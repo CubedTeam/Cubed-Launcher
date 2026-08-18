@@ -137,6 +137,8 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/secret_store.cpp
         src/tool/identity_manager.hpp
         src/tool/identity_manager.cpp
+        src/tool/ansi_text_formatter.hpp
+        src/tool/ansi_text_formatter.cpp
         src/multiplayer/frp_manager.hpp
         src/multiplayer/frp_manager.cpp
         src/multiplayer/easytier_manager.hpp
@@ -211,6 +213,24 @@ if (BUILD_TESTING)
         Qt6::Test
     )
     add_test(NAME IdentityManagerTest COMMAND IdentityManagerTest)
+
+    qt_add_executable(AnsiTextFormatterTest
+        tests/ansi_text_formatter_test.cpp
+        src/tool/ansi_text_formatter.cpp
+        src/tool/ansi_text_formatter.hpp
+    )
+    target_include_directories(AnsiTextFormatterTest PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_link_libraries(AnsiTextFormatterTest PRIVATE
+        Qt6::Gui
+        Qt6::Qml
+        Qt6::Test
+    )
+    add_test(NAME AnsiTextFormatterTest COMMAND AnsiTextFormatterTest)
+    set_tests_properties(AnsiTextFormatterTest PROPERTIES
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_QPA_PLATFORMTHEME="
+    )
 endif()
 
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")

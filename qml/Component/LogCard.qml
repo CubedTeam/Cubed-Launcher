@@ -24,6 +24,7 @@ Card {
             }
         }
         Rectangle {
+            id: logSurface
             visible: root.showLog
             Layout.fillWidth: true
             Layout.preferredHeight: 260
@@ -43,7 +44,9 @@ Card {
                     font.family: "Monospace"
                     font.pixelSize: 13
                     selectByMouse: true
-                    text: root.logLines.join("\n")
+                    // AI-generated: Render terminal colors without changing raw logs.
+                    textFormat: TextEdit.RichText
+                    text: AnsiTextFormatter.to_html(root.logLines.join("\n"), color, logSurface.color)
                     onTextChanged: cursorPosition = length
                 }
             }
