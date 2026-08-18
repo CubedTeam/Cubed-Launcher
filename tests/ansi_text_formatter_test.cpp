@@ -44,14 +44,17 @@ void AnsiTextFormatterTest::preservesPlainTextAndEscapesHtml() {
 void AnsiTextFormatterTest::rendersBasicColorsAndResets() {
     const QString input = QStringLiteral(
         "\x1b[31mred\x1b[44m on blue\x1b[39m default\x1b[49m done "
-        "\x1b[91mbright");
+        "\x1b[91mbright \x1b[34mblue \x1b[94mbright blue");
     const QString html = format(input);
 
     QVERIFY(html.contains(QStringLiteral("color:#800000")));
     QVERIFY(html.contains(QStringLiteral("background-color:#000080")));
     QVERIFY(html.contains(QStringLiteral("color:#ff0000")));
-    QCOMPARE(visibleText(html),
-             QStringLiteral("red on blue default done bright"));
+    QVERIFY(html.contains(QStringLiteral("color:#58a6ff")));
+    QVERIFY(html.contains(QStringLiteral("color:#79c0ff")));
+    QCOMPARE(
+        visibleText(html),
+        QStringLiteral("red on blue default done bright blue bright blue"));
 }
 
 void AnsiTextFormatterTest::rendersExtendedColors() {

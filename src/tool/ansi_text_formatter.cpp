@@ -20,7 +20,7 @@ struct TextStyle {
     bool strike{false};
 };
 
-QColor ansi_color(int index) {
+QColor ansi_color(int index, bool is_background) {
     static const std::array<QColor, 16> basic_colors = {
         QColor(QStringLiteral("#000000")), QColor(QStringLiteral("#800000")),
         QColor(QStringLiteral("#008000")), QColor(QStringLiteral("#808000")),
@@ -34,6 +34,12 @@ QColor ansi_color(int index) {
 
     if (index < 0 || index > 255) {
         return {};
+    }
+    if (!is_background && index == 4) {
+        return QColor(QStringLiteral("#58a6ff"));
+    }
+    if (!is_background && index == 12) {
+        return QColor(QStringLiteral("#79c0ff"));
     }
     if (index < static_cast<int>(basic_colors.size())) {
         return basic_colors[static_cast<std::size_t>(index)];
@@ -90,17 +96,17 @@ void apply_basic_parameter(int parameter, TextStyle& style) {
     } else if (parameter == 29) {
         style.strike = false;
     } else if (parameter >= 30 && parameter <= 37) {
-        style.foreground = ansi_color(parameter - 30);
+        style.foreground = ansi_color(parameter - 30, false);
     } else if (parameter == 39) {
         style.foreground.reset();
     } else if (parameter >= 40 && parameter <= 47) {
-        style.background = ansi_color(parameter - 40);
+        style.background = ansi_color(parameter - 40, true);
     } else if (parameter == 49) {
         style.background.reset();
     } else if (parameter >= 90 && parameter <= 97) {
-        style.foreground = ansi_color(parameter - 90 + 8);
+        style.foreground = ansi_color(parameter - 90 + 8, false);
     } else if (parameter >= 100 && parameter <= 107) {
-        style.background = ansi_color(parameter - 100 + 8);
+        style.background = ansi_color(parameter - 100 + 8, true);
     }
 }
 
@@ -108,7 +114,7 @@ void set_extended_color(int selector, int mode, const QList<int>& values,
                         TextStyle& style) {
     QColor color;
     if (mode == 5 && !values.isEmpty()) {
-        color = ansi_color(values.constFirst());
+        color = ansi_color(values.constFirst(), selector == 48);
     } else if (mode == 2 && values.size() >= 3) {
         const qsizetype offset = values.size() - 3;
         const int red = values[offset];
