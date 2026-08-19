@@ -125,6 +125,14 @@ Item {
                         highlighted: ListView.isCurrentItem
                         leftPadding: root.expanded ? Theme.space16 : 0
                         rightPadding: root.expanded ? Theme.space16 : 0
+                        scale: down ? 0.98 : 1
+
+                        Behavior on scale {
+                            NumberAnimation {
+                                duration: Theme.motionFast
+                                easing.type: Theme.motionEasing
+                            }
+                        }
 
                         contentItem: Item {
                             MdIcon {
@@ -165,11 +173,6 @@ Item {
                             color: navDelegate.highlighted ? Theme.secondaryContainer : navDelegate.down ? Theme.surfaceContainerHighest : navDelegate.hovered ? Theme.surfaceContainerHigh : "transparent"
                             border.width: navDelegate.activeFocus ? 1 : 0
                             border.color: Theme.primary
-                            Behavior on color {
-                                ColorAnimation {
-                                    duration: Theme.motionFast
-                                }
-                            }
                         }
 
                         MdToolTip {
