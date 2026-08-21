@@ -8,13 +8,6 @@ PageScaffold {
     title: qsTr("Game Manager")
     subtitle: qsTr("Install Cubed, choose a download source, and manage the game folder.")
 
-    InfoBanner {
-        visible: Qt.platform.os !== "windows"
-        Layout.fillWidth: true
-        tone: "warning"
-        text: qsTr("Automatic game installation is currently available on Windows only.")
-    }
-
     DownloadGame {
         Layout.fillWidth: true
     }

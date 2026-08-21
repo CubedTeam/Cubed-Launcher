@@ -196,7 +196,7 @@ Card {
                 visible: !GameUpdate.downloading
                 iconName: CubedGame.installed ? "update" : "download"
                 text: CubedGame.installed ? qsTr("Update Game") : qsTr("Install Game")
-                enabled: !GameUpdate.checkingUpdate && Qt.platform.os === "windows"
+                enabled: !GameUpdate.checkingUpdate
                 onClicked: {
                     if (!Settings.pathSetted)
                         Settings.set_game_dir(SystemInfo.defaultGameInstallDir);

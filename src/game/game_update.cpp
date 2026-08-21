@@ -8,12 +8,33 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QProcess>
 #include <qmicroz.h>
 #include <qtmetamacros.h>
 #include <utility>
 
+namespace {
+#ifdef _WIN32
+constexpr QStringView kAssetPattern = u"Cubed-.*-windows-x64\\.zip";
+constexpr QStringView kTempFileName = u"Cubed-latest.zip";
+#else
+constexpr QStringView kAssetPattern = u"Cubed-.*-linux-x64\\.tar\\.gz";
+constexpr QStringView kTempFileName = u"Cubed-latest.tar.gz";
+#endif
+
+QString temp_archive_path() {
+    return QDir::temp().filePath(kTempFileName.toString());
+}
+} // namespace
+
 GameUpdate::GameUpdate()
-    : m_fetcher(&m_manager, QStringLiteral("Cubed"), this),
+    : m_fetcher(&m_manager,
+#ifdef _WIN32
+                QStringLiteral("Cubed"),
+#else
+                QStringLiteral("Cubed-linux"),
+#endif
+                this),
       m_downloader(&m_manager, this) {
     m_game_install_path = DefaultDir::get_default_game_install_dir();
     connect(&m_downloader, &FileDownloader::progress_changed, this,
@@ -66,8 +87,8 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
     const bool includePrereleases = settings && settings->prerelease_updates();
 
     m_fetcher.fetch(
-        "CubedTeam", "Cubed",
-        QRegularExpression(R"(Cubed-.*-windows-x64\.zip)"), includePrereleases,
+        "CubedTeam", "Cubed", QRegularExpression(kAssetPattern.toString()),
+        includePrereleases,
         [this, installed, report_failure,
          finish_check](GithubReleaseFetcher::Result r) {
             if (!r.ok) {
@@ -95,7 +116,7 @@ Q_INVOKABLE void GameUpdate::check_update(const QString& local_version) {
 Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
     if (m_download_url.isEmpty()) {
         Logger::warn("Game Download Url is empty");
-        m_downloader.start({}, QDir::temp().filePath("Cubed-latest.zip"));
+        m_downloader.start({}, temp_archive_path());
         return;
     }
     QString download_url = m_download_url;
@@ -109,31 +130,53 @@ Q_INVOKABLE void GameUpdate::download_from_github(int mirror_index) {
 }
 
 Q_INVOKABLE void GameUpdate::download_game(const QString& download_url) {
-    const QString zip_path = QDir::temp().filePath("Cubed-latest.zip");
-    m_downloader.start(download_url, zip_path);
+    m_downloader.start(download_url, temp_archive_path());
 }
 
-void GameUpdate::on_download_complete(const QString& zip_path) {
-    QFile check(zip_path);
+void GameUpdate::on_download_complete(const QString& archive_path) {
+    QFile check(archive_path);
     if (!check.open(QIODevice::ReadOnly)) {
-        m_downloader.report_error(QStringLiteral("Can't open zip"));
+        m_downloader.report_error(QStringLiteral("Can't open archive"));
         return;
     }
+#ifdef _WIN32
     const QByteArray header = check.read(4);
     check.close();
     if (header.left(4) != QByteArray::fromHex("504b0304")) {
         m_downloader.report_error(QStringLiteral("Downloaded file is invalid"));
         return;
     }
-
-    if (!QMicroz::extract(zip_path, m_game_install_path)) {
-        QFile::remove(zip_path);
+    if (!QMicroz::extract(archive_path, m_game_install_path)) {
+        QFile::remove(archive_path);
         m_downloader.report_error(QStringLiteral("Extract file error"));
         return;
     }
+#else
+    // AI-generated: Linux tarball has a top-level Cubed/ dir; strip it and
+    // keep the executable bit via system tar.
+    const QByteArray header = check.read(2);
+    check.close();
+    if (header.left(2) != QByteArray::fromHex("1f8b")) {
+        m_downloader.report_error(QStringLiteral("Downloaded file is invalid"));
+        return;
+    }
+    QDir().mkpath(m_game_install_path);
+    QProcess tar;
+    tar.setProgram(QStringLiteral("tar"));
+    tar.setArguments({"xzf", archive_path, "-C", m_game_install_path,
+                      "--strip-components", "1"});
+    tar.start();
+    if (!tar.waitForStarted() || !tar.waitForFinished(-1) ||
+        tar.exitCode() != 0) {
+        QFile::remove(archive_path);
+        m_downloader.report_error(
+            QStringLiteral("Extract file error: %1").arg(tar.errorString()));
+        return;
+    }
+#endif
 
     Logger::info("Install Game Success");
-    QFile::remove(zip_path);
+    QFile::remove(archive_path);
     m_downloader.mark_succeeded();
     m_new_version = false;
     m_local_version = m_remote_version;
