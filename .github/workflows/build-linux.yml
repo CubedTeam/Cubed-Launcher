@@ -104,7 +104,7 @@ jobs:
           APPIMAGE_PATH: "CubedLauncher-${{ inputs.version }}-linux-x64.AppImage"
         run: |
           chmod +x "$APPIMAGE_PATH"
-          "$APPIMAGE_PATH" --appimage-extract >/dev/null
+          "./$APPIMAGE_PATH" --appimage-extract >/dev/null
           test -f squashfs-root/usr/lib/libcrypto.so.3
           test -f squashfs-root/usr/lib/libssl.so.3
           if ldd squashfs-root/usr/bin/CubedLauncher | grep -q "not found"; then
