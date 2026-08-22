@@ -104,6 +104,7 @@ jobs:
         with:
           files: |
             artifacts/CubedLauncher-*
+            artifacts/installer/output/*.exe
             artifacts/SHA256SUMS
           generate_release_notes: true
           draft: false
