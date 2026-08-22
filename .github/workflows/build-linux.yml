@@ -103,28 +103,76 @@ jobs:
         env:
           APPIMAGE_PATH: "CubedLauncher-${{ inputs.version }}-linux-x64.AppImage"
         run: |
+          require_file() {
+            if [ ! -f "$1" ]; then
+              echo "Required AppImage file is missing: $1" >&2
+              find squashfs-root/usr -maxdepth 4 -type f -print >&2
+              exit 1
+            fi
+          }
+
+          trace_dependencies() {
+            env \
+              -u LD_LIBRARY_PATH \
+              -u QT_PLUGIN_PATH \
+              -u QML2_IMPORT_PATH \
+              -u QT_QPA_PLATFORM_PLUGIN_PATH \
+              LD_LIBRARY_PATH="$APP_LIB_DIR" \
+              ldd "$1"
+          }
+
+          assert_bundled_library() {
+            local dependency_output="$1"
+            local library_name="$2"
+            local bundled_path="$APP_LIB_DIR/$library_name"
+            local resolved_path
+            resolved_path="$(awk -v name="$library_name" \
+              '$1 == name { print $3; exit }' <<< "$dependency_output")"
+            if [ -z "$resolved_path" ]; then
+              echo "$library_name is not present in the dependency graph." >&2
+              exit 1
+            fi
+            if [ "$(readlink -f "$resolved_path")" != "$(readlink -f "$bundled_path")" ]; then
+              echo "$library_name resolved outside the AppImage: $resolved_path" >&2
+              exit 1
+            fi
+          }
+
           chmod +x "$APPIMAGE_PATH"
           "./$APPIMAGE_PATH" --appimage-extract >/dev/null
-          test -f squashfs-root/usr/lib/libcrypto.so.3
-          test -f squashfs-root/usr/lib/libssl.so.3
-          if ldd squashfs-root/usr/bin/CubedLauncher | grep -q "not found"; then
+          APP_ROOT="$(readlink -f squashfs-root)"
+          APP_LIB_DIR="$APP_ROOT/usr/lib"
+          LAUNCHER="$APP_ROOT/usr/bin/CubedLauncher"
+          TLS_BACKEND="$APP_ROOT/usr/plugins/tls/libqopensslbackend.so"
+          require_file "$LAUNCHER"
+          require_file "$APP_LIB_DIR/libcrypto.so.3"
+          require_file "$APP_LIB_DIR/libssl.so.3"
+          require_file "$TLS_BACKEND"
+
+          LAUNCHER_DEPENDENCIES="$(trace_dependencies "$LAUNCHER")"
+          echo "$LAUNCHER_DEPENDENCIES"
+          if grep -q "not found" <<< "$LAUNCHER_DEPENDENCIES"; then
             echo "The packaged launcher has unresolved shared libraries." >&2
             exit 1
           fi
-          CRYPTO_PATH="$(ldd squashfs-root/usr/bin/CubedLauncher | awk '$1 == "libcrypto.so.3" { print $3 }')"
-          test "$(readlink -f "$CRYPTO_PATH")" = "$(readlink -f squashfs-root/usr/lib/libcrypto.so.3)"
-          TLS_BACKEND=squashfs-root/usr/plugins/tls/libqopensslbackend.so
-          test -f "$TLS_BACKEND"
-          if ldd "$TLS_BACKEND" | grep -q "not found"; then
+          assert_bundled_library "$LAUNCHER_DEPENDENCIES" libcrypto.so.3
+
+          TLS_DEPENDENCIES="$(trace_dependencies "$TLS_BACKEND")"
+          echo "$TLS_DEPENDENCIES"
+          if grep -q "not found" <<< "$TLS_DEPENDENCIES"; then
             echo "The packaged Qt TLS backend has unresolved shared libraries." >&2
             exit 1
           fi
-          SSL_PATH="$(ldd "$TLS_BACKEND" | awk '$1 == "libssl.so.3" { print $3 }')"
-          TLS_CRYPTO_PATH="$(ldd "$TLS_BACKEND" | awk '$1 == "libcrypto.so.3" { print $3 }')"
-          test "$(readlink -f "$SSL_PATH")" = "$(readlink -f squashfs-root/usr/lib/libssl.so.3)"
-          test "$(readlink -f "$TLS_CRYPTO_PATH")" = "$(readlink -f squashfs-root/usr/lib/libcrypto.so.3)"
+          assert_bundled_library "$TLS_DEPENDENCIES" libssl.so.3
+          assert_bundled_library "$TLS_DEPENDENCIES" libcrypto.so.3
+
           set +e
-          timeout 10s xvfb-run -a squashfs-root/AppRun
+          env \
+            -u LD_LIBRARY_PATH \
+            -u QT_PLUGIN_PATH \
+            -u QML2_IMPORT_PATH \
+            -u QT_QPA_PLATFORM_PLUGIN_PATH \
+            timeout 10s xvfb-run -a "$APP_ROOT/AppRun"
           APP_STATUS=$?
           set -e
           if [ "$APP_STATUS" -ne 124 ]; then
