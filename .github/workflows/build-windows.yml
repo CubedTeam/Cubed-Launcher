@@ -41,6 +41,12 @@ jobs:
           version: '6.8.3'
           cache: true
 
+      - name: Install OpenSSL
+        shell: pwsh
+        run: |
+          choco install openssl -y --no-progress
+          "OPENSSL_ROOT_DIR=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
+
       - name: Configure
         run: >
           cmake
@@ -59,6 +65,13 @@ jobs:
         shell: cmd
         run: |
           windeployqt --release --qmldir qml build\CubedLauncher\CubedLauncher.exe
+
+      - name: Deploy OpenSSL Crypto
+        if: inputs.package
+        shell: pwsh
+        run: |
+          Copy-Item "$env:OPENSSL_ROOT_DIR\bin\libcrypto-3-x64.dll" `
+            "build\CubedLauncher\"
 
       - name: Install Inno Setup
         if: inputs.package

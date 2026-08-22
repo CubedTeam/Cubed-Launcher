@@ -31,7 +31,8 @@ jobs:
           sudo apt install -y \
             fuse \
             libfuse2 \
-            desktop-file-utils
+            desktop-file-utils \
+            libssl-dev
 
       - name: Install GCC 14 (for C++23)
         run: |

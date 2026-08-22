@@ -16,6 +16,7 @@ private Q_SLOTS:
     void import_rejects_missing_directory_and_remote_sources();
     void export_copies_identity_exactly();
     void export_failure_preserves_existing_destination();
+    void identity_data_validation_preserves_existing_identity();
 };
 
 namespace {
@@ -130,6 +131,30 @@ void IdentityManagerTest::export_failure_preserves_existing_destination() {
     QVERIFY(!manager.export_identity(QUrl::fromLocalFile(destination)));
     QCOMPARE(read_file(destination), original);
     QVERIFY(!manager.export_identity(QUrl("https://example.com/backup.json")));
+}
+
+void IdentityManagerTest::
+    identity_data_validation_preserves_existing_identity() {
+    QTemporaryDir temporary_directory;
+    QVERIFY(temporary_directory.isValid());
+    IdentityManager manager(temporary_directory.path());
+    const QByteArray original = R"({"player":"original"})";
+    QVERIFY(write_file(manager.identity_path(), original));
+
+    QByteArray contents;
+    QVERIFY(manager.read_identity_data(contents));
+    QCOMPARE(contents, original);
+    QVERIFY(!manager.replace_identity_data("not json"));
+    QCOMPARE(read_file(manager.identity_path()), original);
+
+    const QByteArray replacement = R"({"player":"restored"})";
+    QVERIFY(manager.replace_identity_data(replacement));
+    QCOMPARE(read_file(manager.identity_path()), replacement);
+    const QFileInfo info(manager.identity_path());
+    QCOMPARE(info.permissions() &
+                 (QFileDevice::ReadGroup | QFileDevice::WriteGroup |
+                  QFileDevice::ReadOther | QFileDevice::WriteOther),
+             QFileDevice::Permissions{});
 }
 
 QTEST_MAIN(IdentityManagerTest)

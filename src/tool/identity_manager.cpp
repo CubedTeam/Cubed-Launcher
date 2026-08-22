@@ -51,11 +51,20 @@ bool IdentityManager::import_identity(const QUrl& source) {
         return false;
     }
 
-    QJsonParseError parse_error;
-    const QJsonDocument document =
-        QJsonDocument::fromJson(contents, &parse_error);
-    if (parse_error.error != QJsonParseError::NoError || !document.isObject()) {
-        set_error(tr("The selected file is not a valid identity JSON object."));
+    return replace_identity_data(contents);
+}
+
+bool IdentityManager::read_identity_data(QByteArray& contents) {
+    set_error({});
+    if (!has_identity_path() || !read_identity(m_identity_path, contents)) {
+        return false;
+    }
+    return validate_identity(contents);
+}
+
+bool IdentityManager::replace_identity_data(const QByteArray& contents) {
+    set_error({});
+    if (!has_identity_path() || !validate_identity(contents)) {
         return false;
     }
 
@@ -64,7 +73,6 @@ bool IdentityManager::import_identity(const QUrl& source) {
         set_error(tr("Cannot create the Cubed data directory."));
         return false;
     }
-
     return write_identity(m_identity_path, contents);
 }
 
@@ -91,6 +99,17 @@ bool IdentityManager::has_identity_path() {
         return true;
     }
     set_error(tr("The Cubed identity path is unavailable."));
+    return false;
+}
+
+bool IdentityManager::validate_identity(const QByteArray& contents) {
+    QJsonParseError parse_error;
+    const QJsonDocument document =
+        QJsonDocument::fromJson(contents, &parse_error);
+    if (parse_error.error == QJsonParseError::NoError && document.isObject()) {
+        return true;
+    }
+    set_error(tr("The selected file is not a valid identity JSON object."));
     return false;
 }
 

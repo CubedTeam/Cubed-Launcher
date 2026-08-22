@@ -33,6 +33,7 @@ configure_file(
 add_subdirectory(third_party/qmicroz)
 
 find_package(Qt6 6.8 REQUIRED COMPONENTS Core Quick QuickControls2 Network LinguistTools)
+find_package(OpenSSL 3 REQUIRED COMPONENTS Crypto)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -137,6 +138,12 @@ qt_add_qml_module(${PROJECT_NAME}
         src/tool/secret_store.cpp
         src/tool/identity_manager.hpp
         src/tool/identity_manager.cpp
+        src/tool/backup_crypto.hpp
+        src/tool/backup_crypto.cpp
+        src/tool/webdav_client.hpp
+        src/tool/webdav_client.cpp
+        src/tool/webdav_backup_manager.hpp
+        src/tool/webdav_backup_manager.cpp
         src/tool/ansi_text_formatter.hpp
         src/tool/ansi_text_formatter.cpp
         src/multiplayer/frp_manager.hpp
@@ -171,6 +178,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Quick
     Qt6::QuickControls2
     Qt6::Network
+    OpenSSL::Crypto
     qmicroz
 )
 
@@ -213,6 +221,35 @@ if (BUILD_TESTING)
         Qt6::Test
     )
     add_test(NAME IdentityManagerTest COMMAND IdentityManagerTest)
+
+    qt_add_executable(BackupCryptoTest
+        tests/backup_crypto_test.cpp
+        src/tool/backup_crypto.cpp
+        src/tool/backup_crypto.hpp
+    )
+    target_include_directories(BackupCryptoTest PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_link_libraries(BackupCryptoTest PRIVATE
+        OpenSSL::Crypto
+        Qt6::Core
+        Qt6::Test
+    )
+    add_test(NAME BackupCryptoTest COMMAND BackupCryptoTest)
+
+    qt_add_executable(WebDavClientTest
+        tests/webdav_client_test.cpp
+        src/tool/webdav_client.cpp
+        src/tool/webdav_client.hpp
+    )
+    target_include_directories(WebDavClientTest PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_link_libraries(WebDavClientTest PRIVATE
+        Qt6::Network
+        Qt6::Test
+    )
+    add_test(NAME WebDavClientTest COMMAND WebDavClientTest)
 
     qt_add_executable(AnsiTextFormatterTest
         tests/ansi_text_formatter_test.cpp
