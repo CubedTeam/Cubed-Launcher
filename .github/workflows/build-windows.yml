@@ -41,46 +41,32 @@ jobs:
           version: '6.8.3'
           cache: true
 
-      - name: Install OpenSSL
+      - name: Prepare vcpkg Cache
+        id: vcpkg
         shell: pwsh
         run: |
-          choco install openssl --version=3.6.2 --allow-downgrade -y --no-progress
-          $candidateRoots = @(
-            "C:\Program Files\OpenSSL-Win64",
-            "C:\Program Files\OpenSSL"
-          )
-          $opensslRoot = $candidateRoots |
-            Where-Object {
-              Test-Path (Join-Path $_ "include\openssl\opensslv.h")
-            } |
-            Select-Object -First 1
-          if ($null -eq $opensslRoot) {
-            throw "Could not locate the OpenSSL installation root."
+          $vcpkgCommit = git -C "$env:VCPKG_INSTALLATION_ROOT" rev-parse HEAD
+          $imageVersion = $env:ImageVersion
+          if ([string]::IsNullOrWhiteSpace($imageVersion)) {
+            $imageVersion = "unknown"
           }
-          $cryptoLibraries = @(Get-ChildItem `
-            (Join-Path $opensslRoot "lib") `
-            -Filter "libcrypto.lib" `
-            -File `
-            -Recurse)
-          $cryptoLibrary = $cryptoLibraries |
-            Where-Object { $_.FullName -match "\\VC\\x64\\MD\\" } |
-            Select-Object -First 1
-          if ($null -eq $cryptoLibrary) {
-            $cryptoLibrary = $cryptoLibraries | Select-Object -First 1
-          }
-          if ($null -eq $cryptoLibrary) {
-            throw "Could not locate the OpenSSL Crypto import library."
-          }
-          $opensslInclude = Join-Path $opensslRoot "include"
-          $cryptoRuntime = Join-Path $opensslRoot "bin\libcrypto-3-x64.dll"
-          $sslRuntime = Join-Path $opensslRoot "bin\libssl-3-x64.dll"
-          if (-not (Test-Path $cryptoRuntime) -or -not (Test-Path $sslRuntime)) {
-            throw "The expected OpenSSL 3 runtime DLLs are missing."
-          }
-          "OPENSSL_ROOT_DIR=$opensslRoot" >> $env:GITHUB_ENV
-          "OPENSSL_INCLUDE_DIR=$opensslInclude" >> $env:GITHUB_ENV
-          "OPENSSL_CRYPTO_LIBRARY=$($cryptoLibrary.FullName)" >> $env:GITHUB_ENV
-          Write-Host "Using OpenSSL from $opensslRoot"
+          $cacheDir = Join-Path $env:RUNNER_TEMP "vcpkg-binary-cache"
+          New-Item `
+            -ItemType Directory `
+            -Force `
+            -Path "$cacheDir" | Out-Null
+          "commit=$vcpkgCommit" >> $env:GITHUB_OUTPUT
+          "image_version=$imageVersion" >> $env:GITHUB_OUTPUT
+          "VCPKG_DEFAULT_BINARY_CACHE=$cacheDir" >> $env:GITHUB_ENV
+
+      - name: Restore vcpkg Binary Cache
+        uses: actions/cache@v4
+        with:
+          path: "${{ runner.temp }}\\vcpkg-binary-cache"
+          key: >-
+            vcpkg-${{ runner.os }}-x64-windows-${{ hashFiles('vcpkg.json') }}-${{ steps.vcpkg.outputs.image_version }}-${{ steps.vcpkg.outputs.commit }}
+          restore-keys: |
+            vcpkg-${{ runner.os }}-x64-windows-${{ hashFiles('vcpkg.json') }}-
 
       - name: Configure
         shell: pwsh
@@ -91,42 +77,53 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_C_COMPILER_LAUNCHER=sccache
           -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
-          "-DOPENSSL_ROOT_DIR=$env:OPENSSL_ROOT_DIR"
-          "-DOPENSSL_INCLUDE_DIR=$env:OPENSSL_INCLUDE_DIR"
-          "-DOPENSSL_CRYPTO_LIBRARY=$env:OPENSSL_CRYPTO_LIBRARY"
+          "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
+          -DVCPKG_MANIFEST_MODE=ON
+          -DVCPKG_TARGET_TRIPLET=x64-windows
+          -DVCPKG_APPLOCAL_DEPS=OFF
           "-DAPP_VERSION=${{ inputs.version }}"
 
       - name: Build
         run: cmake --build build --config Release --target CubedLauncher
 
+      - name: Stage Runtime
+        if: inputs.package
+        run: >
+          cmake
+          --install build
+          --prefix build/package
+          --component Runtime
+          --config Release
+
       - name: Deploy Qt
         if: inputs.package
         shell: cmd
         run: |
-          windeployqt --release --qmldir qml build\CubedLauncher\CubedLauncher.exe
+          windeployqt --release --qmldir qml build\package\CubedLauncher.exe
 
       - name: Verify OpenSSL Deployment
         if: inputs.package
         shell: pwsh
         run: |
           $cryptoDll = @(Get-ChildItem `
-            "build\CubedLauncher\libcrypto-3*.dll" `
+            "build\package\libcrypto*.dll" `
             -ErrorAction Stop)
           if ($cryptoDll.Count -ne 1) {
             throw "Expected exactly one OpenSSL Crypto runtime DLL."
           }
           $sslDll = @(Get-ChildItem `
-            "build\CubedLauncher\libssl-3*.dll" `
+            "build\package\libssl*.dll" `
             -ErrorAction Stop)
           if ($sslDll.Count -ne 1) {
             throw "Expected exactly one OpenSSL SSL runtime DLL."
           }
+          dumpbin /dependents "build\package\CubedLauncher.exe"
 
       - name: Smoke Test Windows Bundle
         if: inputs.package
         shell: pwsh
         run: |
-          $bundleDir = (Resolve-Path "build\CubedLauncher").Path
+          $bundleDir = (Resolve-Path "build\package").Path
           $originalPath = $env:PATH
           $env:PATH = "$bundleDir;${env:SystemRoot}\System32;${env:SystemRoot}"
           $process = $null
@@ -162,8 +159,56 @@ jobs:
         shell: pwsh
         run: |
           Compress-Archive `
-            -Path build/CubedLauncher/* `
+            -Path build/package/* `
             -DestinationPath CubedLauncher-${{ inputs.version }}-windows-x64-portable.zip
+
+      - name: Verify Packaged Artifacts
+        if: inputs.package
+        shell: pwsh
+        run: |
+          function Assert-OpenSslRuntime([string] $directory) {
+            $cryptoDll = @(Get-ChildItem `
+              "$directory\libcrypto*.dll" `
+              -ErrorAction Stop)
+            if ($cryptoDll.Count -ne 1) {
+              throw "Expected exactly one OpenSSL Crypto runtime DLL in $directory."
+            }
+            $sslDll = @(Get-ChildItem `
+              "$directory\libssl*.dll" `
+              -ErrorAction Stop)
+            if ($sslDll.Count -ne 1) {
+              throw "Expected exactly one OpenSSL SSL runtime DLL in $directory."
+            }
+          }
+
+          $portableDir = Join-Path $env:RUNNER_TEMP "portable-check"
+          Expand-Archive `
+            -Path "CubedLauncher-${{ inputs.version }}-windows-x64-portable.zip" `
+            -DestinationPath $portableDir
+          Assert-OpenSslRuntime $portableDir
+
+          $installer = Get-ChildItem `
+            "installer\output\*.exe" `
+            -File |
+            Select-Object -First 1
+          if ($null -eq $installer) {
+            throw "The Windows installer was not created."
+          }
+          $installerDir = Join-Path $env:RUNNER_TEMP "installer-check"
+          $installerProcess = Start-Process `
+            $installer.FullName `
+            -ArgumentList @(
+              "/VERYSILENT",
+              "/SUPPRESSMSGBOXES",
+              "/NORESTART",
+              "/DIR=$installerDir"
+            ) `
+            -Wait `
+            -PassThru
+          if ($installerProcess.ExitCode -ne 0) {
+            throw "The Windows installer verification failed with code $($installerProcess.ExitCode)."
+          }
+          Assert-OpenSslRuntime $installerDir
 
       - name: Upload Windows Artifacts
         if: inputs.package
