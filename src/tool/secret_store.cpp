@@ -38,22 +38,29 @@ namespace SecretStore {
 #if defined(_WIN32)
 constexpr QLatin1StringView kDpapiPrefix("DPAPI:");
 
-void write_dpapi_blob(const QString& key, const QByteArray& blob) {
-    QSettings s;
+QSettings dpapi_settings() {
+    return QSettings(QSettings::IniFormat, QSettings::UserScope, "Cubed",
+                     "Launcher");
+}
+
+bool write_dpapi_blob(const QString& key, const QByteArray& blob) {
+    QSettings s = dpapi_settings();
     s.setValue(QStringLiteral("secret_store/") + key, blob);
     s.sync();
+    return s.status() == QSettings::NoError;
 }
 
 QByteArray read_dpapi_blob(const QString& key) {
-    return QSettings()
+    return dpapi_settings()
         .value(QStringLiteral("secret_store/") + key)
         .toByteArray();
 }
 
-void delete_dpapi_blob(const QString& key) {
-    QSettings s;
+bool delete_dpapi_blob(const QString& key) {
+    QSettings s = dpapi_settings();
     s.remove(QStringLiteral("secret_store/") + key);
     s.sync();
+    return s.status() == QSettings::NoError;
 }
 #endif
 
@@ -83,7 +90,15 @@ bool save(const QString& key, const QByteArray& secret) {
     QByteArray wrapped;
     wrapped.append(kDpapiPrefix.data(), kDpapiPrefix.size());
     wrapped.append(blob.toBase64());
-    write_dpapi_blob(key, wrapped);
+    if (!write_dpapi_blob(key, wrapped)) {
+        Logger::warn("DPAPI settings write failed");
+        return false;
+    }
+    const auto stored = load(key);
+    if (!stored || *stored != secret) {
+        Logger::warn("DPAPI settings verification failed");
+        return false;
+    }
     return true;
 #else
     GError* err = nullptr;
@@ -152,7 +167,10 @@ bool remove(const QString& key) {
         return false;
     }
 #if defined(_WIN32)
-    delete_dpapi_blob(key);
+    if (!delete_dpapi_blob(key)) {
+        Logger::warn("DPAPI settings removal failed");
+        return false;
+    }
     return true;
 #else
     GError* err = nullptr;
