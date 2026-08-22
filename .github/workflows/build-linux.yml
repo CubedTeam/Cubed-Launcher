@@ -31,7 +31,8 @@ jobs:
           sudo apt install -y \
             fuse \
             libfuse2 \
-            desktop-file-utils
+            desktop-file-utils \
+            libssl-dev
 
       - name: Install GCC 14 (for C++23)
         run: |
@@ -79,9 +80,18 @@ jobs:
         env:
           QML_SOURCES_PATHS: "qml"
           LDAI_OUTPUT: "CubedLauncher-${{ inputs.version }}-linux-x64.AppImage"
+          NO_STRIP: "1"
         run: |
+          QMAKE="$(command -v qmake)"
+          export QMAKE
+          "$QMAKE" -query QT_VERSION | grep -q '^6\.'
+          OPENSSL_LIBDIR="$(pkg-config --variable=libdir openssl)"
+          test -f "$OPENSSL_LIBDIR/libcrypto.so.3"
+          test -f "$OPENSSL_LIBDIR/libssl.so.3"
           linuxdeploy-x86_64.AppImage \
             --appdir AppDir \
+            --library "$OPENSSL_LIBDIR/libcrypto.so.3" \
+            --library "$OPENSSL_LIBDIR/libssl.so.3" \
             --desktop-file AppDir/usr/share/applications/CubedLauncher.desktop \
             --plugin qt \
             --output appimage

@@ -26,11 +26,15 @@ public:
     Q_INVOKABLE bool import_identity(const QUrl& source);
     Q_INVOKABLE bool export_identity(const QUrl& destination);
 
+    bool read_identity_data(QByteArray& contents);
+    bool replace_identity_data(const QByteArray& contents);
+
 Q_SIGNALS:
     void error_message_changed();
 
 private:
     bool has_identity_path();
+    bool validate_identity(const QByteArray& contents);
     bool read_identity(const QString& path, QByteArray& contents);
     bool write_identity(const QString& path, const QByteArray& contents);
     void set_error(const QString& message);

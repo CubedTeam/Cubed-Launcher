@@ -55,62 +55,62 @@
         <translation>一款轻量的 Cubed 启动器与联机助手。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="69"/>
+        <location filename="../qml/Tab/About.qml" line="70"/>
         <source>Application</source>
         <translation>应用程序</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="72"/>
+        <location filename="../qml/Tab/About.qml" line="77"/>
         <source>Name</source>
         <translation>名称</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="73"/>
+        <location filename="../qml/Tab/About.qml" line="81"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="74"/>
+        <location filename="../qml/Tab/About.qml" line="85"/>
         <source>Qt version</source>
         <translation>Qt 版本</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="89"/>
+        <location filename="../qml/Tab/About.qml" line="114"/>
         <source>Check for updates</source>
         <translation>检查更新</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="107"/>
+        <location filename="../qml/Tab/About.qml" line="133"/>
         <source>System</source>
         <translation>系统</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="110"/>
+        <location filename="../qml/Tab/About.qml" line="140"/>
         <source>Platform</source>
         <translation>平台</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="111"/>
+        <location filename="../qml/Tab/About.qml" line="144"/>
         <source>Product</source>
         <translation>产品</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="112"/>
+        <location filename="../qml/Tab/About.qml" line="148"/>
         <source>System version</source>
         <translation>系统版本</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="113"/>
+        <location filename="../qml/Tab/About.qml" line="152"/>
         <source>Kernel</source>
         <translation>内核</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="114"/>
+        <location filename="../qml/Tab/About.qml" line="156"/>
         <source>Kernel version</source>
         <translation>内核版本</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/About.qml" line="122"/>
+        <location filename="../qml/Tab/About.qml" line="171"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
@@ -130,7 +130,7 @@
         <translation type="vanished">更新启动器（仅支持 Windows）</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="32"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="30"/>
         <source>Update Launcher</source>
         <translation>更新启动器</translation>
     </message>
@@ -143,48 +143,48 @@
         <translation type="vanished">自定义链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="19"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="17"/>
         <source>Launcher update available: %1 → %2</source>
         <translation>启动器有新版本可用：%1 → %2</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="20"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="18"/>
         <source>Details</source>
         <translation>详情</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="45"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="46"/>
         <source>Automatic launcher updates are currently available on Windows only.</source>
         <translation>启动器自动更新目前仅支持 Windows。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="58"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="59"/>
         <source>Use custom download link</source>
         <translation>使用自定义下载链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="70"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="71"/>
         <source>Mirror: </source>
         <translation>镜像：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="79"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="80"/>
         <source>Download Link</source>
         <translation>下载链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="105"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="108"/>
         <source>Release page</source>
         <translation>发布页面</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="111"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="114"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="20"/>
-        <location filename="../qml/Tool/CheckUpdate.qml" line="118"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="18"/>
+        <location filename="../qml/Tool/CheckUpdate.qml" line="121"/>
         <source>Update</source>
         <translation>更新</translation>
     </message>
@@ -200,82 +200,82 @@
         <translation type="vanished">使用自定义链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="78"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="82"/>
         <source>Mirror: </source>
         <translation>镜像：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="94"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="98"/>
         <source>Install location</source>
         <translation>安装位置</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="122"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="128"/>
         <source>Advanced folder options</source>
         <translation>高级文件夹选项</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="132"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="138"/>
         <source>Choose Folder</source>
         <translation>选择文件夹</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="138"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="144"/>
         <source>Reset path</source>
         <translation>重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="168"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="174"/>
         <source>Installation finished successfully.</source>
         <translation>安装已成功完成。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="174"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="180"/>
         <source>A new game version is available.</source>
         <translation>有新的游戏版本可用。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="190"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="198"/>
         <source>Update Game</source>
         <translation>更新游戏</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="190"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="198"/>
         <source>Install Game</source>
         <translation>安装游戏</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="184"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="192"/>
         <source>Cancel Download</source>
         <translation>取消下载</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="28"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="32"/>
         <source>Update Cubed</source>
         <translation>更新 Cubed</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="28"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="32"/>
         <source>Install Cubed</source>
         <translation>安装 Cubed</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="35"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="38"/>
         <source>Installed version: %1</source>
         <translation>已安装版本：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="36"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="38"/>
         <source>The game has not been installed on this device.</source>
         <translation>此设备尚未安装游戏。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="42"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="44"/>
         <source>Downloading</source>
         <translation>正在下载</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="43"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="44"/>
         <source>Checking</source>
         <translation>正在检查</translation>
     </message>
@@ -290,17 +290,17 @@
         <translation>未安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="62"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="66"/>
         <source>Download source</source>
         <translation>下载源</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="69"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="73"/>
         <source>Use custom link</source>
         <translation>使用自定义链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="86"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="90"/>
         <source>Download Link</source>
         <translation>下载链接</translation>
     </message>
@@ -337,7 +337,7 @@
         <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/DownloadGame.qml" line="215"/>
+        <location filename="../qml/Tool/DownloadGame.qml" line="226"/>
         <source>Select Game Folder</source>
         <translation>选择游戏文件夹</translation>
     </message>
@@ -417,137 +417,137 @@
         <translation type="vanished">状态：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="48"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="50"/>
         <source>Select…</source>
         <translation>选择…</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="101"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="114"/>
         <source>EasyTier client</source>
         <translation>EasyTier 客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="102"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="115"/>
         <source>Share a room code to create a private virtual network.</source>
         <translation>共享房间码以创建私有虚拟网络。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="106"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="119"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="106"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="119"/>
         <source>Stopped</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="124"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="137"/>
         <source>Create Room</source>
         <translation>创建房间</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="129"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="146"/>
         <source>Join Room</source>
         <translation>加入房间</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="140"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="157"/>
         <source>Relay server</source>
         <translation>中继服务器</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="147"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="164"/>
         <source>Public</source>
         <translation>公共</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="152"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="169"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="162"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="179"/>
         <source>Public server: %1</source>
         <translation>公共服务器：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="170"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="187"/>
         <source>Peer address, for example tcp://1.2.3.4:1010</source>
         <translation>对等节点地址，例如 tcp://1.2.3.4:1010</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="185"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="202"/>
         <source>Room code</source>
         <translation>房间码</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="185"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="202"/>
         <source>Enter room code</source>
         <translation>输入房间码</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="207"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="224"/>
         <source>6-character code</source>
         <translation>6 位房间码</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="219"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="236"/>
         <source>Copy room code</source>
         <translation>复制房间码</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="226"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="243"/>
         <source>Generate a new code</source>
         <translation>生成新房间码</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="233"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="250"/>
         <source>Enter a valid 6-character room code.</source>
         <translation>请输入有效的 6 位房间码。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="272"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="291"/>
         <source>EasyTier requests administrator or root privileges to create a TUN/TAP interface and can control this machine&apos;s network stack. Only continue if you trust easytier-core. Frp does not require elevated privileges.</source>
         <translation>EasyTier 会申请管理员或 root 权限来创建 TUN/TAP 接口，并可控制本机网络栈。仅在信任 easytier-core 时继续。Frp 不需要提升权限。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="290"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="317"/>
         <source>Waiting for address…</source>
         <translation>正在等待地址…</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="299"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="326"/>
         <source>Copy virtual IP</source>
         <translation>复制虚拟 IP</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="305"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="332"/>
         <source>Refresh virtual IP</source>
         <translation>刷新虚拟 IP</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="316"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="343"/>
         <source>EasyTier logs</source>
         <translation>EasyTier 日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="328"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="355"/>
         <source>Advanced EasyTier options</source>
         <translation>EasyTier 高级选项</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="329"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="356"/>
         <source>Override network credentials, reinstall the service, or change its folder.</source>
         <translation>覆盖网络凭据、重新安装服务或更改安装文件夹。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="342"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="371"/>
         <source>Manual network identity</source>
         <translation>手动网络身份</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="348"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="377"/>
         <source>When both fields are filled, they override the room code.</source>
         <translation>两个字段均填写后将覆盖房间码派生值。</translation>
     </message>
@@ -588,12 +588,12 @@
         <translation type="vanished">当两个字段都填时，将覆盖房间码派生值。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="357"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="386"/>
         <source>Network name</source>
         <translation>网络名称</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="363"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="392"/>
         <source>Network secret</source>
         <translation>网络密钥</translation>
     </message>
@@ -610,12 +610,12 @@
         <translation type="vanished">本地监听端口</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="245"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="264"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="258"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="277"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
@@ -628,7 +628,7 @@
         <translation type="vanished">启动器本身不需要管理员或 root 权限。但启动时，easytier-core 会申请管理员（Windows）或 root（Linux）权限以创建 TUN/TAP 虚拟网卡。以提升的权限运行时，easytier-core 进程能够大范围操控本机的网络栈，请确认仅在信任此软件且了解风险与后果后再继续。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="288"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="312"/>
         <source>Virtual IP</source>
         <translation>虚拟 IP</translation>
     </message>
@@ -665,7 +665,7 @@
         <translation type="vanished">建议：改用 frp（无需管理员或 root 权限）。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="373"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="402"/>
         <source>EasyTier Install Directory</source>
         <translation>EasyTier 安装目录</translation>
     </message>
@@ -686,7 +686,7 @@
         <translation type="vanished">EasyTier 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="374"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="403"/>
         <source>Set EasyTier Folder</source>
         <translation>设置 EasyTier 文件夹</translation>
     </message>
@@ -695,7 +695,7 @@
         <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/EasyTierSection.qml" line="388"/>
+        <location filename="../qml/Tool/EasyTierSection.qml" line="420"/>
         <source>Select EasyTier Folder</source>
         <translation>选择 EasyTier 文件夹</translation>
     </message>
@@ -703,12 +703,12 @@
 <context>
     <name>FirstLaunchDialog</name>
     <message>
-        <location filename="../qml/Component/FirstLaunchDialog.qml" line="36"/>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="39"/>
         <source>Welcome to Cubed Launcher</source>
         <translation>欢迎使用 Cubed 启动器</translation>
     </message>
     <message>
-        <location filename="../qml/Component/FirstLaunchDialog.qml" line="43"/>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="46"/>
         <source>Choose where to install Cubed game files. You can change this later in Settings.</source>
         <translation>选择 Cubed 游戏的安装位置。后续可在“设置”页签中修改。</translation>
     </message>
@@ -717,17 +717,17 @@
         <translation type="vanished">默认位置：</translation>
     </message>
     <message>
-        <location filename="../qml/Component/FirstLaunchDialog.qml" line="70"/>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="76"/>
         <source>Use Default Folder</source>
         <translation>使用默认文件夹</translation>
     </message>
     <message>
-        <location filename="../qml/Component/FirstLaunchDialog.qml" line="79"/>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="85"/>
         <source>Choose Install Folder</source>
         <translation>选择安装文件夹</translation>
     </message>
     <message>
-        <location filename="../qml/Component/FirstLaunchDialog.qml" line="89"/>
+        <location filename="../qml/Component/FirstLaunchDialog.qml" line="95"/>
         <source>Select Game Install Folder</source>
         <translation>选择游戏安装文件夹</translation>
     </message>
@@ -799,58 +799,58 @@
         <translation type="vanished">状态：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="66"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="68"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="66"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="68"/>
         <source>Stopped</source>
         <translation>已停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="83"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="87"/>
         <source>Start</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="90"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="94"/>
         <source>Stop</source>
         <translation>停止</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="74"/>
-        <location filename="../qml/Tool/FrpSection.qml" line="147"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="76"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="153"/>
         <source>Edit frpc.toml</source>
         <translation>编辑 frpc.toml</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="61"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="63"/>
         <source>Frp client</source>
         <translation>Frp 客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="62"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="64"/>
         <source>Connect through a configured Frp server without elevated privileges.</source>
         <translation>通过已配置的 Frp 服务器连接，无需提升权限。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="103"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="107"/>
         <source>Frp logs</source>
         <translation>Frp 日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="115"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="119"/>
         <source>Advanced Frp options</source>
         <translation>Frp 高级选项</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="116"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="120"/>
         <source>Reinstall the service or change its installation folder.</source>
         <translation>重新安装服务或更改其安装文件夹。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="128"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="134"/>
         <source>Frp Install Directory</source>
         <translation>Frp 安装目录</translation>
     </message>
@@ -871,7 +871,7 @@
         <translation type="vanished">Frp 安装目录：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="129"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="135"/>
         <source>Set Frp Folder</source>
         <translation>设置 Frp 文件夹</translation>
     </message>
@@ -880,7 +880,7 @@
         <translation type="vanished">重置路径</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/FrpSection.qml" line="170"/>
+        <location filename="../qml/Tool/FrpSection.qml" line="182"/>
         <source>Select Frp Folder</source>
         <translation>选择 Frp 文件夹</translation>
     </message>
@@ -894,44 +894,44 @@
     </message>
     <message>
         <location filename="../src/tool/identity_manager.cpp" line="45"/>
-        <location filename="../src/tool/identity_manager.cpp" line="77"/>
+        <location filename="../src/tool/identity_manager.cpp" line="85"/>
         <source>The selected path is not a local file.</source>
         <translation>所选路径不是本地文件。</translation>
     </message>
     <message>
-        <location filename="../src/tool/identity_manager.cpp" line="58"/>
+        <location filename="../src/tool/identity_manager.cpp" line="112"/>
         <source>The selected file is not a valid identity JSON object.</source>
         <translation>所选文件不是有效的身份 JSON 对象。</translation>
     </message>
     <message>
-        <location filename="../src/tool/identity_manager.cpp" line="64"/>
+        <location filename="../src/tool/identity_manager.cpp" line="73"/>
         <source>Cannot create the Cubed data directory.</source>
         <translation>无法创建 Cubed 数据目录。</translation>
     </message>
     <message>
-        <location filename="../src/tool/identity_manager.cpp" line="93"/>
+        <location filename="../src/tool/identity_manager.cpp" line="101"/>
         <source>The Cubed identity path is unavailable.</source>
         <translation>Cubed 身份文件路径不可用。</translation>
     </message>
     <message>
-        <location filename="../src/tool/identity_manager.cpp" line="100"/>
+        <location filename="../src/tool/identity_manager.cpp" line="119"/>
         <source>The identity file does not exist or is not a regular file.</source>
         <translation>身份文件不存在或不是常规文件。</translation>
     </message>
     <message>
-        <location filename="../src/tool/identity_manager.cpp" line="108"/>
-        <location filename="../src/tool/identity_manager.cpp" line="115"/>
+        <location filename="../src/tool/identity_manager.cpp" line="127"/>
+        <location filename="../src/tool/identity_manager.cpp" line="134"/>
         <source>Cannot read the identity file: %1</source>
         <translation>无法读取身份文件：%1</translation>
     </message>
     <message>
-        <location filename="../src/tool/identity_manager.cpp" line="127"/>
-        <location filename="../src/tool/identity_manager.cpp" line="134"/>
+        <location filename="../src/tool/identity_manager.cpp" line="146"/>
+        <location filename="../src/tool/identity_manager.cpp" line="153"/>
         <source>Cannot write the identity file: %1</source>
         <translation>无法写入身份文件：%1</translation>
     </message>
     <message>
-        <location filename="../src/tool/identity_manager.cpp" line="140"/>
+        <location filename="../src/tool/identity_manager.cpp" line="159"/>
         <source>Cannot finish writing the identity file: %1</source>
         <translation>无法完成身份文件写入：%1</translation>
     </message>
@@ -992,67 +992,67 @@
         <translation>打开管理页</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="54"/>
+        <location filename="../qml/Tab/Launch.qml" line="56"/>
         <source>Game status</source>
         <translation>游戏状态</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="60"/>
+        <location filename="../qml/Tab/Launch.qml" line="62"/>
         <source>Running</source>
         <translation>运行中</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="61"/>
+        <location filename="../qml/Tab/Launch.qml" line="62"/>
         <source>Ready</source>
         <translation>就绪</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="61"/>
+        <location filename="../qml/Tab/Launch.qml" line="62"/>
         <source>Not installed</source>
         <translation>未安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="73"/>
+        <location filename="../qml/Tab/Launch.qml" line="77"/>
         <source>Installed version</source>
         <translation>已安装版本</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="79"/>
+        <location filename="../qml/Tab/Launch.qml" line="83"/>
         <source>—</source>
         <translation>—</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="89"/>
+        <location filename="../qml/Tab/Launch.qml" line="93"/>
         <source>Version %1 available</source>
         <translation>版本 %1 可用</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="113"/>
+        <location filename="../qml/Tab/Launch.qml" line="117"/>
         <source>Launch game</source>
         <translation>启动游戏</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="119"/>
+        <location filename="../qml/Tab/Launch.qml" line="123"/>
         <source>Choose the player name used by Cubed.</source>
         <translation>选择 Cubed 中使用的玩家名称。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="130"/>
+        <location filename="../qml/Tab/Launch.qml" line="134"/>
         <source>Enter Player Name</source>
         <translation>输入玩家名称</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="144"/>
+        <location filename="../qml/Tab/Launch.qml" line="150"/>
         <source>Start Game</source>
         <translation>开始游戏</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="144"/>
+        <location filename="../qml/Tab/Launch.qml" line="150"/>
         <source>Install Game First</source>
         <translation>请先安装游戏</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Launch.qml" line="156"/>
+        <location filename="../qml/Tab/Launch.qml" line="162"/>
         <source>Stop all game processes</source>
         <translation>停止所有游戏进程</translation>
     </message>
@@ -1099,9 +1099,8 @@
         <translation>安装 Cubed、选择下载源并管理游戏文件夹。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Manager.qml" line="15"/>
         <source>Automatic game installation is currently available on Windows only.</source>
-        <translation>游戏自动安装目前仅支持 Windows。</translation>
+        <translation type="vanished">游戏自动安装目前仅支持 Windows。</translation>
     </message>
 </context>
 <context>
@@ -1120,32 +1119,32 @@
         <translation type="vanished">超时</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="44"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="51"/>
         <source>Choose the fastest available source. Latency results are estimates.</source>
         <translation>选择当前最快的下载源，延迟结果仅供参考。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="73"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="105"/>
         <source>Testing latency…</source>
         <translation>正在测试延迟…</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="74"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="105"/>
         <source>ms</source>
         <translation>毫秒</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="74"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="105"/>
         <source>Timed out</source>
         <translation>已超时</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="89"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="128"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/MirrorSelect.qml" line="92"/>
+        <location filename="../qml/Tool/MirrorSelect.qml" line="136"/>
         <source>Test Latency</source>
         <translation>测试延迟</translation>
     </message>
@@ -1277,12 +1276,12 @@
         <translation>选择公共服务器</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/PublicServerSelect.qml" line="32"/>
+        <location filename="../qml/Tool/PublicServerSelect.qml" line="38"/>
         <source>Select a community relay for the EasyTier room.</source>
         <translation>为 EasyTier 房间选择社区中继服务器。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/PublicServerSelect.qml" line="67"/>
+        <location filename="../qml/Tool/PublicServerSelect.qml" line="102"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -1322,72 +1321,72 @@
         <translation type="vanished">自定义链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="25"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="24"/>
         <source>Installed version: %1</source>
         <translation>已安装版本：%1</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="26"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="24"/>
         <source>Download and install this multiplayer service.</source>
         <translation>下载并安装此联机服务。</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="30"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="28"/>
         <source>Working</source>
         <translation>处理中</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="31"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="28"/>
         <source>Installed</source>
         <translation>已安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="31"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="28"/>
         <source>Not installed</source>
         <translation>未安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="40"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="37"/>
         <source>Checking for updates…</source>
         <translation>正在检查更新…</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="41"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="37"/>
         <source>Downloading…</source>
         <translation>正在下载…</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="42"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="37"/>
         <source>Extracting…</source>
         <translation>正在解压…</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="42"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="37"/>
         <source>Working…</source>
         <translation>处理中…</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="62"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="57"/>
         <source>Use custom download link</source>
         <translation>使用自定义下载链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="72"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="67"/>
         <source>Mirror: </source>
         <translation>镜像：</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="80"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="75"/>
         <source>Download Link</source>
         <translation>下载链接</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="95"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="92"/>
         <source>Reinstall</source>
         <translation>重新安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="95"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="92"/>
         <source>Download &amp; Install</source>
         <translation>下载并安装</translation>
     </message>
@@ -1396,7 +1395,7 @@
         <translation type="vanished">下载并安装</translation>
     </message>
     <message>
-        <location filename="../qml/Tool/ServiceInstallCard.qml" line="87"/>
+        <location filename="../qml/Tool/ServiceInstallCard.qml" line="82"/>
         <source>Uninstall</source>
         <translation>卸载</translation>
     </message>
@@ -1404,7 +1403,7 @@
 <context>
     <name>Setting</name>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="106"/>
+        <location filename="../qml/Tab/Setting.qml" line="133"/>
         <source>Language</source>
         <translation>语言</translation>
     </message>
@@ -1437,12 +1436,12 @@
         <translation type="vanished">导入身份文件</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="356"/>
+        <location filename="../qml/Tab/Setting.qml" line="577"/>
         <source>Export Identity File</source>
         <translation>导出身份文件</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="176"/>
+        <location filename="../qml/Tab/Setting.qml" line="224"/>
         <source>Exit Cubed before importing or exporting the identity file.</source>
         <translation>请先退出 Cubed，再导入或导出身份文件。</translation>
     </message>
@@ -1492,187 +1491,327 @@
         <translation>深色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="47"/>
+        <location filename="../qml/Tab/Setting.qml" line="51"/>
         <source>Color palette</source>
         <translation>主题配色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="48"/>
+        <location filename="../qml/Tab/Setting.qml" line="52"/>
         <source>Each palette includes accessible light and dark color roles.</source>
         <translation>每套配色均包含具有良好可读性的浅色与深色角色。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="52"/>
+        <location filename="../qml/Tab/Setting.qml" line="59"/>
         <source>Cubed</source>
         <translation>Cubed</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="53"/>
+        <location filename="../qml/Tab/Setting.qml" line="64"/>
         <source>Blue</source>
         <translation>蓝色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="54"/>
+        <location filename="../qml/Tab/Setting.qml" line="69"/>
         <source>Violet</source>
         <translation>紫色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="55"/>
+        <location filename="../qml/Tab/Setting.qml" line="74"/>
         <source>Teal</source>
         <translation>青色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="56"/>
+        <location filename="../qml/Tab/Setting.qml" line="79"/>
         <source>Orange</source>
         <translation>橙色</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="101"/>
+        <location filename="../qml/Tab/Setting.qml" line="128"/>
         <source>General</source>
         <translation>常规</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="102"/>
+        <location filename="../qml/Tab/Setting.qml" line="129"/>
         <source>Language and update preferences.</source>
         <translation>语言与更新偏好。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="107"/>
+        <location filename="../qml/Tab/Setting.qml" line="134"/>
         <source>The interface updates immediately after selection.</source>
         <translation>选择后界面会立即更新。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="118"/>
+        <location filename="../qml/Tab/Setting.qml" line="149"/>
         <source>Automatically check for launcher updates</source>
         <translation>自动检查启动器新版本</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="119"/>
+        <location filename="../qml/Tab/Setting.qml" line="150"/>
         <source>Check for a new launcher version when the launcher starts.</source>
         <translation>启动器启动时检查是否有新版本。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="128"/>
+        <location filename="../qml/Tab/Setting.qml" line="163"/>
         <source>Receive pre-release updates</source>
         <translation>接收预发布版本更新</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="129"/>
+        <location filename="../qml/Tab/Setting.qml" line="164"/>
         <source>Include preview releases when checking for launcher and game updates.</source>
         <translation>检查启动器和游戏更新时包含预览版本。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="143"/>
+        <location filename="../qml/Tab/Setting.qml" line="188"/>
         <source>Identity &amp; security</source>
         <translation>身份与安全</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="144"/>
+        <location filename="../qml/Tab/Setting.qml" line="189"/>
         <source>Protect and transfer your Cubed player identity.</source>
         <translation>保护和转移你的 Cubed 玩家身份。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="151"/>
+        <location filename="../qml/Tab/Setting.qml" line="196"/>
         <source>identity.json contains authentication credentials. Never share it or upload it publicly.</source>
         <translation>identity.json 包含认证凭据，请勿分享或上传到公开位置。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="182"/>
+        <location filename="../qml/Tab/Setting.qml" line="232"/>
         <source>Import Identity</source>
         <translation>导入身份</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="189"/>
+        <location filename="../qml/Tab/Setting.qml" line="239"/>
         <source>Export Identity</source>
         <translation>导出身份</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="209"/>
+        <location filename="../qml/Tab/Setting.qml" line="259"/>
+        <source>WebDAV backup</source>
+        <translation>WebDAV 备份</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="260"/>
+        <source>Encrypt and store your player identity in a private WebDAV directory.</source>
+        <translation>加密玩家身份并保存到私有 WebDAV 目录。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="267"/>
+        <source>Keep your backup passphrase safe. It is required to restore the identity on another device and cannot be recovered.</source>
+        <translation>请妥善保管备份口令。在其他设备上恢复身份时需要此口令，遗失后无法找回。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="270"/>
+        <source>WebDAV directory</source>
+        <translation>WebDAV 目录</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="271"/>
+        <source>An existing HTTPS directory. The backup uses the fixed file cubed-identity-backup.dat.</source>
+        <translation>填写现有的 HTTPS 目录。备份固定使用 cubed-identity-backup.dat 文件。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="276"/>
+        <source>https://example.com/webdav/backups/</source>
+        <translation>https://example.com/webdav/backups/</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="282"/>
+        <source>WebDAV username</source>
+        <translation>WebDAV 用户名</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="283"/>
+        <source>The account used to access this directory.</source>
+        <translation>用于访问此目录的账号。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="288"/>
+        <source>Username</source>
+        <translation>用户名</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="294"/>
+        <source>WebDAV password</source>
+        <translation>WebDAV 密码</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="295"/>
+        <source>Stored securely in the system keyring. Enter a new value to replace it.</source>
+        <translation>已安全保存到系统密钥环。输入新值可替换。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="295"/>
+        <source>Required for WebDAV authentication and stored in the system keyring.</source>
+        <translation>用于 WebDAV 身份验证，并保存到系统密钥环。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="302"/>
+        <source>Password saved</source>
+        <translation>密码已保存</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="302"/>
+        <source>Enter password</source>
+        <translation>输入密码</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="313"/>
+        <source>Remove saved password</source>
+        <translation>移除已保存的密码</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="318"/>
+        <source>Backup passphrase</source>
+        <translation>备份口令</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="319"/>
+        <source>Stored securely. Enter a new value to replace it; existing backups require their original passphrase.</source>
+        <translation>已安全保存。输入新值可替换；已有备份仍需使用原口令。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="319"/>
+        <source>Use at least 8 characters. This is separate from the WebDAV password.</source>
+        <translation>至少使用 8 个字符，此口令与 WebDAV 密码相互独立。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="326"/>
+        <source>Passphrase saved</source>
+        <translation>口令已保存</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="326"/>
+        <source>Enter passphrase</source>
+        <translation>输入口令</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="337"/>
+        <source>Remove saved passphrase</source>
+        <translation>移除已保存的口令</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="345"/>
+        <source>Exit Cubed before backing up or restoring the player identity.</source>
+        <translation>备份或恢复玩家身份前请先退出 Cubed。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="352"/>
+        <source>WebDAV operation in progress…</source>
+        <translation>WebDAV 操作进行中…</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="361"/>
+        <source>Test Connection</source>
+        <translation>测试连接</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="368"/>
+        <source>Back Up Now</source>
+        <translation>立即备份</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="375"/>
+        <source>Restore from WebDAV</source>
+        <translation>从 WebDAV 恢复</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="395"/>
         <source>Advanced</source>
         <translation>高级</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="210"/>
+        <location filename="../qml/Tab/Setting.qml" line="396"/>
         <source>Developer options, cache, and GitHub authentication.</source>
         <translation>开发者选项、缓存与 GitHub 认证。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="214"/>
+        <location filename="../qml/Tab/Setting.qml" line="400"/>
         <source>Show advanced options</source>
         <translation>显示高级选项</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="215"/>
+        <location filename="../qml/Tab/Setting.qml" line="401"/>
         <source>These settings are intended for troubleshooting and custom setups.</source>
         <translation>这些设置用于故障排查和自定义配置。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="222"/>
+        <location filename="../qml/Tab/Setting.qml" line="415"/>
         <source>Wrapper command</source>
         <translation>包装器命令</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="223"/>
+        <location filename="../qml/Tab/Setting.qml" line="416"/>
         <source>Run Cubed through a custom wrapper command.</source>
         <translation>通过自定义包装器命令运行 Cubed。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="227"/>
+        <location filename="../qml/Tab/Setting.qml" line="420"/>
         <source>Wrapper Command</source>
         <translation>包装器命令</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="234"/>
+        <location filename="../qml/Tab/Setting.qml" line="427"/>
         <source>Game log</source>
         <translation>游戏日志</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="235"/>
+        <location filename="../qml/Tab/Setting.qml" line="428"/>
         <source>Enable additional launcher logging for Cubed.</source>
         <translation>启用 Cubed 的额外启动器日志。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="241"/>
+        <location filename="../qml/Tab/Setting.qml" line="437"/>
         <source>Cached network data</source>
         <translation>网络数据缓存</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="242"/>
+        <location filename="../qml/Tab/Setting.qml" line="438"/>
         <source>Clear cached release and mirror responses.</source>
         <translation>清除已缓存的版本与镜像响应。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="253"/>
+        <location filename="../qml/Tab/Setting.qml" line="449"/>
         <source>GitHub token</source>
         <translation>GitHub Token</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="254"/>
+        <location filename="../qml/Tab/Setting.qml" line="450"/>
         <source>Stored in the system keyring; environment variables take precedence.</source>
         <translation>保存在系统密钥环中，环境变量优先。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="268"/>
+        <location filename="../qml/Tab/Setting.qml" line="464"/>
         <source>Remove token</source>
         <translation>移除 Token</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="310"/>
+        <location filename="../qml/Tab/Setting.qml" line="506"/>
         <source>IP address</source>
         <translation>IP 地址</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="338"/>
+        <location filename="../qml/Tab/Setting.qml" line="528"/>
+        <source>Restore Player Identity?</source>
+        <translation>恢复玩家身份？</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="539"/>
+        <source>Restoring from WebDAV replaces your current player identity and authentication credentials. This cannot be undone.</source>
+        <translation>从 WebDAV 恢复会替换当前玩家身份和身份验证凭据，此操作无法撤销。</translation>
+    </message>
+    <message>
+        <location filename="../qml/Tab/Setting.qml" line="559"/>
         <source>Clear all cached release and mirror data?</source>
         <translation>清除所有已缓存的版本与镜像数据？</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="387"/>
+        <location filename="../qml/Tab/Setting.qml" line="611"/>
         <source>Importing this file replaces your current player identity and authentication credentials.</source>
         <translation>导入此文件会替换当前玩家身份和认证凭据。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="411"/>
+        <location filename="../qml/Tab/Setting.qml" line="637"/>
         <source>The player identity was imported and will be used next time Cubed starts.</source>
         <translation>玩家身份已导入，将在下次启动 Cubed 时使用。</translation>
     </message>
@@ -1689,28 +1828,28 @@
         <translation type="vanished">关闭</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="285"/>
+        <location filename="../qml/Tab/Setting.qml" line="481"/>
         <source>Network</source>
         <translation>网络</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="286"/>
+        <location filename="../qml/Tab/Setting.qml" line="482"/>
         <source>Configure direct host or client mode for Cubed.</source>
         <translation>配置 Cubed 的直连主机或客户端模式。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="295"/>
+        <location filename="../qml/Tab/Setting.qml" line="491"/>
         <source>Host</source>
         <translation>主机</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="295"/>
+        <location filename="../qml/Tab/Setting.qml" line="491"/>
         <source>Client</source>
         <translation>客户端</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="302"/>
-        <location filename="../qml/Tab/Setting.qml" line="317"/>
+        <location filename="../qml/Tab/Setting.qml" line="498"/>
+        <location filename="../qml/Tab/Setting.qml" line="513"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
@@ -1719,24 +1858,24 @@
         <translation type="vanished">IP 地址</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="346"/>
+        <location filename="../qml/Tab/Setting.qml" line="567"/>
         <source>Select Identity File</source>
         <translation>选择身份文件</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="348"/>
-        <location filename="../qml/Tab/Setting.qml" line="360"/>
+        <location filename="../qml/Tab/Setting.qml" line="569"/>
+        <location filename="../qml/Tab/Setting.qml" line="581"/>
         <source>JSON files (*.json)</source>
         <translation>JSON 文件 (*.json)</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="348"/>
-        <location filename="../qml/Tab/Setting.qml" line="360"/>
+        <location filename="../qml/Tab/Setting.qml" line="569"/>
+        <location filename="../qml/Tab/Setting.qml" line="581"/>
         <source>All files (*)</source>
         <translation>所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="375"/>
+        <location filename="../qml/Tab/Setting.qml" line="596"/>
         <source>Replace Player Identity?</source>
         <translation>替换玩家身份？</translation>
     </message>
@@ -1745,17 +1884,17 @@
         <translation type="vanished">导入此文件将替换当前的玩家身份和认证凭据。是否继续？</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="399"/>
+        <location filename="../qml/Tab/Setting.qml" line="623"/>
         <source>Identity File Updated</source>
         <translation>身份文件已更新</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="399"/>
+        <location filename="../qml/Tab/Setting.qml" line="623"/>
         <source>Identity File Operation Failed</source>
         <translation>身份文件操作失败</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="409"/>
+        <location filename="../qml/Tab/Setting.qml" line="636"/>
         <source>The identity file operation failed: %1</source>
         <translation>身份文件操作失败：%1</translation>
     </message>
@@ -1764,7 +1903,7 @@
         <translation type="vanished">玩家身份已导入，将在下次启动 Cubed 时生效。</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="412"/>
+        <location filename="../qml/Tab/Setting.qml" line="637"/>
         <source>The player identity was exported successfully.</source>
         <translation>玩家身份已成功导出。</translation>
     </message>
@@ -1773,8 +1912,8 @@
         <translation type="vanished">缓存</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="245"/>
-        <location filename="../qml/Tab/Setting.qml" line="331"/>
+        <location filename="../qml/Tab/Setting.qml" line="441"/>
+        <location filename="../qml/Tab/Setting.qml" line="549"/>
         <source>Clear Cache</source>
         <translation>清理缓存</translation>
     </message>
@@ -1783,7 +1922,7 @@
         <translation type="vanished">GitHub Token</translation>
     </message>
     <message>
-        <location filename="../qml/Tab/Setting.qml" line="260"/>
+        <location filename="../qml/Tab/Setting.qml" line="456"/>
         <source>Enter GitHub Token</source>
         <translation>输入 GitHub Token</translation>
     </message>
@@ -1799,28 +1938,28 @@
 <context>
     <name>Sidebar</name>
     <message>
-        <location filename="../qml/Sidebar.qml" line="56"/>
-        <location filename="../qml/Sidebar.qml" line="80"/>
+        <location filename="../qml/Sidebar.qml" line="68"/>
+        <location filename="../qml/Sidebar.qml" line="108"/>
         <source>Launcher</source>
         <translation>启动</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="81"/>
+        <location filename="../qml/Sidebar.qml" line="110"/>
         <source>Manager</source>
         <translation>管理</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="82"/>
+        <location filename="../qml/Sidebar.qml" line="112"/>
         <source>Multiplayer</source>
         <translation>联机</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="83"/>
+        <location filename="../qml/Sidebar.qml" line="114"/>
         <source>Setting</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../qml/Sidebar.qml" line="84"/>
+        <location filename="../qml/Sidebar.qml" line="115"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
@@ -1838,9 +1977,141 @@
         <translation>特别鸣谢</translation>
     </message>
     <message>
-        <location filename="../qml/pages/SpecialThanks.qml" line="29"/>
+        <location filename="../qml/pages/SpecialThanks.qml" line="37"/>
         <source>Thanks to everyone who helped Cubed Launcher grow.</source>
         <translation>感谢每一位帮助 Cubed 启动器成长的人。</translation>
+    </message>
+</context>
+<context>
+    <name>WebDavBackupManager</name>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="63"/>
+        <source>The WebDAV password cannot be empty.</source>
+        <translation>WebDAV 密码不能为空。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="67"/>
+        <source>Cannot save the WebDAV password in the system keyring.</source>
+        <translation>无法将 WebDAV 密码保存到系统密钥环。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="71"/>
+        <source>The WebDAV password was saved securely.</source>
+        <translation>WebDAV 密码已安全保存。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="78"/>
+        <source>Cannot remove the WebDAV password from the system keyring.</source>
+        <translation>无法从系统密钥环移除 WebDAV 密码。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="88"/>
+        <source>The backup passphrase must contain at least 8 characters.</source>
+        <translation>备份口令必须至少包含 8 个字符。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="93"/>
+        <source>Cannot save the backup passphrase in the system keyring.</source>
+        <translation>无法将备份口令保存到系统密钥环。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="98"/>
+        <source>The backup passphrase was saved securely.</source>
+        <translation>备份口令已安全保存。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="105"/>
+        <source>Cannot remove the backup passphrase from the system keyring.</source>
+        <translation>无法从系统密钥环移除备份口令。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="123"/>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="153"/>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="168"/>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="307"/>
+        <source>Another WebDAV operation is already running.</source>
+        <translation>已有另一项 WebDAV 操作正在运行。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="146"/>
+        <source>Cannot encrypt the player identity for backup.</source>
+        <translation>无法加密玩家身份以进行备份。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="174"/>
+        <source>Enter a WebDAV directory URL.</source>
+        <translation>请输入 WebDAV 目录 URL。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="183"/>
+        <source>Enter a valid HTTPS WebDAV directory URL without embedded credentials, a query, or a fragment.</source>
+        <translation>请输入有效的 HTTPS WebDAV 目录 URL，且不要包含嵌入式凭据、查询参数或片段。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="201"/>
+        <source>Enter a WebDAV username.</source>
+        <translation>请输入 WebDAV 用户名。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="207"/>
+        <source>Save the WebDAV password before continuing.</source>
+        <translation>请先保存 WebDAV 密码。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="219"/>
+        <source>Save the backup passphrase before continuing.</source>
+        <translation>请先保存备份口令。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="267"/>
+        <source>The WebDAV directory is reachable.</source>
+        <translation>WebDAV 目录连接正常。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="272"/>
+        <source>The player identity was backed up successfully.</source>
+        <translation>玩家身份备份成功。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="280"/>
+        <source>The backup passphrase is incorrect or the backup was modified.</source>
+        <translation>备份口令错误，或备份已被修改。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="283"/>
+        <source>The remote file is not a supported Cubed identity backup.</source>
+        <translation>远程文件不是受支持的 Cubed 身份备份。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="292"/>
+        <source>The player identity was restored and will be used next time Cubed starts.</source>
+        <translation>玩家身份已恢复，将在下次启动 Cubed 时使用。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="300"/>
+        <source>WebDAV authentication failed. Check the username and password.</source>
+        <translation>WebDAV 身份验证失败，请检查用户名和密码。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="303"/>
+        <source>The WebDAV directory or backup file does not exist.</source>
+        <translation>WebDAV 目录或备份文件不存在。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="305"/>
+        <source>The remote backup is too large.</source>
+        <translation>远程备份文件过大。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="310"/>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="315"/>
+        <source>The WebDAV request failed.</source>
+        <translation>WebDAV 请求失败。</translation>
+    </message>
+    <message>
+        <location filename="../src/tool/webdav_backup_manager.cpp" line="311"/>
+        <source>The WebDAV request failed: %1</source>
+        <translation>WebDAV 请求失败：%1</translation>
     </message>
 </context>
 </TS>

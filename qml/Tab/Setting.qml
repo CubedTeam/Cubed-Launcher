@@ -248,6 +248,142 @@ PageScaffold {
 
     Card {
         Layout.fillWidth: true
+        implicitHeight: webdavColumn.implicitHeight + Theme.space32 * 2
+        ColumnLayout {
+            id: webdavColumn
+            anchors.fill: parent
+            anchors.margins: Theme.space24
+            spacing: Theme.space8
+            SectionHeader {
+                Layout.fillWidth: true
+                title: qsTr("WebDAV backup")
+                subtitle: qsTr("Encrypt and store your player identity in a private WebDAV directory.")
+                iconName: "cloud_sync"
+            }
+            InfoBanner {
+                Layout.fillWidth: true
+                tone: "warning"
+                iconName: "encrypted"
+                text: qsTr("Keep your backup passphrase safe. It is required to restore the identity on another device and cannot be recovered.")
+            }
+            SettingRow {
+                title: qsTr("WebDAV directory")
+                description: qsTr("An existing HTTPS directory. The backup uses the fixed file cubed-identity-backup.dat.")
+                iconName: "folder"
+                MdTextField {
+                    implicitWidth: 320
+                    enabled: !WebDavBackupManager.busy
+                    placeholderText: qsTr("https://example.com/webdav/backups/")
+                    text: WebDavBackupManager.serverUrl
+                    onEditingFinished: WebDavBackupManager.serverUrl = text
+                }
+            }
+            SettingRow {
+                title: qsTr("WebDAV username")
+                description: qsTr("The account used to access this directory.")
+                iconName: "person"
+                MdTextField {
+                    implicitWidth: 260
+                    enabled: !WebDavBackupManager.busy
+                    placeholderText: qsTr("Username")
+                    text: WebDavBackupManager.username
+                    onEditingFinished: WebDavBackupManager.username = text
+                }
+            }
+            SettingRow {
+                title: qsTr("WebDAV password")
+                description: WebDavBackupManager.passwordStored ? qsTr("Stored securely in the system keyring. Enter a new value to replace it.") : qsTr("Required for WebDAV authentication and stored in the system keyring.")
+                iconName: "key"
+                MdTextField {
+                    id: webdavPasswordField
+                    implicitWidth: 220
+                    enabled: !WebDavBackupManager.busy
+                    echoMode: TextInput.Password
+                    placeholderText: WebDavBackupManager.passwordStored ? qsTr("Password saved") : qsTr("Enter password")
+                    onEditingFinished: {
+                        if (text.length > 0 && WebDavBackupManager.store_webdav_password(text))
+                            text = "";
+                    }
+                }
+                MdIconButton {
+                    visible: WebDavBackupManager.passwordStored
+                    enabled: !WebDavBackupManager.busy
+                    iconName: "delete"
+                    variant: "danger"
+                    toolTip: qsTr("Remove saved password")
+                    onClicked: WebDavBackupManager.clear_webdav_password()
+                }
+            }
+            SettingRow {
+                title: qsTr("Backup passphrase")
+                description: WebDavBackupManager.passphraseStored ? qsTr("Stored securely. Enter a new value to replace it; existing backups require their original passphrase.") : qsTr("Use at least 8 characters. This is separate from the WebDAV password.")
+                iconName: "encrypted"
+                MdTextField {
+                    id: backupPassphraseField
+                    implicitWidth: 220
+                    enabled: !WebDavBackupManager.busy
+                    echoMode: TextInput.Password
+                    placeholderText: WebDavBackupManager.passphraseStored ? qsTr("Passphrase saved") : qsTr("Enter passphrase")
+                    onEditingFinished: {
+                        if (text.length > 0 && WebDavBackupManager.store_backup_passphrase(text))
+                            text = "";
+                    }
+                }
+                MdIconButton {
+                    visible: WebDavBackupManager.passphraseStored
+                    enabled: !WebDavBackupManager.busy
+                    iconName: "delete"
+                    variant: "danger"
+                    toolTip: qsTr("Remove saved passphrase")
+                    onClicked: WebDavBackupManager.clear_backup_passphrase()
+                }
+            }
+            InfoBanner {
+                visible: CubedGame.running
+                Layout.fillWidth: true
+                tone: "error"
+                text: qsTr("Exit Cubed before backing up or restoring the player identity.")
+            }
+            InfoBanner {
+                visible: WebDavBackupManager.busy || WebDavBackupManager.resultState !== WebDavBackupManager.Idle
+                Layout.fillWidth: true
+                tone: WebDavBackupManager.resultState === WebDavBackupManager.Error ? "error" : "info"
+                iconName: WebDavBackupManager.busy ? "cloud_sync" : WebDavBackupManager.resultState === WebDavBackupManager.Success ? "check" : "warning"
+                text: WebDavBackupManager.busy ? qsTr("WebDAV operation in progress…") : WebDavBackupManager.statusMessage
+            }
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: Theme.space8
+                Item {
+                    Layout.fillWidth: true
+                }
+                MdButton {
+                    text: qsTr("Test Connection")
+                    iconName: "cloud_sync"
+                    variant: "outlined"
+                    enabled: WebDavBackupManager.connectionReady && !WebDavBackupManager.busy
+                    onClicked: WebDavBackupManager.test_connection()
+                }
+                MdButton {
+                    text: qsTr("Back Up Now")
+                    iconName: "cloud_upload"
+                    variant: "tonal"
+                    enabled: WebDavBackupManager.configurationReady && !WebDavBackupManager.busy && !CubedGame.running
+                    onClicked: WebDavBackupManager.backup_identity()
+                }
+                MdButton {
+                    text: qsTr("Restore from WebDAV")
+                    iconName: "cloud_download"
+                    variant: "filled"
+                    enabled: WebDavBackupManager.configurationReady && !WebDavBackupManager.busy && !CubedGame.running
+                    onClicked: confirmWebDavRestoreDialog.open()
+                }
+            }
+        }
+    }
+
+    Card {
+        Layout.fillWidth: true
         implicitHeight: advancedColumn.implicitHeight + Theme.space32 * 2
         ColumnLayout {
             id: advancedColumn
@@ -379,6 +515,28 @@ PageScaffold {
                     onEditingFinished: CubedGame.set_port(text)
                 }
             }
+        }
+    }
+
+    MdDialog {
+        id: confirmWebDavRestoreDialog
+        parent: Overlay.overlay
+        anchors.centerIn: Overlay.overlay
+        width: Math.min(480, Overlay.overlay.width - 48)
+        modal: true
+        closePolicy: Popup.CloseOnEscape
+        title: qsTr("Restore Player Identity?")
+        standardButtons: Dialog.Ok | Dialog.Cancel
+        palette.text: Theme.surfaceForeground
+        background: Rectangle {
+            color: Theme.surfaceContainerHigh
+            radius: Theme.radiusExtraLarge
+        }
+        onAccepted: WebDavBackupManager.restore_identity()
+        InfoBanner {
+            width: parent.width
+            tone: "warning"
+            text: qsTr("Restoring from WebDAV replaces your current player identity and authentication credentials. This cannot be undone.")
         }
     }
 

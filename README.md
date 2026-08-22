@@ -13,6 +13,7 @@ Cubed Launcher is the official client-side application for managing, updating, a
 - **CMake**: version 3.21 or higher
 - **Compiler**: C++23 conforming compiler (GCC 12+, Clang 16+, MSVC 19.38+)
 - **Qt**: version 6.11 or higher (including Core, Widgets, Network, and Gui modules)
+- **OpenSSL**: version 3.x with the Crypto component
 - **Ninja** (recommended) or any CMake-supported generator
 
 ### Development Environment
@@ -75,4 +76,3 @@ Ensure your compiler is up to date. For GCC, use version 12 or later. For Clang,
 ## License
 
 GPL-3.0 license
-
