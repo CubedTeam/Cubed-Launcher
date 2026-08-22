@@ -279,27 +279,7 @@ endif()
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE QT_NO_KEYWORDS)
 
-if (WIN32)
-    install(TARGETS ${PROJECT_NAME}
-        RUNTIME_DEPENDENCIES
-            DIRECTORIES
-                "$<TARGET_FILE_DIR:Qt6::Core>"
-                "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin"
-            PRE_EXCLUDE_REGEXES
-                "api-ms-win-.*"
-                "ext-ms-win-.*"
-            POST_EXCLUDE_REGEXES
-                ".*[\\/]Windows[\\/]System32[\\/].*"
-        RUNTIME DESTINATION .
-        COMPONENT Runtime
-    )
-    install(DIRECTORY
-        "${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/bin/"
-        DESTINATION .
-        COMPONENT Runtime
-        FILES_MATCHING PATTERN "*.dll"
-    )
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 
 include(GNUInstallDirs)
 

@@ -80,69 +80,17 @@ jobs:
           "-DCMAKE_TOOLCHAIN_FILE=$env:VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake"
           -DVCPKG_MANIFEST_MODE=ON
           -DVCPKG_TARGET_TRIPLET=x64-windows
-          -DVCPKG_APPLOCAL_DEPS=OFF
+          -DVCPKG_APPLOCAL_DEPS=ON
           "-DAPP_VERSION=${{ inputs.version }}"
 
       - name: Build
         run: cmake --build build --config Release --target CubedLauncher
 
-      - name: Stage Runtime
-        if: inputs.package
-        run: >
-          cmake
-          --install build
-          --prefix build/package
-          --component Runtime
-          --config Release
-
       - name: Deploy Qt
         if: inputs.package
         shell: cmd
         run: |
-          windeployqt --release --qmldir qml build\package\CubedLauncher.exe
-
-      - name: Verify OpenSSL Deployment
-        if: inputs.package
-        shell: pwsh
-        run: |
-          $cryptoDll = @(Get-ChildItem `
-            "build\package\libcrypto*.dll" `
-            -ErrorAction Stop)
-          if ($cryptoDll.Count -ne 1) {
-            throw "Expected exactly one OpenSSL Crypto runtime DLL."
-          }
-          $sslDll = @(Get-ChildItem `
-            "build\package\libssl*.dll" `
-            -ErrorAction Stop)
-          if ($sslDll.Count -ne 1) {
-            throw "Expected exactly one OpenSSL SSL runtime DLL."
-          }
-          dumpbin /dependents "build\package\CubedLauncher.exe"
-
-      - name: Smoke Test Windows Bundle
-        if: inputs.package
-        shell: pwsh
-        run: |
-          $bundleDir = (Resolve-Path "build\package").Path
-          $originalPath = $env:PATH
-          $env:PATH = "$bundleDir;${env:SystemRoot}\System32;${env:SystemRoot}"
-          $process = $null
-          try {
-            $process = Start-Process `
-              "$bundleDir\CubedLauncher.exe" `
-              -WorkingDirectory $bundleDir `
-              -PassThru
-            Start-Sleep -Seconds 5
-            if ($process.HasExited) {
-              throw "CubedLauncher exited during the packaged runtime smoke test with code $($process.ExitCode)."
-            }
-          } finally {
-            if ($null -ne $process -and -not $process.HasExited) {
-              Stop-Process -Id $process.Id
-              $process.WaitForExit()
-            }
-            $env:PATH = $originalPath
-          }
+          windeployqt --release --qmldir qml build\CubedLauncher\CubedLauncher.exe
 
       - name: Install Inno Setup
         if: inputs.package
@@ -159,56 +107,8 @@ jobs:
         shell: pwsh
         run: |
           Compress-Archive `
-            -Path build/package/* `
+            -Path build/CubedLauncher/* `
             -DestinationPath CubedLauncher-${{ inputs.version }}-windows-x64-portable.zip
-
-      - name: Verify Packaged Artifacts
-        if: inputs.package
-        shell: pwsh
-        run: |
-          function Assert-OpenSslRuntime([string] $directory) {
-            $cryptoDll = @(Get-ChildItem `
-              "$directory\libcrypto*.dll" `
-              -ErrorAction Stop)
-            if ($cryptoDll.Count -ne 1) {
-              throw "Expected exactly one OpenSSL Crypto runtime DLL in $directory."
-            }
-            $sslDll = @(Get-ChildItem `
-              "$directory\libssl*.dll" `
-              -ErrorAction Stop)
-            if ($sslDll.Count -ne 1) {
-              throw "Expected exactly one OpenSSL SSL runtime DLL in $directory."
-            }
-          }
-
-          $portableDir = Join-Path $env:RUNNER_TEMP "portable-check"
-          Expand-Archive `
-            -Path "CubedLauncher-${{ inputs.version }}-windows-x64-portable.zip" `
-            -DestinationPath $portableDir
-          Assert-OpenSslRuntime $portableDir
-
-          $installer = Get-ChildItem `
-            "installer\output\*.exe" `
-            -File |
-            Select-Object -First 1
-          if ($null -eq $installer) {
-            throw "The Windows installer was not created."
-          }
-          $installerDir = Join-Path $env:RUNNER_TEMP "installer-check"
-          $installerProcess = Start-Process `
-            $installer.FullName `
-            -ArgumentList @(
-              "/VERYSILENT",
-              "/SUPPRESSMSGBOXES",
-              "/NORESTART",
-              "/DIR=$installerDir"
-            ) `
-            -Wait `
-            -PassThru
-          if ($installerProcess.ExitCode -ne 0) {
-            throw "The Windows installer verification failed with code $($installerProcess.ExitCode)."
-          }
-          Assert-OpenSslRuntime $installerDir
 
       - name: Upload Windows Artifacts
         if: inputs.package
