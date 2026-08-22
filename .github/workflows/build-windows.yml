@@ -44,10 +44,46 @@ jobs:
       - name: Install OpenSSL
         shell: pwsh
         run: |
-          choco install openssl -y --no-progress
-          "OPENSSL_ROOT_DIR=C:\Program Files\OpenSSL-Win64" >> $env:GITHUB_ENV
+          choco install openssl --version=3.6.2 --allow-downgrade -y --no-progress
+          $candidateRoots = @(
+            "C:\Program Files\OpenSSL-Win64",
+            "C:\Program Files\OpenSSL"
+          )
+          $opensslRoot = $candidateRoots |
+            Where-Object {
+              Test-Path (Join-Path $_ "include\openssl\opensslv.h")
+            } |
+            Select-Object -First 1
+          if ($null -eq $opensslRoot) {
+            throw "Could not locate the OpenSSL installation root."
+          }
+          $cryptoLibraries = @(Get-ChildItem `
+            (Join-Path $opensslRoot "lib") `
+            -Filter "libcrypto.lib" `
+            -File `
+            -Recurse)
+          $cryptoLibrary = $cryptoLibraries |
+            Where-Object { $_.FullName -match "\\VC\\x64\\MD\\" } |
+            Select-Object -First 1
+          if ($null -eq $cryptoLibrary) {
+            $cryptoLibrary = $cryptoLibraries | Select-Object -First 1
+          }
+          if ($null -eq $cryptoLibrary) {
+            throw "Could not locate the OpenSSL Crypto import library."
+          }
+          $opensslInclude = Join-Path $opensslRoot "include"
+          $cryptoRuntime = Join-Path $opensslRoot "bin\libcrypto-3-x64.dll"
+          $sslRuntime = Join-Path $opensslRoot "bin\libssl-3-x64.dll"
+          if (-not (Test-Path $cryptoRuntime) -or -not (Test-Path $sslRuntime)) {
+            throw "The expected OpenSSL 3 runtime DLLs are missing."
+          }
+          "OPENSSL_ROOT_DIR=$opensslRoot" >> $env:GITHUB_ENV
+          "OPENSSL_INCLUDE_DIR=$opensslInclude" >> $env:GITHUB_ENV
+          "OPENSSL_CRYPTO_LIBRARY=$($cryptoLibrary.FullName)" >> $env:GITHUB_ENV
+          Write-Host "Using OpenSSL from $opensslRoot"
 
       - name: Configure
+        shell: pwsh
         run: >
           cmake
           -B build
@@ -56,6 +92,8 @@ jobs:
           -DCMAKE_C_COMPILER_LAUNCHER=sccache
           -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
           "-DOPENSSL_ROOT_DIR=$env:OPENSSL_ROOT_DIR"
+          "-DOPENSSL_INCLUDE_DIR=$env:OPENSSL_INCLUDE_DIR"
+          "-DOPENSSL_CRYPTO_LIBRARY=$env:OPENSSL_CRYPTO_LIBRARY"
           "-DAPP_VERSION=${{ inputs.version }}"
 
       - name: Build

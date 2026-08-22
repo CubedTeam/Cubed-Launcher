@@ -2,12 +2,12 @@
 
 #include <QByteArray>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QPointer>
 #include <QUrl>
 #include <memory>
 
 class QAuthenticator;
-class QNetworkReply;
 
 class WebDavClient : public QObject {
     Q_OBJECT
