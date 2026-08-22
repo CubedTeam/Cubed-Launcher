@@ -316,7 +316,7 @@ PageScaffold {
             }
             SettingRow {
                 title: qsTr("Backup passphrase")
-                description: WebDavBackupManager.passphraseStored ? qsTr("Stored securely. Enter a new value to replace it; existing backups require their original passphrase.") : qsTr("Use at least 12 characters. This is separate from the WebDAV password.")
+                description: WebDavBackupManager.passphraseStored ? qsTr("Stored securely. Enter a new value to replace it; existing backups require their original passphrase.") : qsTr("Use at least 8 characters. This is separate from the WebDAV password.")
                 iconName: "encrypted"
                 MdTextField {
                     id: backupPassphraseField

@@ -1672,8 +1672,8 @@
     </message>
     <message>
         <location filename="../qml/Tab/Setting.qml" line="319"/>
-        <source>Use at least 12 characters. This is separate from the WebDAV password.</source>
-        <translation>至少使用 12 个字符，此口令与 WebDAV 密码相互独立。</translation>
+        <source>Use at least 8 characters. This is separate from the WebDAV password.</source>
+        <translation>至少使用 8 个字符，此口令与 WebDAV 密码相互独立。</translation>
     </message>
     <message>
         <location filename="../qml/Tab/Setting.qml" line="326"/>
@@ -2006,8 +2006,8 @@
     </message>
     <message>
         <location filename="../src/tool/webdav_backup_manager.cpp" line="88"/>
-        <source>The backup passphrase must contain at least 12 characters.</source>
-        <translation>备份口令必须至少包含 12 个字符。</translation>
+        <source>The backup passphrase must contain at least 8 characters.</source>
+        <translation>备份口令必须至少包含 8 个字符。</translation>
     </message>
     <message>
         <location filename="../src/tool/webdav_backup_manager.cpp" line="93"/>

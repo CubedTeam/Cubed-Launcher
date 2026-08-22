@@ -12,7 +12,7 @@ constexpr QLatin1StringView kServerUrlKey("webdav/server_url");
 constexpr QLatin1StringView kUsernameKey("webdav/username");
 constexpr QLatin1StringView kPasswordKey("webdav_password");
 constexpr QLatin1StringView kPassphraseKey("webdav_backup_passphrase");
-constexpr qsizetype kMinimumPassphraseLength = 12;
+constexpr qsizetype kMinimumPassphraseLength = 8;
 } // namespace
 
 WebDavBackupManager::WebDavBackupManager(QObject* parent)
@@ -85,7 +85,7 @@ void WebDavBackupManager::clear_webdav_password() {
 bool WebDavBackupManager::store_backup_passphrase(const QString& passphrase) {
     if (passphrase.size() < kMinimumPassphraseLength) {
         set_error(
-            tr("The backup passphrase must contain at least 12 characters."));
+            tr("The backup passphrase must contain at least 8 characters."));
         return false;
     }
     if (!SecretStore::save(kPassphraseKey, passphrase.toUtf8())) {
