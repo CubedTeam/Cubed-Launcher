@@ -183,6 +183,38 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 if (WIN32)
+    find_file(CUBED_OPENSSL_CRYPTO_RUNTIME
+        NAMES
+            libcrypto-3-x64.dll
+            libcrypto-3.dll
+        HINTS
+            "${OPENSSL_ROOT_DIR}/bin"
+            "$ENV{OPENSSL_ROOT_DIR}/bin"
+        REQUIRED
+        NO_CACHE
+    )
+    find_file(CUBED_OPENSSL_SSL_RUNTIME
+        NAMES
+            libssl-3-x64.dll
+            libssl-3.dll
+        HINTS
+            "${OPENSSL_ROOT_DIR}/bin"
+            "$ENV{OPENSSL_ROOT_DIR}/bin"
+        REQUIRED
+        NO_CACHE
+    )
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CUBED_OPENSSL_CRYPTO_RUNTIME}"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CUBED_OPENSSL_SSL_RUNTIME}"
+            "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        VERBATIM
+    )
+endif()
+
+if (WIN32)
     target_link_libraries(${PROJECT_NAME} PRIVATE Crypt32 shell32)
 endif()
 

@@ -32,7 +32,9 @@ jobs:
             fuse \
             libfuse2 \
             desktop-file-utils \
-            libssl-dev
+            libssl-dev \
+            xauth \
+            xvfb
 
       - name: Install GCC 14 (for C++23)
         run: |
@@ -80,12 +82,55 @@ jobs:
         env:
           QML_SOURCES_PATHS: "qml"
           LDAI_OUTPUT: "CubedLauncher-${{ inputs.version }}-linux-x64.AppImage"
+          NO_STRIP: "1"
         run: |
+          QMAKE="$(command -v qmake)"
+          export QMAKE
+          "$QMAKE" -query QT_VERSION | grep -q '^6\.'
+          OPENSSL_LIBDIR="$(pkg-config --variable=libdir openssl)"
+          test -f "$OPENSSL_LIBDIR/libcrypto.so.3"
+          test -f "$OPENSSL_LIBDIR/libssl.so.3"
           linuxdeploy-x86_64.AppImage \
             --appdir AppDir \
+            --library "$OPENSSL_LIBDIR/libcrypto.so.3" \
+            --library "$OPENSSL_LIBDIR/libssl.so.3" \
             --desktop-file AppDir/usr/share/applications/CubedLauncher.desktop \
             --plugin qt \
             --output appimage
+
+      - name: Verify AppImage Runtime
+        if: inputs.package
+        env:
+          APPIMAGE_PATH: "CubedLauncher-${{ inputs.version }}-linux-x64.AppImage"
+        run: |
+          chmod +x "$APPIMAGE_PATH"
+          "$APPIMAGE_PATH" --appimage-extract >/dev/null
+          test -f squashfs-root/usr/lib/libcrypto.so.3
+          test -f squashfs-root/usr/lib/libssl.so.3
+          if ldd squashfs-root/usr/bin/CubedLauncher | grep -q "not found"; then
+            echo "The packaged launcher has unresolved shared libraries." >&2
+            exit 1
+          fi
+          CRYPTO_PATH="$(ldd squashfs-root/usr/bin/CubedLauncher | awk '$1 == "libcrypto.so.3" { print $3 }')"
+          test "$(readlink -f "$CRYPTO_PATH")" = "$(readlink -f squashfs-root/usr/lib/libcrypto.so.3)"
+          TLS_BACKEND=squashfs-root/usr/plugins/tls/libqopensslbackend.so
+          test -f "$TLS_BACKEND"
+          if ldd "$TLS_BACKEND" | grep -q "not found"; then
+            echo "The packaged Qt TLS backend has unresolved shared libraries." >&2
+            exit 1
+          fi
+          SSL_PATH="$(ldd "$TLS_BACKEND" | awk '$1 == "libssl.so.3" { print $3 }')"
+          TLS_CRYPTO_PATH="$(ldd "$TLS_BACKEND" | awk '$1 == "libcrypto.so.3" { print $3 }')"
+          test "$(readlink -f "$SSL_PATH")" = "$(readlink -f squashfs-root/usr/lib/libssl.so.3)"
+          test "$(readlink -f "$TLS_CRYPTO_PATH")" = "$(readlink -f squashfs-root/usr/lib/libcrypto.so.3)"
+          set +e
+          timeout 10s xvfb-run -a squashfs-root/AppRun
+          APP_STATUS=$?
+          set -e
+          if [ "$APP_STATUS" -ne 124 ]; then
+            echo "Packaged AppImage failed its runtime smoke test with status $APP_STATUS" >&2
+            exit 1
+          fi
 
       - name: Upload Linux Artifact
         if: inputs.package

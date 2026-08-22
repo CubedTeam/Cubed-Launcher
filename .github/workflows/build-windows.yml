@@ -55,6 +55,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_C_COMPILER_LAUNCHER=sccache
           -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+          "-DOPENSSL_ROOT_DIR=$env:OPENSSL_ROOT_DIR"
           "-DAPP_VERSION=${{ inputs.version }}"
 
       - name: Build
@@ -66,12 +67,47 @@ jobs:
         run: |
           windeployqt --release --qmldir qml build\CubedLauncher\CubedLauncher.exe
 
-      - name: Deploy OpenSSL Crypto
+      - name: Verify OpenSSL Deployment
         if: inputs.package
         shell: pwsh
         run: |
-          Copy-Item "$env:OPENSSL_ROOT_DIR\bin\libcrypto-3-x64.dll" `
-            "build\CubedLauncher\"
+          $cryptoDll = @(Get-ChildItem `
+            "build\CubedLauncher\libcrypto-3*.dll" `
+            -ErrorAction Stop)
+          if ($cryptoDll.Count -ne 1) {
+            throw "Expected exactly one OpenSSL Crypto runtime DLL."
+          }
+          $sslDll = @(Get-ChildItem `
+            "build\CubedLauncher\libssl-3*.dll" `
+            -ErrorAction Stop)
+          if ($sslDll.Count -ne 1) {
+            throw "Expected exactly one OpenSSL SSL runtime DLL."
+          }
+
+      - name: Smoke Test Windows Bundle
+        if: inputs.package
+        shell: pwsh
+        run: |
+          $bundleDir = (Resolve-Path "build\CubedLauncher").Path
+          $originalPath = $env:PATH
+          $env:PATH = "$bundleDir;${env:SystemRoot}\System32;${env:SystemRoot}"
+          $process = $null
+          try {
+            $process = Start-Process `
+              "$bundleDir\CubedLauncher.exe" `
+              -WorkingDirectory $bundleDir `
+              -PassThru
+            Start-Sleep -Seconds 5
+            if ($process.HasExited) {
+              throw "CubedLauncher exited during the packaged runtime smoke test with code $($process.ExitCode)."
+            }
+          } finally {
+            if ($null -ne $process -and -not $process.HasExited) {
+              Stop-Process -Id $process.Id
+              $process.WaitForExit()
+            }
+            $env:PATH = $originalPath
+          }
 
       - name: Install Inno Setup
         if: inputs.package
