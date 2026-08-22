@@ -252,6 +252,22 @@ if (BUILD_TESTING)
     )
     add_test(NAME WebDavClientTest COMMAND WebDavClientTest)
 
+    if (WIN32)
+        qt_add_executable(SecretStoreTest
+            tests/secret_store_test.cpp
+            src/tool/secret_store.cpp
+            src/tool/secret_store.hpp
+        )
+        target_include_directories(SecretStoreTest PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/src
+        )
+        target_link_libraries(SecretStoreTest PRIVATE
+            Crypt32
+            Qt6::Test
+        )
+        add_test(NAME SecretStoreTest COMMAND SecretStoreTest)
+    endif()
+
     qt_add_executable(AnsiTextFormatterTest
         tests/ansi_text_formatter_test.cpp
         src/tool/ansi_text_formatter.cpp
